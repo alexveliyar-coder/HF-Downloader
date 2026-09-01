@@ -1,0 +1,42 @@
+{
+  "app_name": "HF Downloader",
+  
+  "journal_button": "السجل",
+  
+  "console_start": "تم تشغيل HF Downloader (بدون اتصال)",
+  "console_site": "الموقع:",
+  "console_core": "النواة:",
+  "console_files": "الملفات:",
+  "console_exit": "الخروج: إغلاق النافذة أو Ctrl+C",
+  
+  "shutdown_title": "إيقاف الخوادم...",
+  "shutdown_saved": "تم حفظ حالة المهام في .tasks.json",
+  "shutdown_core": "تم إيقاف خادم النواة.",
+  "shutdown_site": "تم إيقاف خادم الموقع.",
+  "shutdown_done": "تم.",
+  
+  "no_pywebview": "لم يتم تثبيت pywebview — جاري فتح المتصفح العادي.",
+  "install_pywebview": "pip install pywebview — للحصول على نافذة منفصلة",
+  
+  "core_start": "تم تشغيل خادم HF Core",
+  "core_addr": "العنوان:",
+  "core_dir": "المجلد:",
+  "core_stop": "Ctrl+C",
+  
+  "restore_tasks": "تم استعادة %d مهمة من .tasks.json",
+  
+  "signal_shutdown": "تم تلقي إشارة الإيقاف — جاري حفظ حالة المهام...",
+  "stopped": "توقف.",
+  
+  "dir_title": "حدد مجلد للحفظ",
+  
+  "error_origin_forbidden": "origin forbidden",
+  "error_bad_path": "bad path",
+  "error_not_found": "not found",
+  "error_bad_link": "bad link",
+  "error_bad_dir": "bad dir",
+  "error_bad_body": "bad body",
+  "error_write_failed": "write failed",
+  "error_dialog_timeout": "dialog timeout",
+  "error_canceled": "canceled"
+}

@@ -1,0 +1,7 @@
+{
+  "include": ["main.py", "src"],
+  "extraPaths": ["src"],
+  "pythonVersion": "3.9",
+  "reportMissingImports": "none",
+  "reportUndefinedVariable": "warning"
+}

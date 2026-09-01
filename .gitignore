@@ -1,0 +1,77 @@
+﻿# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Виртуальные окружения (машинно-зависимы, не коммитим) ---
+.venv/
+venv/
+env/
+.python-version
+.python-version.bak
+
+# --- Секреты и локальные настройки ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+hfdl_token
+
+# --- Runtime-артефакты программы (рядом с main.py) ---
+.tasks.json
+.tasks.json.bak
+.lang.txt
+.last_dir.txt
+.hfdl_log.txt
+hfdl_bookmarks.json
+downloads/**
+!downloads/.gitignore
+
+# --- Сборка (PyInstaller, Nuitka) ---
+build/
+dist/
+*.spec
+!hfdownloader.spec
+*.exe
+*.app
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# --- IDE / OS мусор ---
+.idea/
+.vscode/
+!.vscode/settings.json.example
+!.vscode/launch.json.example
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.history/
+
+# --- Тесты / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Локальные бэкапы / заметки рядом с исходниками ---
+*.new.txt
+*.old.txt
+*.bak
+*.orig
+*.rej
+notes.txt
+TODO.txt
+
+# --- local release helper scripts (never commit) ---
+.gh_login.ps1
+.gh_publish.ps1

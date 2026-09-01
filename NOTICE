@@ -1,0 +1,61 @@
+HF Downloader
+Copyright (c) 2026 Alexey (HF Downloader contributors)
+
+This product includes software developed by HF Downloader contributors.
+A list of contributors can be found in the AUTHORS file (when present)
+or in the git commit history of the project.
+
+Licensed under the GNU Affero General Public License v3.0 or later (AGPLv3).
+A copy of the license is available in the LICENSE file in the root of this
+distribution, and at <https://www.gnu.org/licenses/agpl-3.0.txt>.
+
+For commercial licensing options that bypass the AGPLv3 obligations, see
+docs/COMMERCIAL_LICENSE.md or contact the maintainer.
+
+================================================================================
+
+Bundled third-party software (used at runtime via dependencies in
+requirements.txt / pyproject.toml):
+
+  - requests  (Apache 2.0)
+    Copyright (c) Kenneth Reitz and contributors
+    <https://requests.readthedocs.io>
+
+  - pywebview  (BSD 3-Clause)
+    Copyright (c) 2014-2024 Roman Sirokov and contributors
+    <https://pywebview.flowrl.com>
+
+  - urllib3  (MIT)
+    Copyright (c) Andrey Petrov and contributors
+    <https://urllib3.readthedocs.io>
+
+  - certifi, charset-normalizer, idna  (Mozilla Public License 2.0 / MIT)
+    Bundled as transitive dependencies of requests.
+
+For full license texts of bundled components, see their respective
+upstream projects. The full text of the AGPLv3 license is reproduced
+in the LICENSE file in the root of this distribution.
+
+================================================================================
+
+Trademarks:
+
+  "HF Downloader" is the name under which the maintainer distributes this
+  software. The maintainer does not authorize use of the name "HF Downloader"
+  or any confusingly similar name to identify derivative works distributed
+  under incompatible license terms. If you fork this project and distribute
+  it under terms other than AGPLv3 or a granted commercial license, please
+  use a different name.
+
+  "Hugging Face" and the Hugging Face logo are trademarks of Hugging Face,
+  Inc. This project is an unofficial community tool and is not affiliated
+  with, endorsed by, or sponsored by Hugging Face, Inc.
+
+================================================================================
+
+Maintainer contact:
+
+  GitHub: open an issue with the "license" or "question" template at
+           https://github.com/alexveliyar-coder/HF-Downloader/issues
+
+  For commercial licensing inquiries, see docs/COMMERCIAL_LICENSE.md.

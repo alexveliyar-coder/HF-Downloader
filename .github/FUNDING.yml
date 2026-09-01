@@ -1,0 +1,9 @@
+# Спонсорство
+#
+# GitHub будет показывать кнопку "Sponsor" рядом с репозиторием.
+# custom — для сторонних платформ (Boosty, Patreon, Ko-fi и т.п.).
+# Закомментируй то, что не нужно.
+
+github: [alexveliyar-coder]
+custom:
+  - https://boosty.to/veliyar_ensophia

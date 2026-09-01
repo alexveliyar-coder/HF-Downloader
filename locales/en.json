@@ -1,0 +1,42 @@
+{
+  "app_name": "HF Downloader",
+  
+  "journal_button": "Journal",
+  
+  "console_start": "HF Downloader started (offline)",
+  "console_site": "site:",
+  "console_core": "core:",
+  "console_files": "files:",
+  "console_exit": "exit: close window or Ctrl+C",
+  
+  "shutdown_title": "Stopping servers...",
+  "shutdown_saved": "task state saved to .tasks.json",
+  "shutdown_core": "core server stopped.",
+  "shutdown_site": "site server stopped.",
+  "shutdown_done": "Done.",
+  
+  "no_pywebview": "pywebview not installed — opening regular browser.",
+  "install_pywebview": "pip install pywebview — to get a separate window",
+  
+  "core_start": "HF Core Server started",
+  "core_addr": "address:",
+  "core_dir": "folder:",
+  "core_stop": "Ctrl+C",
+  
+  "restore_tasks": "restored %d task(s) from .tasks.json",
+  
+  "signal_shutdown": "Received stop signal — saving task state...",
+  "stopped": "Stopped.",
+  
+  "dir_title": "Select folder to save",
+  
+  "error_origin_forbidden": "origin forbidden",
+  "error_bad_path": "bad path",
+  "error_not_found": "not found",
+  "error_bad_link": "bad link",
+  "error_bad_dir": "bad dir",
+  "error_bad_body": "bad body",
+  "error_write_failed": "write failed",
+  "error_dialog_timeout": "dialog timeout",
+  "error_canceled": "canceled"
+}

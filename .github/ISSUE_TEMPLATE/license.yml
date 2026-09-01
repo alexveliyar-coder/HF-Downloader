@@ -1,0 +1,50 @@
+---
+name: 💼 License inquiry
+about: Commercial license, dual-licensing, or acquisition question
+title: "[license] "
+labels: ["license", "needs-triage"]
+---
+
+> **If you just want to use HF Downloader for personal, non-commercial purposes** — you don't need a commercial license. The AGPLv3 already gives you that right for free. This template is for inquiries that go beyond what AGPLv3 permits.
+>
+> See [COMMERCIAL_LICENSE.md](../blob/main/COMMERCIAL_LICENSE.md) for the full picture.
+
+## What are you looking for?
+
+- [ ] A **commercial license** to use HF Downloader inside a proprietary product
+- [ ] A **commercial license** to distribute a closed-source fork or build
+- [ ] A **commercial license** to run HF Downloader as a hosted / SaaS service
+- [ ] Permission to **acquire the project** (full transfer of copyright / trademarks)
+- [ ] Other / not sure (please describe)
+
+## Tell me about your use case
+
+<!-- A short description (1-2 paragraphs) of what you're building and how HF Downloader fits in.
+     Don't share trade secrets at this stage — a rough idea is enough to start the conversation. -->
+
+
+## Scale
+
+<!-- Approximate end-users, installs, or monthly active users. If it's an internal tool, just say so. -->
+
+
+## Timeline
+
+<!-- When do you want to ship? When do you need a license in place? -->
+
+
+## Budget
+
+<!-- A rough range helps narrow the conversation. If you genuinely have no budget, say so — sometimes a non-commercial arrangement works for non-profits, education, or personal use. -->
+
+- [ ] No budget (please suggest options)
+- [ ] Under $1,000 / year
+- [ ] $1,000 – $10,000 / year
+- [ ] $10,000 – $50,000 / year
+- [ ] $50,000+ / year (let's talk details)
+- [ ] Prefer not to say yet (will discuss by email)
+
+
+## Contact
+
+<!-- Best email to reach you at, plus a time zone so we can sync asynchronously. -->

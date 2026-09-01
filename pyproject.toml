@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hfdownloader"
+version = "1.0.0"
+description = "Offline desktop app for downloading models, datasets and spaces from Hugging Face"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "HF Downloader contributors" },
+]
+keywords = ["huggingface", "download", "offline", "desktop", "models", "datasets"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: MacOS X",
+    "Environment :: POSIX :: Linux",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Natural Language :: English",
+    "Natural Language :: Russian",
+    "Natural Language :: Chinese (Simplified)",
+    "Natural Language :: Hindi",
+    "Natural Language :: Spanish",
+    "Natural Language :: French",
+    "Natural Language :: Arabic",
+    "Natural Language :: Bengali",
+    "Natural Language :: Portuguese",
+    "Natural Language :: Urdu",
+    "Natural Language :: German",
+    "Natural Language :: Japanese",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "requests>=2.28",
+    "pywebview>=4.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/alexveliyar-coder/HF-Downloader"
+Repository = "https://github.com/alexveliyar-coder/HF-Downloader"
+Issues = "https://github.com/alexveliyar-coder/HF-Downloader/issues"
+Changelog = "https://github.com/alexveliyar-coder/HF-Downloader/blob/main/CHANGELOG.md"
+
+[project.scripts]
+hfdownloader = "main:main"
+
+[tool.setuptools]
+# Сюда попадают Python-исходники. site/ и locales/ — не Python, поэтому
+# перечислены отдельно в package-data.
+include-package-data = true
+
+[tool.setuptools.package-data]
+"" = [
+    "site/*.html",
+    "locales/*.json",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+]
+
+[tool.setuptools.exclude-package-data]
+"" = [
+    "downloads/**",
+    ".github/**",
+    "build/**",
+    "dist/**",
+]
+
+# --- Линтеры и форматтеры (используются добровольно, в CI — факультативно) ---
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+extend-exclude = ["build", "dist", ".venv", "downloads"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "RUF"]
+ignore = ["E501", "B008", "RUF012"]
+
+[tool.ruff.lint.per-file-ignores]
+"site/*" = ["ALL"]  # HTML и JS внутри — не наша зона ответственности
+
+# --- Pylance / Pyright ---
+# main.py импортирует модули из src/. При запуске через `python main.py` мы
+# добавляем src/ в sys.path в самом начале файла, но статический анализатор
+# (Pylance, Pyright) этот код не выполняет и не понимает. extraPaths говорит
+# ему: «ищи модули ещё и в src/».
+[tool.pyright]
+include = ["main.py", "src"]
+extraPaths = ["src"]
+pythonVersion = "3.9"
+reportMissingImports = "none"  # мы намеренно не делаем src/ пакетом
+reportUndefinedVariable = "warning"  # реальные баги — показывать
+
+# --- PyInstaller (используется в build_windows.bat и в CI) ---
+
+[tool.pyinstaller]
+# Запусти:  pyinstaller hfdownloader.spec
+# Или напрямую:  pyinstaller --noconfirm --clean --windowed --name HF-Downloader main.py
+# См. .github/workflows/release.yml для воспроизводимой сборки.
+spec = "hfdownloader.spec"

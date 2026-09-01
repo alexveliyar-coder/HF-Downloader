@@ -1,0 +1,42 @@
+{
+  "app_name": "HF Downloader",
+  
+  "journal_button": "Журнал",
+  
+  "console_start": "HF Downloader запущен (офлайн)",
+  "console_site": "сайт:",
+  "console_core": "ядро:",
+  "console_files": "файлы:",
+  "console_exit": "выход: закрыть окно или Ctrl+C",
+  
+  "shutdown_title": "Остановка серверов...",
+  "shutdown_saved": "состояние задач сохранено в .tasks.json",
+  "shutdown_core": "ядро-сервер остановлено.",
+  "shutdown_site": "сайт-сервер остановлен.",
+  "shutdown_done": "Готово.",
+  
+  "no_pywebview": "pywebview не установлен — открываю обычный браузер.",
+  "install_pywebview": "pip install pywebview — чтобы получить отдельное окно",
+  
+  "core_start": "HF Core Server запущен",
+  "core_addr": "адрес:",
+  "core_dir": "папка:",
+  "core_stop": "Ctrl+C",
+  
+  "restore_tasks": "восстановлено %d задач(а) из .tasks.json",
+  
+  "signal_shutdown": "Получен сигнал остановки — сохраняю состояние задач...",
+  "stopped": "Остановлено.",
+  
+  "dir_title": "Выберите папку для сохранения",
+  
+  "error_origin_forbidden": "origin forbidden",
+  "error_bad_path": "bad path",
+  "error_not_found": "not found",
+  "error_bad_link": "bad link",
+  "error_bad_dir": "bad dir",
+  "error_bad_body": "bad body",
+  "error_write_failed": "write failed",
+  "error_dialog_timeout": "dialog timeout",
+  "error_canceled": "canceled"
+}

@@ -1,0 +1,79 @@
+name: ci
+
+# Прогоняется на каждый push и pull_request в main/develop.
+# Сборки не делает — только проверяет, что код валиден.
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: lint & sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Validate locales JSON
+        run: |
+          python -c "
+          import json, glob, sys
+          bad = []
+          for p in sorted(glob.glob('locales/*.json')):
+              try:
+                  with open(p, encoding='utf-8') as f:
+                      json.load(f)
+                  print(f'OK   {p}')
+              except Exception as e:
+                  print(f'FAIL {p}: {e}')
+                  bad.append(p)
+          sys.exit(1 if bad else 0)
+          "
+
+      - name: Smoke import
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'src')
+          import importlib
+          for m in ['locale_loader', 'updater', 'logger']:
+              importlib.import_module(m)
+              print(f'OK   {m}')
+          # main импортирует webview — в CI без него. Проверяем парсингом.
+          import ast
+          with open('main.py', encoding='utf-8') as f:
+              ast.parse(f.read())
+          with open('src/hf_core_server.py', encoding='utf-8') as f:
+              ast.parse(f.read())
+          print('OK   main.py + src/hf_core_server.py (AST parse)')
+          "
+
+      - name: Verify HTML is well-formed-ish
+        run: |
+          python -c "
+          from html.parser import HTMLParser
+          class P(HTMLParser):
+              err = 0
+              def error(self, msg):
+                  self.err += 1
+                  print('HTML err:', msg)
+          p = P()
+          with open('site/index.html', encoding='utf-8') as f:
+              p.feed(f.read())
+          print('OK   site/index.html (no fatal parser errors)')
+          "
+
+      - name: Smoke tests
+        run: python -m tests.test_smoke

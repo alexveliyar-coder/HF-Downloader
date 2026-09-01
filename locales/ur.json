@@ -1,0 +1,42 @@
+{
+  "app_name": "HF Downloader",
+  
+  "journal_button": "ڈائری",
+  
+  "console_start": "HF Downloader شروع ہوا (آف لائن)",
+  "console_site": "سائٹ:",
+  "console_core": "کور:",
+  "console_files": "فائلیں:",
+  "console_exit": "نکلنا: ونڈو بند کریں یا Ctrl+C",
+  
+  "shutdown_title": "سرورز روکے جا رہے ہیں...",
+  "shutdown_saved": ".tasks.json میں کام کی حالت محفوظ ہوئی",
+  "shutdown_core": "کور سرور رک گیا۔",
+  "shutdown_site": "سائٹ سرور رک گیا۔",
+  "shutdown_done": "مکمل۔",
+  
+  "no_pywebview": "pywebview انسٹال نہیں ہے — عام براؤزر کھل رہا ہے۔",
+  "install_pywebview": "pip install pywebview — ایک الگ ونڈو حاصل کرنے کے لیے",
+  
+  "core_start": "HF Core Server شروع ہوا",
+  "core_addr": "پتہ:",
+  "core_dir": "فولڈر:",
+  "core_stop": "Ctrl+C",
+  
+  "restore_tasks": ".tasks.json سے %d کام بحال ہوئے",
+  
+  "signal_shutdown": "روکنے کا اشارہ ملا — کام کی حالت محفوظ ہو رہی ہے...",
+  "stopped": "رک گیا۔",
+  
+  "dir_title": "محفوظ کرنے کے لیے فولڈر منتخب کریں",
+  
+  "error_origin_forbidden": "origin forbidden",
+  "error_bad_path": "bad path",
+  "error_not_found": "not found",
+  "error_bad_link": "bad link",
+  "error_bad_dir": "bad dir",
+  "error_bad_body": "bad body",
+  "error_write_failed": "write failed",
+  "error_dialog_timeout": "dialog timeout",
+  "error_canceled": "canceled"
+}

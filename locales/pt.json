@@ -1,0 +1,42 @@
+{
+  "app_name": "HF Downloader",
+  
+  "journal_button": "Diário",
+  
+  "console_start": "HF Downloader iniciado (offline)",
+  "console_site": "site:",
+  "console_core": "núcleo:",
+  "console_files": "arquivos:",
+  "console_exit": "saída: fechar janela ou Ctrl+C",
+  
+  "shutdown_title": "Parando servidores...",
+  "shutdown_saved": "estado das tarefas salvo em .tasks.json",
+  "shutdown_core": "servidor núcleo parado.",
+  "shutdown_site": "servidor site parado.",
+  "shutdown_done": "Concluído.",
+  
+  "no_pywebview": "pywebview não instalado — abrindo navegador normal.",
+  "install_pywebview": "pip install pywebview — para obter uma janela separada",
+  
+  "core_start": "HF Core Server iniciado",
+  "core_addr": "endereço:",
+  "core_dir": "pasta:",
+  "core_stop": "Ctrl+C",
+  
+  "restore_tasks": "%d tarefa(s) restaurada(s) de .tasks.json",
+  
+  "signal_shutdown": "Sinal de parada recebido — salvando estado das tarefas...",
+  "stopped": "Parado.",
+  
+  "dir_title": "Selecionar pasta para salvar",
+  
+  "error_origin_forbidden": "origin forbidden",
+  "error_bad_path": "bad path",
+  "error_not_found": "not found",
+  "error_bad_link": "bad link",
+  "error_bad_dir": "bad dir",
+  "error_bad_body": "bad body",
+  "error_write_failed": "write failed",
+  "error_dialog_timeout": "dialog timeout",
+  "error_canceled": "canceled"
+}
