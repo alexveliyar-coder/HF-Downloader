@@ -108,7 +108,7 @@ jobs:
           for d in artifacts/*/; do echo "--- $d"; ls -la "$d"; done
 
       - name: Create / update GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
