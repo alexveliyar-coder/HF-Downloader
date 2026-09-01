@@ -1,21 +1,21 @@
 name: release
 
-# Срабатывает ТОЛЬКО при пуше тега вида v1.2.3.
-# Как выпустить новую версию:
-#   1. Поменяй VERSION в updater.py и CHANGELOG.md
+# Runs ONLY when a tag like v1.2.3 is pushed.
+# How to ship a new version:
+#   1. Bump VERSION in updater.py and update CHANGELOG.md
 #   2. git tag v1.2.3
 #   3. git push origin v1.2.3
-# После этого автоматически соберутся три артефакта, прикрепятся к релизу,
-# и updater.py начнёт уведомлять существующих юзеров.
+# After that, three artifacts are built automatically, attached to the release,
+# and updater.py starts notifying existing users.
 
 on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:  # для ручного запуска из GitHub UI (Actions → release → Run)
+  workflow_dispatch:  # for manual runs from GitHub UI (Actions → release → Run)
 
 permissions:
-  contents: write  # чтобы создать релиз и прикрепить артефакты
+  contents: write  # to create the release and attach artifacts
 
 jobs:
   build:
@@ -72,7 +72,7 @@ jobs:
         shell: bash
         run: |
           cd dist
-          # На всех платформах PyInstaller создаёт папку HF-Downloader
+          # On all platforms PyInstaller creates the HF-Downloader folder
           if [ -d "HF-Downloader" ]; then
             7z a ../${{ matrix.artifact }} HF-Downloader/ 2>/dev/null || \
               zip -r ../${{ matrix.artifact }} HF-Downloader/
@@ -119,13 +119,13 @@ jobs:
             artifacts/**/*.zip
           fail_on_unmatched_files: false
           body: |
-            ## Скачать
-            
-            - 🪟 **Windows**: `HF-Downloader-windows.zip` — распакуй и кликни `HF-Downloader\HF-Downloader.exe`
-            - 🍎 **macOS**: `HF-Downloader-macos.zip` — распакуй и открой `HF-Downloader.app` (если macOS ругается — правой кнопкой → «Открыть»)
-            - 🐧 **Linux**: `HF-Downloader-linux.zip` — распакуй и запусти `./HF-Downloader/HF-Downloader`
-            
-            ## Проверить обновление
-            
-            При следующем запуске программа сама напишет в консоль, что есть новая версия.
-            Полные изменения — в [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md).
+            ## Download
+
+            - 🪟 **Windows**: `HF-Downloader-windows.zip` — unzip and run `HF-Downloader\HF-Downloader.exe`
+            - 🍎 **macOS**: `HF-Downloader-macos.zip` — unzip and open `HF-Downloader.app` (if macOS complains, right-click → Open)
+            - 🐧 **Linux**: `HF-Downloader-linux.zip` — unzip and run `./HF-Downloader/HF-Downloader`
+
+            ## Check for updates
+
+            On next launch the app will print a notice if a new version is available.
+            Full changelog: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md).

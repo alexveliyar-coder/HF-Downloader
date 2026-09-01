@@ -1,14 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 """
-hfdownloader.spec — PyInstaller spec для HF Downloader.
+hfdownloader.spec — PyInstaller spec for HF Downloader.
 
-Сборка:   pyinstaller --noconfirm --clean hfdownloader.spec
-Результат: dist/HF-Downloader/  (--onedir, рекомендуется)
-           или:  dist/HF-Downloader.exe  (--onefile, см. переменную APP_MODE ниже)
+Build:    pyinstaller --noconfirm --clean hfdownloader.spec
+Result:   dist/HF-Downloader/  (--onedir, recommended)
+          or:  dist/HF-Downloader.exe  (--onefile, see APP_MODE below)
 
-Этот spec задуман так, чтобы быть переносимым между Windows / macOS / Linux.
-CI в .github/workflows/release.yml использует тот же spec, плюс подкладывает
-иконки и подпись для macOS.
+This spec is designed to be portable between Windows / macOS / Linux.
+The CI in .github/workflows/release.yml uses this same spec, plus it ships
+icons and macOS signing.
 """
 import os
 import sys
@@ -16,15 +16,15 @@ from pathlib import Path
 
 block_cipher = None
 
-# Режим: 'onedir' (по умолчанию — быстрый старт, удобно дебажить) или 'onefile'
-# (один .exe, медленнее старт, неудобно для антивирусов).
+# Mode: 'onedir' (default — fast startup, easy to debug) or 'onefile'
+# (single .exe, slower startup, more annoying to antiviruses).
 APP_MODE = os.environ.get("HF_APP_MODE", "onedir")
 
-# Версия из updater.py — единый источник правды.
+# Version from updater.py — the single source of truth.
 APP_VERSION = "1.0.0"
 
-# Иконка: берётся из build/icon.ico (Windows) / build/icon.icns (macOS) /
-# build/icon.png (Linux). Можно не указывать — будет дефолтная.
+# Icon: taken from build/icon.ico (Windows) / build/icon.icns (macOS) /
+# build/icon.png (Linux). Can be omitted — a default one will be used.
 ICON_PATH = None
 if sys.platform == "win32":
     candidate = Path("build") / "icon.ico"
@@ -35,21 +35,20 @@ elif sys.platform == "darwin":
     if candidate.exists():
         ICON_PATH = str(candidate)
 
-# Данные, которые нужно положить рядом с exe (не .py-исходники).
-# Формат: (исходник, относительный путь внутри сборки).
+# Data placed next to the exe (not .py sources).
+# Format: (source, relative path inside the build).
 DATA_FILES = [
     ("site", "site"),
     ("locales", "locales"),
 ]
 
-# Путь поиска Python-модулей. main.py лежит в корне, остальные модули
-# — в src/. PyInstaller сам найдёт их по AST-анализу main.py, но мы
-# добавляем src/ явно на случай, если Analysis не отследит динамические
-# импорты.
+# Python module search path. main.py lives in the root, other modules are in
+# src/. PyInstaller will find them via AST analysis of main.py, but we
+# add src/ explicitly in case Analysis misses dynamic imports.
 sys.path.insert(0, str(Path("src").resolve()))
 
-# Скрытые импорты, которые PyInstaller не находит статическим анализом.
-# pywebview требует backend-модуль под каждую ОС; requests тянет urllib3.
+# Hidden imports that PyInstaller can't find via static analysis.
+# pywebview needs a backend module per OS; requests pulls in urllib3.
 HIDDEN_IMPORTS = [
     "webview",
     "webview.platforms.winforms",
@@ -61,7 +60,7 @@ HIDDEN_IMPORTS = [
     "requests",
 ]
 
-# Однострочное (для удобства grep'а по логам).
+# One-liner (handy for grepping logs).
 EXE_NAME = "HF-Downloader" + (".exe" if sys.platform == "win32" else "")
 
 a = Analysis(
@@ -74,7 +73,7 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[
-        # Не тащим в сборку лишнее — уменьшает размер.
+        # Don't drag extra stuff into the build — keeps it smaller.
         "tkinter",
         "test",
         "unittest",
@@ -93,33 +92,33 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-# Собираем exe.
+# Build the exe.
 exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,  # для onedir — бинари отдельно, для onefile — None
+    exclude_binaries=True,  # for onedir — binaries separate; for onefile — None
     name=EXE_NAME,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,  # UPX часто триггерит антивирусы; оставляем выключенным
-    console=False,  # --windowed: без чёрного окна консоли
+    upx=False,  # UPX often triggers antiviruses; leave it off
+    console=False,  # --windowed: no black console window
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
-    codesign_identity=None,  # macOS: подпись настраивается в CI
+    codesign_identity=None,  # macOS: signing is configured in CI
     entitlements_file=None,
     icon=ICON_PATH,
 )
 
 if APP_MODE == "onefile":
-    # onefile: запаковываем всё в один бинарь.
+    # onefile: pack everything into a single binary.
     exe.exclude_binaries = False
     coll = COLLECT(exe) if False else None  # noqa
-    # В onefile нет coll, exe уже содержит всё.
+    # In onefile mode there's no coll — the exe already contains everything.
 else:
-    # onedir: бинари и данные в подпапке.
+    # onedir: binaries and data in a subfolder.
     coll = COLLECT(
         exe,
         a.binaries,

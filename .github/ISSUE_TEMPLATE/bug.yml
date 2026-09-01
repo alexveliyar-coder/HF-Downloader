@@ -1,47 +1,47 @@
 ---
 name: 🐛 Bug report
-about: Что-то сломалось — помоги разобраться
+about: Something is broken — help me figure it out
 title: "[bug] "
 labels: ["bug", "needs-triage"]
 ---
 
-## Что произошло
+## What happened
 
-<!-- Краткое описание проблемы в 1-2 предложениях. -->
+<!-- Short problem description in 1-2 sentences. -->
 
 
-## Как воспроизвести
+## How to reproduce
 
-<!-- Пошагово: что нажал, что ввёл, что ожидал, что получил. -->
+<!-- Step by step: what you clicked, what you entered, what you expected, what you got. -->
 
 1.
 2.
 3.
 
-## Что ожидалось
+## What was expected
 
-<!-- Как должно было сработать по-нормальному. -->
+<!-- How it should have worked normally. -->
 
 
-## Окружение
+## Environment
 
-<!-- Заполни что можешь, остальное оставь пустым. -->
+<!-- Fill in what you can, leave the rest empty. -->
 
-- **Версия HF Downloader**: <!-- из баннера при запуске или из About -->
-- **ОС**: <!-- Windows 11 / macOS 14 / Ubuntu 24.04 -->
-- **Python** (если запускаешь из исходников): <!-- `python --version` -->
-- **Запуск**: <!-- exe / python main.py / start_windows.bat -->
-- **Браузер** (если открылось в браузере, а не в окне): <!-- Chrome 120 / Edge -->
+- **HF Downloader version**: <!-- from the banner at startup or from About -->
+- **OS**: <!-- Windows 11 / macOS 14 / Ubuntu 24.04 -->
+- **Python** (if running from source): <!-- `python --version` -->
+- **Launch**: <!-- exe / python main.py / start_windows.bat -->
+- **Browser** (if it opened in a browser instead of a window): <!-- Chrome 120 / Edge -->
 
-## Логи
+## Logs
 
-<!-- Если есть — прикрепи содержимое .hfdl_log.txt (рядом с main.py).
-     Перед вставкой проверь, что нет токенов / личных ссылок. -->
+<!-- If available, attach the contents of .hfdl_log.txt (next to main.py).
+     Before pasting, check that there are no tokens / personal links. -->
 
 ```text
 paste here
 ```
 
-## Скриншоты / видео
+## Screenshots / video
 
-<!-- Если можешь — приложи. Для UI-багов это сильно ускоряет починку. -->
+<!-- If you can, attach them. For UI bugs this speeds up the fix a lot. -->

@@ -1,27 +1,27 @@
 # tests/
 
-Smoke-тесты для HF Downloader. Запуск:
+Smoke tests for HF Downloader. Run:
 
 ```bash
 python -m tests.test_smoke
 ```
 
-Зачем нужно:
-- проверить, что все `locales/*.json` валидны и согласованы
-- поймать случайно закоммиченный токен / API-ключ
-- убедиться, что `site/index.html` не раздулся до неприличия
+Why these exist:
+- verify all `locales/*.json` files are valid and consistent
+- catch an accidentally committed token / API key
+- make sure `site/index.html` hasn't ballooned to an unreasonable size
 
-Это **не** unit-тесты — здесь не проверяется поведение программы под нагрузкой, не мокаются сетевые вызовы, и т.д. Для такого нужен pytest + responses/httpx-mock, и когда тестов станет больше — переедем туда.
+These are **not** unit tests — they don't check behavior under load, don't mock network calls, etc. For that we'd need pytest + responses/httpx-mock, and when the test suite grows we'll move there.
 
-## Добавление проверки
+## Adding a check
 
-1. Напиши функцию `def check_xxx():` — без аргументов, печатает `OK` или `FAIL`.
-2. Добавь её в список `checks` в `main()` в `test_smoke.py`.
-3. Запусти — убедись, что новая проверка зелёная.
-4. Открой PR.
+1. Write a `def check_xxx():` function — no arguments, prints `OK` or `FAIL`.
+2. Add it to the `checks` list in `main()` in `test_smoke.py`.
+3. Run it — make sure the new check is green.
+4. Open a PR.
 
-## Что не нужно
+## What we don't need
 
-- ❌ Pytest-фикстуры на каждый чих — у нас маленький проект.
-- ❌ Тесты на UI (`site/index.html`) — для этого нужен Selenium / Playwright, оверкилл.
-- ❌ Mock-тесты для `requests` — пока что у нас одна точка вызова и она интеграционная по сути.
+- ❌ A pytest fixture for every little thing — this is a small project.
+- ❌ UI tests for `site/index.html` — that would need Selenium / Playwright, overkill.
+- ❌ Mock tests for `requests` — we have one call site and it's inherently integration-style.

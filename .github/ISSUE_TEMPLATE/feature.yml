@@ -1,31 +1,31 @@
 ---
 name: ✨ Feature request
-about: Идея, как сделать HF Downloader лучше
+about: An idea for making HF Downloader better
 title: "[feature] "
 labels: ["enhancement"]
 ---
 
-## Что хочется
+## What I want
 
-<!-- Опиши фичу так, как будто объясняешь другу: что она делает и зачем нужна. -->
-
-
-## Зачем
-
-<!-- Какую проблему решает? Кому полезна? Как часто будет использоваться? -->
+<!-- Describe the feature as if explaining to a friend: what it does and why it's needed. -->
 
 
-## Возможный подход к реализации
+## Why
 
-<!-- Если есть идеи как это сделать — опиши. Необязательно.
-     Если не знаешь как реализовать — это нормально, оставь пустым. -->
-
-
-## Альтернативы, которые рассматривал
-
-<!-- Может, есть способ проще / уже что-то похожее в других тулах? -->
+<!-- What problem does it solve? Who is it useful for? How often would it be used? -->
 
 
-## Дополнительный контекст
+## Possible implementation approach
 
-<!-- Скриншоты, ссылки на аналоги в других программах, что угодно. -->
+<!-- If you have ideas on how to build it, describe them. Optional.
+     If you don't know how to implement it — that's fine, leave it empty. -->
+
+
+## Alternatives considered
+
+<!-- Maybe there's a simpler way / something similar already exists in other tools? -->
+
+
+## Additional context
+
+<!-- Screenshots, links to similar features in other apps, anything. -->

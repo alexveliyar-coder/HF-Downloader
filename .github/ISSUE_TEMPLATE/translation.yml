@@ -1,26 +1,26 @@
 ---
 name: 🌐 Translation
-about: Добавить или улучшить перевод интерфейса
+about: Add or improve a UI translation
 title: "[i18n] "
 labels: ["translation", "good first issue"]
 ---
 
-## Язык
+## Language
 
-<!-- Какой язык правим / добавляем. Например: 'de.json' → Deutsch. -->
-
-
-## Что меняется
-
-<!-- Краткое описание. Например:
-     - Добавил logsClose в de.json (раньше падал на немецком)
-     - Перевёл строку 'all_filters' в es.json
--->
+<!-- Which language are we fixing / adding. For example: 'de.json' → German. -->
 
 
-## Чек-лист
+## What changes
 
-- [ ] Файл прошёл `python -c "import json; json.load(open('...'))"` без ошибок
-- [ ] Все ключи из en.json присутствуют (если добавлял новый — добавил и туда)
-- [ ] Перевод сделан руками, не через машинный переводчик
-- [ ] Длина строки разумная (если влезало в кнопку — продолжает влезать)
+<!-- Short description. For example:
+     - Added logsClose to de.json (used to crash in German)
+     - Translated the 'all_filters' string in es.json
+ -->
+
+
+## Checklist
+
+- [ ] File passes `python -c "import json; json.load(open('...'))"` without errors
+- [ ] All keys from en.json are present (if I added a new one, I added it there too)
+- [ ] Translation done by hand, not machine-translated
+- [ ] String length is reasonable (if it fit in a button before, it still fits)

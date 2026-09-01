@@ -1,8 +1,8 @@
-# Спонсорство
+# Sponsorship
 #
-# GitHub будет показывать кнопку "Sponsor" рядом с репозиторием.
-# custom — для сторонних платформ (Boosty, Patreon, Ko-fi и т.п.).
-# Закомментируй то, что не нужно.
+# GitHub will show a "Sponsor" button next to the repository.
+# custom — for third-party platforms (Boosty, Patreon, Ko-fi, etc.).
+# Comment out what you don't need.
 
 github: [alexveliyar-coder]
 custom:

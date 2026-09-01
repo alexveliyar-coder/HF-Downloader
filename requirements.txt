@@ -1,8 +1,8 @@
 # Runtime dependencies
 #
-# requests — обязательная, ядро скачивания без неё не работает.
-# pywebview — рекомендуемая. Без неё программа запустится, но откроется
-# в обычном браузере (это не баг, а запасной вариант).
+# requests — required, the download core won't work without it.
+# pywebview — recommended. Without it the app still runs, but opens
+# in a regular browser (not a bug, a fallback).
 
 requests>=2.28,<3
 pywebview>=4.4,<6

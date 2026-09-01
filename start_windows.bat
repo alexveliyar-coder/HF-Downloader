@@ -2,33 +2,33 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 
-:: Если есть py-лаунчер (он не является Store-заглушкой), используем его;
-:: иначе — обычный python. Это обходит проблему, когда `python` — это
-:: заглушка Microsoft Store, открывающая магазин вместо запуска скрипта.
+:: If the py launcher exists (and isn't a Microsoft Store stub), use it;
+:: otherwise use plain python. This bypasses the issue where `python` is
+:: a Microsoft Store stub that opens the store instead of running a script.
 set "PY=python"
 py -3 --version >nul 2>nul
 if not errorlevel 1 set "PY=py -3"
 
 %PY% -c "import sys" >nul 2>nul
 if errorlevel 1 (
-    echo Python не найден. Установите его с https://www.python.org/downloads/
-    echo и поставьте галочку "Add Python to PATH".
+    echo Python not found. Install it from https://www.python.org/downloads/
+    echo and check "Add Python to PATH".
     pause
     exit /b
 )
 
-echo Проверяю зависимости...
+echo Checking dependencies...
 %PY% -c "import requests, webview" >nul 2>nul
 if errorlevel 1 (
-    echo Устанавливаю зависимости...
+    echo Installing dependencies...
     %PY% -m pip install -r requirements.txt
     if errorlevel 1 (
-        echo Не удалось установить зависимости. Проверьте интернет и наличие pip.
-        echo Затем запустите скрипт снова.
+        echo Failed to install dependencies. Check your internet connection and pip.
+        echo Then run the script again.
         pause
         exit /b 1
     )
 )
-echo Запускаю HF Downloader...
+echo Starting HF Downloader...
 %PY% main.py
 pause

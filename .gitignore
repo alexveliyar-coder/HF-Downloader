@@ -1,4 +1,4 @@
-﻿# --- Python ---
+# --- Python ---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -73,5 +73,5 @@ notes.txt
 TODO.txt
 
 # --- local release helper scripts (never commit) ---
-.gh_login.ps1
-.gh_publish.ps1
+.gh_*
+*.gh_publish*

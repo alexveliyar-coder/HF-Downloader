@@ -1,26 +1,26 @@
 ---
 name: ❓ Question / help
-about: Нужна помощь с использованием
+about: Need help using HF Downloader
 title: "[question] "
 labels: ["question"]
 ---
 
-## Что хочу сделать
+## What I want to do
 
-<!-- Коротко: что пытаешься получить от программы. -->
-
-
-## Что уже пробовал
-
-<!-- Шаги, которые предпринял. -->
+<!-- Briefly: what you're trying to get from the app. -->
 
 
-## Окружение
+## What I already tried
 
-- **Версия**: 
-- **ОС**: 
-- **Запуск**: 
+<!-- Steps you've already taken. -->
 
-## Скриншоты
 
-<!-- Если речь про UI — скриншот сильно поможет. -->
+## Environment
+
+- **Version**: 
+- **OS**: 
+- **Launch**: 
+
+## Screenshots
+
+<!-- If it's about the UI, a screenshot helps a lot. -->

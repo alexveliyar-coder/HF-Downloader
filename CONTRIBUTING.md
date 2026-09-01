@@ -1,88 +1,88 @@
-# Участие в проекте
+# Contributing
 
-Спасибо, что хочешь помочь. Здесь — краткая инструкция, чтобы твоё время не ушло впустую.
+Thanks for wanting to help. This is a short guide to make sure your time isn't wasted.
 
-## Быстрый старт для контрибьюторов
+## Quick start for contributors
 
 ```bash
-# 1. Форкни репозиторий (кнопка Fork на GitHub)
-# 2. Клонируй свою копию
-git clone https://github.com/ТВОЙ_ЮЗЕР/HF-Downloader.git
+# 1. Fork the repository (Fork button on GitHub)
+# 2. Clone your copy
+git clone https://github.com/alexveliyar-coder/HF-Downloader.git
 cd HF-Downloader
 
-# 3. Создай ветку под свою задачу
-git checkout -b fix/что-ты-делаешь
+# 3. Create a branch for your task
+git checkout -b fix/what-you-are-doing
 
-# 4. Поставь зависимости и запусти
+# 4. Install dependencies and run
 python -m pip install -r requirements.txt
 python main.py
 ```
 
-## Куда смотреть в коде
+## Where to look in the code
 
-| Хочешь поправить... | Смотри в... |
+| If you want to fix... | Look in... |
 |---|---|
-| Перевод интерфейса | `locales/*.json` |
-| Текст / кнопка / модалка | `site/index.html` (один здоровенный файл) |
-| Логика скачивания | `hf_core_server.py` |
-| Точка входа / запуск / graceful shutdown | `main.py` |
-| Проверка обновлений | `updater.py` |
-| Автоопределение языка | `locale_loader.py` |
-| Логгер (WARN/ERROR + маскирование токенов) | `logger.py` |
+| UI translation | `locales/*.json` |
+| Text / button / modal | `site/index.html` (one big file) |
+| Download logic | `hf_core_server.py` |
+| Entry point / startup / graceful shutdown | `main.py` |
+| Update check | `updater.py` |
+| Language auto-detection | `locale_loader.py` |
+| Logger (WARN/ERROR + token masking) | `logger.py` |
 
-## Правила оформления
+## Code style
 
-- **Код**: Python 3.9+ совместимость. Без Type hints-фанатизма, но если пишешь новую функцию — лучше с типами.
-- **Имена**: `lower_snake_case` для функций/переменных, `UpperCamelCase` для классов. Константы — `UPPER_SNAKE_CASE`.
-- **Комментарии**: объясняют **почему**, не **что**. Если код очевидный — не комментируй.
-- **Строки**: используем `str.format` или f-strings, `%` — только для уже существующего кода с локализацией.
-- **Логирование**: для новых сообщений — добавляй ключ в `locales/*.json` (хотя бы в `en.json`), и используй `L.t("...")`.
+- **Code**: Python 3.9+ compatibility. No type-hint fanaticism, but if you write a new function, prefer adding types.
+- **Names**: `lower_snake_case` for functions/variables, `UpperCamelCase` for classes. Constants — `UPPER_SNAKE_CASE`.
+- **Comments**: explain **why**, not **what**. If the code is obvious, don't comment.
+- **Strings**: use `str.format` or f-strings; `%` only for existing localization-aware code.
+- **Logging**: for new user-facing messages, add a key to `locales/*.json` (at least `en.json`) and use `L.t("...")`.
 
-## Про переводы
+## About translations
 
-Все строки, которые видит юзер — должны быть в `locales/*.json`. Прямо хардкод в коде (на русском или английском) — **не принимается**, кроме:
+Every string a user sees must live in `locales/*.json`. Hardcoding in code (in Russian or English) is **not accepted**, except:
 
-- логов (`logger.py`) — они на английском для совместимости с grep/awk
-- комментариев в коде
-- URL/HTTP-заголовков
+- logs (`logger.py`) — they're in English for grep/awk compatibility
+- code comments
+- URLs / HTTP headers
 
-Когда добавляешь новый ключ в `en.json` — **сразу** добавь его во все остальные `locales/*.json` файлы (хотя бы как перевод на английском — потом кто-то переведёт).
+When you add a new key to `en.json`, **immediately** add it to every other `locales/*.json` file (even as an English placeholder — someone will translate it later).
 
-## Pull Request
+## Pull Requests
 
-1. **Один PR — одна логическая правка**. Не мешай «поправил баг + переименовал переменные + обновил README» в один PR — будет сложно ревьюить.
-2. **Опиши что меняется** в описании PR (шаблон подставится автоматически).
-3. **Локально проверь** что `start_windows.bat` / `./start_mac_linux.sh` запускается без ошибок.
-4. **Если трогал `site/index.html`** — открой UI и убедись что:
-   - все 12 языков в выпадающем меню работают
-   - модалки открываются/закрываются
-   - кнопка «Журнал» показывает лог
-5. **CI** сам проверит ruff и валидность JSON. Если красный — посмотри лог, поправь.
+1. **One PR = one logical change**. Don't mix "fixed a bug + renamed variables + updated README" into one PR — it's hard to review.
+2. **Describe what changes** in the PR description (the template fills itself in).
+3. **Test locally** that `start_windows.bat` / `./start_mac_linux.sh` runs without errors.
+4. **If you touched `site/index.html`** — open the UI and make sure:
+   - all 12 languages in the dropdown work
+   - modals open/close
+   - the Journal (📋) button shows the log
+5. **CI** will run ruff and JSON validation for you. If it's red, look at the log and fix it.
 
-## Не нужно делать
+## Don't do this
 
-- ❌ Менять `requirements.txt` без обсуждения. Каждая новая зависимость — это +10 МБ к exe и ещё одна точка отказа.
-- ❌ Рефакторить «по дороге». Если заметил плохой код в соседнем файле — открой отдельный PR с пометкой `(refactor)`.
-- ❌ Коммитить `downloads/`, `.env`, `.tasks.json`, `.lang.txt` — они в `.gitignore` именно потому что локальные.
+- ❌ Change `requirements.txt` without discussion. Every new dependency is about +10 MB to the exe and one more point of failure.
+- ❌ Refactor "on the way". If you notice bad code in a nearby file, open a separate PR labeled `(refactor)`.
+- ❌ Commit `downloads/`, `.env`, `.tasks.json`, `.lang.txt` — they're in `.gitignore` precisely because they're local.
 
-## Коммиты
+## Commits
 
-Сообщения в стиле:
-- `fix: ...` — баг-фикс
-- `feat: ...` — новая фича
-- `docs: ...` — только документация
-- `i18n: ...` — переводы
-- `refactor: ...` — внутренние изменения без эффекта на юзера
-- `chore: ...` — обвязка (CI, .gitignore, скрипты)
+Messages in the style:
+- `fix: ...` — bug fix
+- `feat: ...` — new feature
+- `docs: ...` — documentation only
+- `i18n: ...` — translations
+- `refactor: ...` — internal changes with no user-facing effect
+- `chore: ...` — tooling (CI, .gitignore, scripts)
 
-Примеры хороших сообщений:
-- `fix: модалка журнала падала при смене языка с непустым логом`
-- `i18n: добавил logsClose в de.json`
-- `chore: добавил GitHub Actions для сборки релизов`
+Examples of good messages:
+- `fix: journal modal crashed on language switch with a non-empty log`
+- `i18n: added logsClose to de.json`
+- `chore: added GitHub Actions workflow for building releases`
 
-## Если что-то непонятно
+## If something is unclear
 
-- Открой [Discussion](../../discussions) (если включены) или Issue с тегом `question`.
-- Не стесняйся спрашивать — лучше спросить и сделать правильно, чем сделать наугад и переделывать.
+- Open a [Discussion](../../discussions) (if enabled) or an Issue with the `question` label.
+- Don't hesitate to ask — better to ask and do it right than to guess and redo it.
 
-Ещё раз спасибо, что помогаешь 💛
+Thanks again for helping 💛

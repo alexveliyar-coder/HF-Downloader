@@ -10,12 +10,12 @@ updates:
     labels:
       - "dependencies"
     groups:
-      # Мажорные/минорные апдейты — отдельно от патчей, чтобы PR был меньше.
+      # Major/minor updates are kept separate from patches so PRs stay small.
       minor-and-patch:
         update-types:
           - "minor"
           - "patch"
-    # Не апгрейдим PyInstaller автоматически — он требует тестовой сборки.
+    # Don't auto-upgrade PyInstaller — it needs a test build.
     ignore:
       - dependency-name: "pyinstaller"
 

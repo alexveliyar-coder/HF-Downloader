@@ -1,7 +1,7 @@
 name: ci
 
-# Прогоняется на каждый push и pull_request в main/develop.
-# Сборки не делает — только проверяет, что код валиден.
+# Runs on every push and pull_request to main/develop.
+# Doesn't build — only checks that the code is valid.
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           for m in ['locale_loader', 'updater', 'logger']:
               importlib.import_module(m)
               print(f'OK   {m}')
-          # main импортирует webview — в CI без него. Проверяем парсингом.
+          # main imports webview — not available in CI. Check it by parsing.
           import ast
           with open('main.py', encoding='utf-8') as f:
               ast.parse(f.read())

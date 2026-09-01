@@ -1,44 +1,44 @@
-# Безопасность
+# Security
 
-## Что мы делаем для защиты твоих данных
+## What we do to protect your data
 
-HF Downloader спроектирован так, чтобы ничего важного не утекало:
+HF Downloader is designed so that nothing important leaks:
 
-- **Сервера слушают только `127.0.0.1`** — к ним нельзя подключиться из интернета или из локальной сети. Только ты на своём компьютере.
-- **Токен Hugging Face** отправляется напрямую из браузера (или pywebview-окна) на `huggingface.co` по HTTPS. Никакой промежуточный сервер его не видит и не хранит. По умолчанию токен вообще не сохраняется — только пока работает программа, в `localStorage` окна.
-- **Локальный кэш** (`downloads/`, `.tasks.json`, `.lang.txt`, `.last_dir.txt`) лежит рядом с программой и доступен только тебе.
-- **Скачиваемые файлы** идут в `downloads/<папка_которую_ты_выбрал>/` и не покидают твой компьютер.
+- **Servers listen only on `127.0.0.1`** — they cannot be reached from the internet or your local network. Only you, on your own machine.
+- **Hugging Face token** is sent directly from the browser (or pywebview window) to `huggingface.co` over HTTPS. No intermediate server ever sees or stores it. By default the token is not persisted at all — it lives only in the window's `localStorage` while the app is running.
+- **Local cache** (`downloads/`, `.tasks.json`, `.lang.txt`, `.last_dir.txt`) sits next to the app and is accessible only to you.
+- **Downloaded files** go to `downloads/<the folder you chose>/` and never leave your computer.
 
-## Что мы **не** делаем
+## What we do **not** do
 
-- Не отправляем телеметрию.
-- Не открываем порты наружу.
-- Не запускаем скачанные файлы, не распаковываем архивы, не исполняем скрипты.
-- Не модифицируем файлы за пределами `downloads/`.
+- No telemetry.
+- No inbound open ports.
+- We never run downloaded files, unpack archives, or execute scripts.
+- We never modify files outside `downloads/`.
 
-## Сообщить об уязвимости
+## Reporting a vulnerability
 
-Нашёл дыру в безопасности? **Не создавай публичный issue** — описание уязвимости может быть использовано злоумышленниками до выхода патча.
+Found a security hole? **Do not open a public issue** — a vulnerability description could be used by attackers before a patch ships.
 
-Вместо этого напиши в личку мейнтейнеру:
-- **Email**: `security@your-domain.example` (если ещё не настроен — посмотри профиль мейнтейнера в GitHub)
-- **Или** через GitHub: [Security → Advisories → New draft security advisory](https://github.com/alexveliyar-coder/HF-Downloader/security/advisories/new)
+Instead, contact the maintainer directly:
+- **Email**: `security@your-domain.example` (if not set up yet, check the maintainer's GitHub profile)
+- **Or** via GitHub: [Security → Advisories → New draft security advisory](https://github.com/alexveliyar-coder/HF-Downloader/security/advisories/new)
 
-Постараюсь ответить в течение **72 часов**. В рассылке конкретных сроков фикса не даю — зависит от серьёзности.
+We aim to respond within **72 hours**. We don't promise a specific fix timeline in advance — it depends on severity.
 
-### Что включить в репорт
+### What to include in a report
 
-1. **Описание**: что именно не так, какие файлы/строки, как воспроизвести.
-2. **Impact**: что может сделать атакующий (утечка токена? выполнение кода? отказ в обслуживании?).
-3. **Окружение**: версия HF Downloader, ОС, способ запуска (exe / исходники).
-4. **Proof-of-concept**: минимальный сценарий или скриншот/лог.
+1. **Description**: what exactly is wrong, which files/lines, how to reproduce it.
+2. **Impact**: what an attacker could do (token leak? code execution? denial of service?).
+3. **Environment**: HF Downloader version, OS, launch method (exe / from source).
+4. **Proof-of-concept**: a minimal scenario, or a screenshot/log.
 
-### Скоуэнд (out of scope)
+### Out of scope
 
-- Уязвимости в **зависимостях** (`requests`, `pywebview`) — репорти их апстриму, не нам.
-- Уязвимости в **самой Hugging Face** — это не наш проект.
-- Теоретические атаки, требующие физического доступа к твоей разблокированной машине.
+- Vulnerabilities in **dependencies** (`requests`, `pywebview`) — report them upstream, not to us.
+- Vulnerabilities in **Hugging Face itself** — that's not our project.
+- Theoretical attacks that require physical access to an unlocked machine.
 
-## Спасибо
+## Thanks
 
-Если ты нашёл и ответственно раскрыл уязвимость — спасибо. Имя репортера попадёт в [CHANGELOG.md](./CHANGELOG.md), если не попросишь обратного.
+If you found and responsibly disclosed a vulnerability — thank you. Your name will appear in [CHANGELOG.md](./CHANGELOG.md) unless you ask us not to.

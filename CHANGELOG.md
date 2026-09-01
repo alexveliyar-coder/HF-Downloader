@@ -1,55 +1,55 @@
 # Changelog
 
-Все заметные изменения в этом проекте фиксируются здесь. Формат основан на [Keep a Changelog](https://keepachangelog.com/), версии — по [Semantic Versioning](https://semver.org/).
+All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/), and versioning follows [Semantic Versioning](https://semver.org/).
 
-> Как читать: `MAJOR.MINOR.PATCH`. `MAJOR` ломает совместимость, `MINOR` добавляет фичи, `PATCH` чинит баги.
+> How to read: `MAJOR.MINOR.PATCH`. `MAJOR` breaks compatibility, `MINOR` adds features, `PATCH` fixes bugs.
 
 ## [Unreleased]
 
-### Будет
-- Что-то, что ещё в работе
+### Planned
+- Something still in progress
 
 ## [1.0.0] — 2026-09-01
 
 ### Added
-- Первый публичный релиз.
-- Скачивание моделей / датасетов / спейсов с Hugging Face (файлы и целые репозитории).
-- Пауза / возобновление загрузок с HTTP Range headers (докачка после сбоя).
-- Очередь задач с режимом «строго по одной».
-- Закладки на часто скачиваемые репозитории.
-- Автоподхват ссылок из буфера обмена (с разрешения юзера).
-- Локальный журнал событий (WARN/ERROR) с фильтром и копированием.
-- 12 языков интерфейса: en, zh, hi, es, fr, ar, bn, pt, ru, ur, de, ja.
-- Проверка обновлений через GitHub Releases (только уведомление, без автозагрузки).
-- Сборки под Windows / macOS / Linux через GitHub Actions (тег `vX.Y.Z` → релиз).
+- First public release.
+- Download models / datasets / spaces from Hugging Face (single files and whole repos).
+- Pause / resume with HTTP Range headers (resume after a crash).
+- Task queue with a strict one-at-a-time mode.
+- Bookmarks for frequently downloaded repos.
+- Automatic clipboard link pickup (with user permission).
+- Local event journal (WARN/ERROR) with filter and copy-to-clipboard.
+- 12 UI languages: en, zh, hi, es, fr, ar, bn, pt, ru, ur, de, ja.
+- Update check via GitHub Releases (notification only, no auto-download).
+- Windows / macOS / Linux builds via GitHub Actions (tag `vX.Y.Z` → release).
 
 ### Fixed
-- Модалка журнала могла «застрять» на старом языке при смене языка, если в логе были записи — `renderLogs` затирал `logsEmpty` через `innerHTML`, и `applyLang` падал с `TypeError: Cannot set properties of null`. Теперь `renderLogs` удаляет только `.log-entry`, оставляя плейсхолдер пустого состояния в DOM. Бонус: записи лога рендерятся через `createElement`+`textContent` вместо конкатенации HTML (XSS-safe).
+- The journal modal could get "stuck" on the old language when switching languages with entries in the log — `renderLogs` overwrote `logsEmpty` via `innerHTML`, and `applyLang` crashed with `TypeError: Cannot set properties of null`. Now `renderLogs` only removes `.log-entry`, leaving the empty-state placeholder in the DOM. Bonus: log entries are rendered via `createElement` + `textContent` instead of HTML concatenation (XSS-safe).
 
 ### Security
-- Замаскированы токены HF, Authorization-заголовки, имена репозиториев в `.hfdl_log.txt`.
+- Masked HF tokens, Authorization headers, and repository names in `.hfdl_log.txt`.
 
 ---
 
-## Шаблон для следующих релизов
+## Template for future releases
 
 ```markdown
 ## [X.Y.Z] — YYYY-MM-DD
 
 ### Added
-- Новая фича.
+- New feature.
 
 ### Changed
-- Изменили поведение существующей фичи.
+- Changed behavior of an existing feature.
 
 ### Fixed
-- Что-то починили.
+- Something fixed.
 
 ### Removed
-- Что-то удалили (deprecated).
+- Something removed (deprecated).
 
 ### Security
-- Что-то связанное с безопасностью.
+- Something security-related.
 ```
 
 [Unreleased]: https://github.com/alexveliyar-coder/HF-Downloader/compare/v1.0.0...HEAD

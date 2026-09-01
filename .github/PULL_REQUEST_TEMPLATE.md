@@ -1,28 +1,28 @@
-# Что меняется
+# What changes
 
-<!-- Краткое описание PR в 1-3 предложениях. Ссылка на issue: Fixes #123 -->
+<!-- Short PR description in 1-3 sentences. Link to the issue: Fixes #123 -->
 
 
-## Тип изменения
+## Type of change
 
-- [ ] 🐛 Bug fix (не ломает существующее поведение)
-- [ ] ✨ New feature (расширяет возможности)
-- [ ] 💥 Breaking change (ломает совместимость — описать в деталях)
+- [ ] 🐛 Bug fix (does not break existing behavior)
+- [ ] ✨ New feature (adds capabilities)
+- [ ] 💥 Breaking change (breaks compatibility — describe in detail)
 - [ ] 📝 Documentation only
 - [ ] 🌐 Translation
-- [ ] 🔧 Internal / refactor (без изменения поведения для юзера)
+- [ ] 🔧 Internal / refactor (no user-facing behavior change)
 
 
-## Как проверить
+## How to test
 
-<!-- Пошагово: что сделать чтобы воспроизвести / увидеть эффект. -->
+<!-- Step by step: what to do to reproduce / see the effect. -->
 
 
-## Чек-лист
+## Checklist
 
-- [ ] Код читается (комментарии объясняют «почему», а не «что»)
-- [ ] Локально запустил `start_windows.bat` / `./start_mac_linux.sh` — работает
-- [ ] Если трогал `site/index.html` — проверил во всех 12 языках (хотя бы в EN и одном не-EN)
-- [ ] Если трогал `locales/*.json` — все файлы валидны (`python -c "import json; json.load(open('...'))"`)
-- [ ] Если менял `updater.VERSION` — обновил `CHANGELOG.md` и записал, что именно изменилось
-- [ ] Если добавлял зависимость — обновил `requirements.txt` и `pyproject.toml`
+- [ ] Code is readable (comments explain _why_, not _what_)
+- [ ] Ran `start_windows.bat` / `./start_mac_linux.sh` locally — works
+- [ ] If I touched `site/index.html` — checked in all 12 languages (at least EN and one non-EN)
+- [ ] If I touched `locales/*.json` — all files are valid (`python -c "import json; json.load(open('...'))"`)
+- [ ] If I changed `updater.VERSION` — updated `CHANGELOG.md` and wrote down what changed
+- [ ] If I added a dependency — updated `requirements.txt` and `pyproject.toml`

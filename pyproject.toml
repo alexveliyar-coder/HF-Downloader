@@ -57,8 +57,8 @@ Changelog = "https://github.com/alexveliyar-coder/HF-Downloader/blob/main/CHANGE
 hfdownloader = "main:main"
 
 [tool.setuptools]
-# Сюда попадают Python-исходники. site/ и locales/ — не Python, поэтому
-# перечислены отдельно в package-data.
+# Python sources go here. site/ and locales/ are not Python, so
+# they are listed separately in package-data.
 include-package-data = true
 
 [tool.setuptools.package-data]
@@ -78,7 +78,7 @@ include-package-data = true
     "dist/**",
 ]
 
-# --- Линтеры и форматтеры (используются добровольно, в CI — факультативно) ---
+# --- Linters and formatters (optional, in CI they're run as needed) ---
 
 [tool.ruff]
 line-length = 110
@@ -90,24 +90,24 @@ select = ["E", "F", "W", "I", "B", "UP", "RUF"]
 ignore = ["E501", "B008", "RUF012"]
 
 [tool.ruff.lint.per-file-ignores]
-"site/*" = ["ALL"]  # HTML и JS внутри — не наша зона ответственности
+"site/*" = ["ALL"]  # HTML and JS inside are not our responsibility
 
 # --- Pylance / Pyright ---
-# main.py импортирует модули из src/. При запуске через `python main.py` мы
-# добавляем src/ в sys.path в самом начале файла, но статический анализатор
-# (Pylance, Pyright) этот код не выполняет и не понимает. extraPaths говорит
-# ему: «ищи модули ещё и в src/».
+# main.py imports modules from src/. When running via `python main.py` we
+# add src/ to sys.path at the very top of the file, but static analyzers
+# (Pylance, Pyright) don't execute that code. extraPaths tells them
+# where to look for the modules.
 [tool.pyright]
 include = ["main.py", "src"]
 extraPaths = ["src"]
 pythonVersion = "3.9"
-reportMissingImports = "none"  # мы намеренно не делаем src/ пакетом
-reportUndefinedVariable = "warning"  # реальные баги — показывать
+reportMissingImports = "none"  # we deliberately don't make src/ a package
+reportUndefinedVariable = "warning"  # show real bugs
 
-# --- PyInstaller (используется в build_windows.bat и в CI) ---
+# --- PyInstaller (used in build_windows.bat and in CI) ---
 
 [tool.pyinstaller]
-# Запусти:  pyinstaller hfdownloader.spec
-# Или напрямую:  pyinstaller --noconfirm --clean --windowed --name HF-Downloader main.py
-# См. .github/workflows/release.yml для воспроизводимой сборки.
+# Run:  pyinstaller hfdownloader.spec
+# Or directly:  pyinstaller --noconfirm --clean --windowed --name HF-Downloader main.py
+# See .github/workflows/release.yml for a reproducible build.
 spec = "hfdownloader.spec"

@@ -1,11 +1,11 @@
-# Документация
+# Documentation
 
-Сюда складываем:
+Put here:
 
-- `screenshot.jpg` — главный скриншот для README (1200×800, не больше 200 КБ, JPEG хорошо сжимается)
-- `screenshot-journal.png` — модалка журнала
-- `screenshot-queue.png` — очередь загрузок
-- `architecture.md` — что внутри и почему
-- `decisions/*.md` — Architecture Decision Records (почему мы выбрали X вместо Y)
+- `screenshot.jpg` — main screenshot for the README (1200×800, no larger than 200 KB, JPEG compresses well)
+- `screenshot-journal.png` — journal modal screenshot
+- `screenshot-queue.png` — download queue screenshot
+- `architecture.md` — what's inside and why
+- `decisions/*.md` — Architecture Decision Records (why we chose X instead of Y)
 
-Скриншоты делаем на разных языках, чтобы README в переводах тоже выглядел.
+Take screenshots in different languages so translated READMEs look good too.
