@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 Alexey (HF Downloader contributors)
 # See LICENSE and NOTICE for details.
@@ -21,11 +20,9 @@ updater.py — Проверка обновлений HF Downloader.
 """
 import json
 import os
-import sys
 import urllib.error
 import urllib.request
 from typing import Optional
-
 
 # Эту строку обновляешь вручную при каждом релизе. Должна совпадать с тегом
 # GitHub-релиза вида v1.2.3 (без префикса 'v' в самой строке).
@@ -49,7 +46,7 @@ def _http_json(url: str) -> Optional[dict]:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "HF-Downloader/%s (+https://github.com/%s)" % (VERSION, UPDATE_REPO),
+                "User-Agent": f"HF-Downloader/{VERSION} (+https://github.com/{UPDATE_REPO})",
                 "Accept": "application/vnd.github+json",
             },
         )
@@ -98,7 +95,7 @@ def check_update():
     if "/" not in UPDATE_REPO or UPDATE_REPO == _DEFAULT_REPO:
         # Не сконфигурировано — молча выходим, не ругаемся на dev-машине.
         return None
-    url = "https://api.github.com/repos/%s/releases/latest" % UPDATE_REPO
+    url = f"https://api.github.com/repos/{UPDATE_REPO}/releases/latest"
     data = _http_json(url)
     if not data or "tag_name" not in data:
         return None
@@ -120,7 +117,7 @@ def format_update_message(info) -> str:
     lines = [
         "",
         "-" * 58,
-        "  HF Downloader: доступна новая версия %s (у вас %s)" % (info["latest"], VERSION),
+        "  HF Downloader: доступна новая версия {} (у вас {})".format(info["latest"], VERSION),
         "  " + info["url"],
     ]
     if info.get("prerelease"):
@@ -135,4 +132,4 @@ if __name__ == "__main__":
     if info:
         print(format_update_message(info))
     else:
-        print("У вас последняя версия (%s)." % VERSION)
+        print(f"У вас последняя версия ({VERSION}).")

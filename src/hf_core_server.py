@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 Alexey (HF Downloader contributors)
 # See LICENSE and NOTICE for details.
@@ -20,8 +19,8 @@ HF Core Server — локальное ядро загрузчика (запус�
 Сервер слушает ТОЛЬКО 127.0.0.1:8765 (недоступен из интернета).
 Файлы сохраняются в папку "downloads" рядом со скриптом.
 """
-import json
 import itertools
+import json
 import os
 import re
 import signal
@@ -36,6 +35,9 @@ from pathlib import Path
 
 import requests
 
+from locale_loader import SUPPORTED_LANGUAGES, get_locale, init_locale
+from logger import logger
+
 # Allow running this file directly (`python src/hf_core_server.py`) — its
 # sibling modules live next to it, so this is a no-op in that case, but it
 # also works when invoked from the project root via `python -m src.hf_core_server`.
@@ -44,8 +46,6 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 # Локализация
-from locale_loader import get_locale, init_locale, SUPPORTED_LANGUAGES
-from logger import logger
 
 # Глобальная локаль для сервера (инициализируется при старте)
 _server_locale = None
@@ -63,8 +63,8 @@ def set_web_port(port):
     global _actual_web_port, ALLOWED_ORIGINS
     _actual_web_port = port
     ALLOWED_ORIGINS = (
-        "http://127.0.0.1:%d" % port,
-        "http://localhost:%d" % port,
+        f"http://127.0.0.1:{port}",
+        f"http://localhost:{port}",
     )
 
 def find_free_port(host, start_port, max_tries=20):
@@ -75,15 +75,13 @@ def find_free_port(host, start_port, max_tries=20):
     вызывающий обязан передать его в ThreadingHTTPServer (см. start_in_thread),
     иначе порт может быть перехвачен другим процессом в промежутке.
     """
-    last_err = None
     for p in range(start_port, start_port + max_tries):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind((host, p))
             return s, p
-        except OSError as e:
-            last_err = e
+        except OSError:
             s.close()
             continue
     # Крайний случай: всё занято — возвращаем сокет на start_port (bind может
@@ -101,8 +99,8 @@ BOOKMARKS_FILE = os.path.join(_PROJECT_ROOT, "hfdl_bookmarks.json")
 # сайт в браузере мог бы записать задачи/пути на ваш ПК (недоступно из сети —
 # сервер слушает 127.0.0.1, но страницы зовут его из браузера).
 ALLOWED_ORIGINS = (
-    "http://127.0.0.1:%d" % WEB_PORT,
-    "http://localhost:%d" % WEB_PORT,
+    f"http://127.0.0.1:{WEB_PORT}",
+    f"http://localhost:{WEB_PORT}",
 )
 
 _actual_port = PORT
@@ -132,7 +130,7 @@ LAST_DIR_FILE = os.path.join(_PROJECT_ROOT, ".last_dir.txt")
 def load_tasks_state():
     """Загрузить состояние активных задач из файла при старте."""
     try:
-        with open(_TASKS_FILE, "r", encoding="utf-8") as fh:
+        with open(_TASKS_FILE, encoding="utf-8") as fh:
             data = json.load(fh)
         if isinstance(data, list):
             # Восстанавливаем задачи в статусе "downloading" и "paused"
@@ -178,17 +176,17 @@ def _shutdown_handler(signum, frame):
     """Обработчик сигналов для graceful shutdown."""
     global _server_instance
     print("\n\nПолучен сигнал остановки — сохраняю состояние задач...")
-    
+
     # Устанавливаем cancel для всех активных задач
     with LOCK:
-        for tid, st in TASKS.items():
+        for _tid, st in TASKS.items():
             if st["status"] in ("downloading", "paused"):
                 st["cancel"] = True
                 st["run"].set()  # Разрешаем потоку выйти из цикла паузы
-    
+
     # Сохраняем состояние задач
     save_tasks_state()
-    
+
     # Корректно останавливаем сервер (не вызывает KeyboardInterrupt)
     if _server_instance:
         _server_instance.shutdown()
@@ -197,7 +195,7 @@ def _shutdown_handler(signum, frame):
 def _read_saved_lang():
     """Сохранённый выбор языка пользователя (.lang.txt, пишется при смене)."""
     try:
-        with open(LANG_FILE, "r", encoding="utf-8") as fh:
+        with open(LANG_FILE, encoding="utf-8") as fh:
             code = fh.read().strip().lower()
         if code in SUPPORTED_LANGUAGES:
             return code
@@ -208,12 +206,12 @@ def _read_saved_lang():
 
 def load_bookmarks():
     try:
-        with open(BOOKMARKS_FILE, "r", encoding="utf-8") as fh:
+        with open(BOOKMARKS_FILE, encoding="utf-8") as fh:
             data = json.load(fh)
         if isinstance(data, list):
             return [str(x).strip() for x in data if str(x).strip()]
     except (OSError, ValueError):
-        import sys; sys.stderr.write("  [warn] load_bookmarks failed\n")
+        sys.stderr.write("  [warn] load_bookmarks failed\n")
     return []
 
 
@@ -227,18 +225,18 @@ def save_bookmarks(items):
         with open(BOOKMARKS_FILE, "w", encoding="utf-8") as fh:
             json.dump(clean, fh, ensure_ascii=False, indent=2)
     except OSError:
-        import sys; sys.stderr.write("  [warn] save_bookmarks failed\n")
+        sys.stderr.write("  [warn] save_bookmarks failed\n")
     return clean
 
 
 def load_last_dir():
     try:
-        with open(LAST_DIR_FILE, "r", encoding="utf-8") as fh:
+        with open(LAST_DIR_FILE, encoding="utf-8") as fh:
             p = fh.read().strip()
         if p and os.path.isdir(p):
             return p
     except OSError:
-        import sys; sys.stderr.write("  [warn] load_last_dir failed\n")
+        sys.stderr.write("  [warn] load_last_dir failed\n")
     return BASE_DIR
 
 
@@ -247,7 +245,7 @@ def save_last_dir(path):
         with open(LAST_DIR_FILE, "w", encoding="utf-8") as fh:
             fh.write(path)
     except OSError:
-        import sys; sys.stderr.write("  [warn] save_last_dir failed\n")
+        sys.stderr.write("  [warn] save_last_dir failed\n")
 
 
 def resolve_choose_initial_dir(requested):
@@ -323,7 +321,7 @@ def clipboard_text():
         # (см. _CLIP_WORKER) — надёжно даже при владении буфером WebView2.
         try:
             out = subprocess.run(
-                _python_cmd() + ["-c", _CLIP_WORKER],
+                [*_python_cmd(), "-c", _CLIP_WORKER],
                 capture_output=True, text=True, encoding="utf-8", timeout=2,
             )
             return out.stdout or ""
@@ -391,7 +389,7 @@ finally:
 
 class CoreError(Exception):
     def __init__(self, status, msg=""):
-        super().__init__(msg or ("HTTP %d" % status))
+        super().__init__(msg or f"HTTP {status}")
         self.status = status
 
 
@@ -431,7 +429,7 @@ def safe_subdir(rel, allow_absolute=True):
 def hf_headers(token):
     h = {}
     if token:
-        h["Authorization"] = "Bearer %s" % token
+        h["Authorization"] = f"Bearer {token}"
     return h
 
 
@@ -474,7 +472,7 @@ def parse_link(raw):
 def repo_file_url(rtype, repo, fpath, branch="main"):
     prefix = "" if rtype == "models" else rtype + "/"
     enc = "/".join(urllib.parse.quote(p) for p in fpath.split("/"))
-    return "https://huggingface.co/%s%s/resolve/%s/%s" % (prefix, repo, branch, enc)
+    return f"https://huggingface.co/{prefix}{repo}/resolve/{branch}/{enc}"
 
 
 def _next_cursor(resp):
@@ -501,7 +499,7 @@ def fetch_tree(rtype, repo, token, branch="main"):
     курсор из заголовка Link ...; rel="next" и повторяем запрос, пока он
     присутствует. Иначе папка скачивалась бы не полностью (обрыв на 1000).
     """
-    api = "https://huggingface.co/api/%s/%s/tree/%s" % (rtype, repo, branch)
+    api = f"https://huggingface.co/api/{rtype}/{repo}/tree/{branch}"
     params = {"recursive": "true", "expand": "false", "limit": 1000}
     out = []
     while True:
@@ -527,11 +525,11 @@ def stream_to_file(url, dest, token, st):
     headers = hf_headers(token)
     part = dest + ".part"
     start = os.path.getsize(part) if os.path.exists(part) else 0
-    
+
     # Пробуем начать докачку, если есть .part файл
     resume_attempted = False
     if start > 0:
-        headers["Range"] = "bytes=%d-" % start
+        headers["Range"] = f"bytes={start}-"
         resume_attempted = True
 
     res = requests.get(url, headers=headers, stream=True, timeout=(15, 900))
@@ -540,7 +538,7 @@ def stream_to_file(url, dest, token, st):
             raise CoreError(res.status_code)
         if res.status_code == 404:
             raise CoreError(404)
-        
+
         # Определяем режим работы при попытке докачки:
         # - 206 Partial Content — сервер поддерживает Range, докачиваем с начала .part
         # - 200 OK + Content-Range — редкий случай (некоторые CDN), но есть заголовок range
@@ -559,7 +557,7 @@ def stream_to_file(url, dest, token, st):
                 resume_attempted = False
 
         res.raise_for_status()
-        
+
         content_length = int(res.headers.get("content-length") or 0)
         if resume_attempted and res.status_code == 206:
             # Content-Range: bytes N-M/T — T это полный размер
@@ -570,7 +568,7 @@ def stream_to_file(url, dest, token, st):
                 total_size = start + content_length
         else:
             total_size = content_length
-        
+
         mode = "ab" if (resume_attempted and res.status_code == 206) else "wb"
 
         downloaded = start
@@ -643,11 +641,11 @@ def stream_to_file(url, dest, token, st):
                         st["downloaded"] = st["base"] + (downloaded - start)
                         st["total"] = st["base_total"] if st["base_total"] else (st["base"] + total_size)
                         st["speed"] = speed
-        
+
         # Если докачка не удалась — удаляем .part и начинаем с чистого листа
         if not resume_attempted and start > 0:
             os.remove(part)
-        
+
         os.replace(part, dest)
         return os.path.getsize(dest)
     finally:
@@ -711,14 +709,14 @@ def run_task(tid):
     st = TASKS[tid]
     branch = st.get("branch", "main")
     max_retries = st.get("max_retries", 3)
-    
+
     def _sleep_with_cancel(seconds):
         deadline = time.time() + seconds
         while time.time() < deadline:
             if st["cancel"]:
                 raise CoreError(-2, "cancelled")
             time.sleep(0.2)
-    
+
     def _do_file_download():
         dest = os.path.join(st["dir"], sanitize(st["name"]))
         # Если файл уже на диске и HEAD подтверждает совпадение размера —
@@ -740,12 +738,12 @@ def run_task(tid):
                     st["files_done"] = 1
                     st["files_total"] = 1
                     st["had_skip"] = True
-                    logger.warn("File already on disk with matching size, skipping: %s" % os.path.basename(dest))
+                    logger.warn(f"File already on disk with matching size, skipping: {os.path.basename(dest)}")
                     return expected
             except Exception as _e:
                 # HEAD упал (нет сети / 405 / таймаут) — лучше качать заново,
                 # чем зависнуть на пропуске. Не считаем это ошибкой юзера.
-                logger.warn("HEAD probe failed for %s, will re-download: %s" % (os.path.basename(dest), _e))
+                logger.warn(f"HEAD probe failed for {os.path.basename(dest)}, will re-download: {_e}")
         return stream_to_file(st["url"], dest, st.get("token", ""), st)
 
     def _do_fetch_tree():
@@ -768,7 +766,7 @@ def run_task(tid):
             if os.path.exists(dest) and f.get("size", 0) > 0 and os.path.getsize(dest) == f["size"]:
                 got = f["size"]
                 st["had_skip"] = True
-                logger.warn("Already on disk, skipping: %s" % f["path"])
+                logger.warn("Already on disk, skipping: {}".format(f["path"]))
             else:
                 got = stream_to_file(repo_file_url(st["rtype"], st["repo"], f["path"], branch),
                                      dest, st.get("token", ""), st)
@@ -776,11 +774,11 @@ def run_task(tid):
             st["files_done"] = i + 1
             st["file_index"] = i + 1
             st["downloaded"] = st["base"]
-    
+
     try:
         os.makedirs(st["dir"], exist_ok=True)
         st["status"] = "downloading"
-        
+
         if st["kind"] == "file":
             while True:
                 try:
@@ -791,7 +789,7 @@ def run_task(tid):
                     if st["retries"] > max_retries:
                         raise
                     delay = st.get("retry_delay", 2)
-                    st["current"] = "retry %d/%d in %ds" % (st["retries"], max_retries, delay)
+                    st["current"] = f"retry {st['retries']}/{max_retries} in {delay}s"
                     _sleep_with_cancel(delay)
                     st["retry_delay"] = min(delay * 2, 30)
                     st["current"] = ""
@@ -807,7 +805,7 @@ def run_task(tid):
                     if st["retries"] > max_retries:
                         raise
                     delay = st.get("retry_delay", 2)
-                    st["current"] = "retry %d/%d in %ds" % (st["retries"], max_retries, delay)
+                    st["current"] = f"retry {st['retries']}/{max_retries} in {delay}s"
                     _sleep_with_cancel(delay)
                     st["retry_delay"] = min(delay * 2, 30)
                     st["current"] = ""
@@ -815,16 +813,16 @@ def run_task(tid):
             st["speed"] = 0
     except CoreError as e:
         st["status"] = "error"
-        st["error"] = "http_%d" % e.status
+        st["error"] = f"http_{e.status}"
         st["speed"] = 0
         if e.status in (401, 403):
-            logger.warn("Access denied (%d) for %s — token required" % (e.status, st.get("repo") or st.get("name") or "unknown"))
+            logger.warn(f"Access denied ({e.status}) for {st.get('repo') or st.get('name') or 'unknown'} — token required")
         elif e.status == 404:
             logger.warn("File not found (404): %s" % (st.get("name") or "unknown"))
         elif e.status == -2:
             pass
         else:
-            logger.error("HTTP error %d for %s" % (e.status, st.get("repo") or st.get("name") or "unknown"))
+            logger.error(f"HTTP error {e.status} for {st.get('repo') or st.get('name') or 'unknown'}")
     except requests.exceptions.RequestException:
         st["status"] = "error"
         st["error"] = "network"
@@ -904,8 +902,8 @@ class Handler(BaseHTTPRequestHandler):
         # из браузера (у неё Origin тоже null) не получила доступ к ядру.
         if o == "null":
             ref = self.headers.get("Referer") or ""
-            return (ref.startswith("http://127.0.0.1:%d/" % _actual_web_port) or
-                    ref.startswith("http://localhost:%d/" % _actual_web_port))
+            return (ref.startswith(f"http://127.0.0.1:{_actual_web_port}/") or
+                    ref.startswith(f"http://localhost:{_actual_web_port}/"))
         return False
 
     def _json(self, obj, code=200):
@@ -1094,7 +1092,7 @@ class Handler(BaseHTTPRequestHandler):
             except CoreError:
                 self._json({"error": "bad dir"}, 400)
                 return
-            tid = "t%d-%d" % (int(time.time() * 1000000), next(_tid_seq))
+            tid = f"t{int(time.time() * 1000000)}-{next(_tid_seq)}"
             branch = str(body.get("branch") or parsed.get("branch", "main")).strip() or "main"
             st = {
                 "kind": parsed["kind"],
@@ -1301,14 +1299,14 @@ if ($folder.ShowDialog()) {{
 def start_in_thread():
     """Запуск ядра в фоновом потоке (использует main.py / pywebview)."""
     global _server_instance, _server_locale, _actual_port
-    
+
     # Инициализируем локализацию: сначала сохранённый выбор пользователя
     # (.lang.txt, пишется при смене языка в UI), затем автоопределение ОС.
     saved_lang = _read_saved_lang()
     _server_locale = init_locale(saved_lang) if saved_lang else init_locale()
-    
+
     os.makedirs(BASE_DIR, exist_ok=True)
-    
+
     # Восстанавливаем сохранённые задачи при старте и запускаем для них
     # рабочие потоки, чтобы недокачанные загрузки продолжились.
     saved = load_tasks_state()
@@ -1318,7 +1316,7 @@ def start_in_thread():
             TASKS.update(saved)
         for tid in saved:
             threading.Thread(target=run_task, args=(tid,), daemon=True).start()
-    
+
     sock, _actual_port = find_free_port(HOST, PORT)
     # Передаём уже привязанный сокет, чтобы не терять зарезервированный порт
     # (иначе между find_free_port и bind-ом сервера порт мог бы перехватить другой процесс).
@@ -1329,10 +1327,10 @@ def start_in_thread():
     srv.server_port = srv.server_address[1]
     srv.server_activate()
     _server_instance = srv
-    
+
     # Signal handlers registered in main.py for unified shutdown.
     # Here we only expose the API — do NOT register signals again.
-    
+
     t = threading.Thread(target=srv.serve_forever, daemon=True)
     t.start()
     return srv
@@ -1340,17 +1338,17 @@ def start_in_thread():
 
 def main():
     global _server_instance
-    
+
     start_in_thread()
-    
+
     L = _server_locale or init_locale()
     print("=" * 56)
     print(" " + L.t("core_start"))
-    print("   " + L.t("core_addr") + " http://%s:%d" % (HOST, _actual_port))
-    print("   " + L.t("core_dir") + " %s" % BASE_DIR)
+    print("   " + L.t("core_addr") + f" http://{HOST}:{_actual_port}")
+    print("   " + L.t("core_dir") + f" {BASE_DIR}")
     print("   " + L.t("core_stop"))
     print("=" * 56)
-    
+
     # Регистрируем обработчик сигнала для standalone запуска
     try:
         signal.signal(signal.SIGINT, _shutdown_handler)
@@ -1358,21 +1356,21 @@ def main():
             signal.signal(signal.SIGTERM, _shutdown_handler)
     except (OSError, ValueError):
         pass
-    
+
     try:
         threading.Event().wait()
     except KeyboardInterrupt:
         # Дублируем shutdown на случай если signal handler не сработал
         print("\n\n" + L.t("signal_shutdown"))
-        
+
         with LOCK:
-            for tid, st in TASKS.items():
+            for _tid, st in TASKS.items():
                 if st["status"] in ("downloading", "paused"):
                     st["cancel"] = True
                     st["run"].set()
-        
+
         save_tasks_state()
-        
+
         if _server_instance:
             _server_instance.shutdown()
         print(L.t("stopped"))

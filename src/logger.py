@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 Alexey (HF Downloader contributors)
 # See LICENSE and NOTICE for details.
@@ -14,7 +13,6 @@ import threading
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_FILE = BASE_DIR / ".hfdl_log.txt"
@@ -79,7 +77,7 @@ class Logger:
             self._lines.append(entry)
             try:
                 with open(self._log_file, "a", encoding="utf-8") as f:
-                    f.write("[%s] %s %s\n" % (ts, level, masked))
+                    f.write(f"[{ts}] {level} {masked}\n")
             except OSError:
                 pass
 

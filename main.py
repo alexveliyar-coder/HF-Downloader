@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 Alexey (HF Downloader contributors)
 # See LICENSE and NOTICE for details.
@@ -11,7 +10,6 @@ import sys
 import threading
 import urllib.parse
 import webbrowser
-from functools import partial
 from pathlib import Path
 
 # Add bundled src/ to sys.path so we can import the project modules
@@ -21,11 +19,11 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 # Localization — auto-detect OS language
-from locale_loader import get_locale, init_locale
-
 # Update checker (только консольное уведомление, без скачивания).
 # Прямой импорт: updater.py лежит в src/ и добавлен в sys.path выше.
-import updater
+import updater  # noqa: E402
+from locale_loader import init_locale  # noqa: E402
+
 _HAS_UPDATER = True
 
 BASE = Path(__file__).parent
@@ -45,48 +43,51 @@ except ImportError as _imp_err:
     sys.stderr.write(
         "\n[HF Downloader] Не найдены зависимости (requests).\n"
         "Установите их командой:  python -m pip install -r requirements.txt\n"
-        "Текст ошибки: %s\n" % _imp_err
+        f"Текст ошибки: {_imp_err}\n"
     )
-    raise SystemExit(1)
+    raise SystemExit(1) from None
 
 
 def _graceful_shutdown():
     """Корректная остановка всех компонентов."""
     global _site_server, _core_server_ref
     L = init_locale()  # получаем локализацию (уже инициализирована в main())
-    
+
     print("\n\n" + L.t("shutdown_title"))
-    
+
     # Устанавливаем cancel для всех активных задач в core-сервере
     with hf_core_server.LOCK:
-        for tid, st in hf_core_server.TASKS.items():
+        for _tid, st in hf_core_server.TASKS.items():
             if isinstance(st.get("run"), threading.Event) and st["status"] in ("downloading", "paused"):
                 st["cancel"] = True
                 st["run"].set()
-    
+
     # Сохраняем состояние задач
     try:
         hf_core_server.save_tasks_state()
         print("  " + L.t("shutdown_saved"))
     except Exception:
-        import sys; sys.stderr.write("  [warn] shutdown: save_tasks_state failed\n")
-    
+        import sys
+        sys.stderr.write("  [warn] shutdown: save_tasks_state failed\n")
+
     # Корректно останавливаем core-сервер (не вызывает KeyboardInterrupt)
     if _core_server_ref:
         try:
             _core_server_ref.shutdown()
             print("  " + L.t("shutdown_core"))
         except Exception:
-            import sys; sys.stderr.write("  [warn] shutdown: core server failed\n")
-    
+            import sys
+            sys.stderr.write("  [warn] shutdown: core server failed\n")
+
     # Останавливаем сайт-сервер корректно
     if _site_server:
         try:
             _site_server.shutdown()
             print("  " + L.t("shutdown_site"))
         except Exception:
-            import sys; sys.stderr.write("  [warn] shutdown: site server failed\n")
-    
+            import sys
+            sys.stderr.write("  [warn] shutdown: site server failed\n")
+
     print(L.t("shutdown_done"))
 
 
@@ -96,7 +97,7 @@ def _saved_lang():
     If the file doesn't exist or the language isn't supported — None (use auto-detect).
     """
     try:
-        with open(hf_core_server.LANG_FILE, "r", encoding="utf-8") as fh:
+        with open(hf_core_server.LANG_FILE, encoding="utf-8") as fh:
             code = fh.read().strip().lower()
         if code in hf_core_server.SUPPORTED_LANGUAGES:
             return code
@@ -139,7 +140,7 @@ class _SiteHandler(http.server.SimpleHTTPRequestHandler):
 
     def _serve_index(self):
         try:
-            with open(SITE / "index.html", "r", encoding="utf-8") as f:
+            with open(SITE / "index.html", encoding="utf-8") as f:
                 content = f.read()
             port = getattr(hf_core_server, '_actual_port', hf_core_server.PORT)
             content = content.replace("%CORE_PORT%", str(port))
@@ -157,7 +158,7 @@ class _SiteHandler(http.server.SimpleHTTPRequestHandler):
 
 def serve_site():
     global _site_server
-    sock, port = _find_free_port("127.0.0.1", WEB_PORT)
+    sock, _port = _find_free_port("127.0.0.1", WEB_PORT)
     # Hold the reserved socket so nothing else grabs the port before the server starts.
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _SiteHandler, bind_and_activate=False)
     srv.socket = sock
@@ -312,12 +313,12 @@ if ($folder.ShowDialog()) {{
 
 def main():
     global _core_server_ref
-    
+
     # Initialize localization: first use saved user preference
     # (.lang.txt, written when changing language in UI), then auto-detect OS.
     saved_lang = _saved_lang()
     L = init_locale(saved_lang) if saved_lang else init_locale()
-    
+
     # Регистрируем обработчик сигнала ОДИН РАЗ в главном потоке
     try:
         signal.signal(signal.SIGINT, lambda signum, frame: (_graceful_shutdown(), None)[1])
@@ -325,23 +326,23 @@ def main():
             signal.signal(signal.SIGTERM, lambda signum, frame: (_graceful_shutdown(), None)[1])
     except (OSError, ValueError):
         pass
-    
+
     _core_server_ref = hf_core_server.start_in_thread()
     site_srv = serve_site()
     actual_web_port = site_srv.server_address[1]
     # Сайт может слушать не 8777 (если порт занят) — сообщаем ядру фактический
     # порт, иначе CORS/Origin не совпадут и все запросы фронтенда получат 403.
     hf_core_server.set_web_port(actual_web_port)
-    
+
     # Передаём язык в frontend через URL-параметр.
     # cache-buster (`&v=VERSION`) — чтобы при обновлении версии pywebview/браузер
     # не показывал старую страницу из кэша.
-    url = "http://127.0.0.1:%d/?lang=%s&v=%s" % (actual_web_port, L.lang, updater.VERSION)
-    
+    url = f"http://127.0.0.1:{actual_web_port}/?lang={L.lang}&v={updater.VERSION}"
+
     print("=" * 58)
     print(" " + L.t("console_start") + " v" + (updater.VERSION if _HAS_UPDATER else "?"))
     print("   " + L.t("console_site") + " " + url)
-    print("   " + L.t("console_core") + " http://127.0.0.1:%d" % hf_core_server._actual_port)
+    print("   " + L.t("console_core") + f" http://127.0.0.1:{hf_core_server._actual_port}")
     print("   " + L.t("console_files") + "    " + hf_core_server.BASE_DIR)
     print("   " + L.t("console_exit"))
     print("=" * 58)
@@ -354,7 +355,7 @@ def main():
                 print(updater.format_update_message(info))
         except Exception:
             pass
-    
+
     try:
         import webview  # pywebview
 

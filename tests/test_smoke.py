@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 Alexey (HF Downloader contributors)
 # See LICENSE and NOTICE for details.
@@ -30,8 +29,8 @@ def check_locale_files():
         try:
             data = json.loads(p.read_text(encoding="utf-8"))
         except Exception as e:
-            raise AssertionError("%s: invalid JSON — %s" % (p.name, e))
-        assert isinstance(data, dict), "%s: not a dict at top level" % p.name
+            raise AssertionError(f"{p.name}: invalid JSON — {e}") from None
+        assert isinstance(data, dict), f"{p.name}: not a dict at top level"
         keys_sets.append((p.name, set(data.keys())))
     # Сравниваем с английским (эталон).
     en = next(s for name, s in keys_sets if name == "en.json")
@@ -47,12 +46,12 @@ def check_locale_files():
     if missing:
         print("  WARN: locales without all en keys:")
         for name, miss in missing:
-            print("    %s missing: %s" % (name, ", ".join(sorted(miss))))
+            print(f"    {name} missing: {', '.join(sorted(miss))}")
     if extra:
         print("  WARN: locales with extra keys (vs en):")
         for name, ex in extra:
-            print("    %s extra: %s" % (name, ", ".join(sorted(ex))))
-    print("  OK (%d files)" % len(files))
+            print(f"    {name} extra: {', '.join(sorted(ex))}")
+    print(f"  OK ({len(files)} files)")
 
 
 def check_updater_version():
@@ -65,10 +64,10 @@ def check_updater_version():
     assert m, "VERSION not found in updater.py"
     version = m.group(1)
     parts = version.split(".")
-    assert len(parts) == 3, "VERSION should be X.Y.Z, got %r" % version
+    assert len(parts) == 3, f"VERSION should be X.Y.Z, got {version!r}"
     for p in parts:
-        assert p.isdigit(), "VERSION part should be numeric: %r" % p
-    print("  OK: VERSION = %s" % version)
+        assert p.isdigit(), f"VERSION part should be numeric: {p!r}"
+    print(f"  OK: VERSION = {version}")
 
 
 def check_html_size():
@@ -76,8 +75,8 @@ def check_html_size():
     print("3. Проверка размера site/index.html …")
     p = ROOT / "site" / "index.html"
     size = p.stat().st_size
-    assert size < 500 * 1024, "site/index.html больше 500 КБ (%d байт) — пора разбивать на файлы" % size
-    print("  OK: %d КБ" % (size // 1024))
+    assert size < 500 * 1024, f"site/index.html больше 500 КБ ({size} байт) — пора разбивать на файлы"
+    print(f"  OK: {size // 1024} КБ")
 
 
 def check_no_secrets_in_history():
@@ -109,7 +108,7 @@ def check_no_secrets_in_history():
     if bad:
         msg = "Найдены паттерны секретов:\n"
         for p, label in bad:
-            msg += "  %s — %s\n" % (p, label)
+            msg += f"  {p} — {label}\n"
         raise AssertionError(msg)
     print("  OK (ничего подозрительного)")
 
@@ -134,7 +133,7 @@ def main():
             failed += 1
     print()
     if failed:
-        print("FAILED: %d check(s)" % failed)
+        print(f"FAILED: {failed} check(s)")
         sys.exit(1)
     print("All smoke checks passed.")
 
