@@ -44,7 +44,7 @@ classifiers = [
 ]
 dependencies = [
     "requests>=2.28",
-    "pywebview>=4.4",
+    "pywebview>=6.2.1",
 ]
 
 [project.urls]
