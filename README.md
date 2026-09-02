@@ -6,6 +6,8 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](#download)
 [![i18n](https://img.shields.io/badge/languages-12-green)](locales/)
+[![CI](https://img.shields.io/github/actions/workflow/status/alexveliyar-coder/HF-Downloader/ci.yml?branch=main&label=CI)](../../actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/alexveliyar-coder/HF-Downloader?display_name=tag&sort=semver)](../../releases/latest)
 
 <p align="center">
   <img src="docs/screenshot.jpg" alt="HF Downloader screenshot" width="800">
