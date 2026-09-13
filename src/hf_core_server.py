@@ -661,8 +661,8 @@ def fetch_tree(rtype, repo, token, branch="main"):
                 raise CoreError(404)
         except requests.exceptions.Timeout as e:
             raise CoreError(-3, "timeout") from e
-        except (requests.exceptions.ConnectionError, requests.exceptions.ChunkedEncodingError):
-            raise CoreError(-3, "network")
+        except (requests.exceptions.ConnectionError, requests.exceptions.ChunkedEncodingError) as e:
+            raise CoreError(-3, "network") from e
         res.raise_for_status()
         for f in res.json():
             if f.get("type") == "file" and isinstance(f.get("path"), str):
@@ -880,12 +880,12 @@ def _stream_with_retry(url, dest, token, st, headers_fn=None, max_retries=5):
             deadline = time.time() + wait_s
             while time.time() < deadline:
                 if st["cancel"]:
-                    raise CoreError(-2, "cancelled")
+                    raise CoreError(-2, "cancelled") from None
                 if not st["run"].is_set():
                     # пауза во время ожидания — отматываем deadline
                     while not st["run"].is_set():
                         if st["cancel"]:
-                            raise CoreError(-2, "cancelled")
+                            raise CoreError(-2, "cancelled") from None
                         time.sleep(0.2)
                     deadline = time.time() + wait_s
                 time.sleep(0.2)
@@ -952,11 +952,9 @@ def run_task(tid):
     # Жизненный цикл задачи в лог: без этой строки невозможно понять, дошло ли
     # дело до скачивания и с какими параметрами задача была запущена.
     logger.info(
-        "Task %s start: kind=%s source=%s name=%s token=%s" % (
-            tid, st.get("kind"), st.get("source"),
-            st.get("name") or st.get("repo") or "?",
-            "yes" if st.get("token") else "no",
-        )
+        f"Task {tid} start: kind={st.get('kind')} source={st.get('source')} "
+        f"name={st.get('name') or st.get('repo') or '?'} "
+        f"token={'yes' if st.get('token') else 'no'}"
     )
 
     def _sleep_with_cancel(seconds):
@@ -1028,22 +1026,22 @@ def run_task(tid):
             return url
         except CivitAIError as e:
             if e.code == "civitai_token_invalid":
-                raise CoreError(401)
+                raise CoreError(401) from e
             elif e.code == "civitai_forbidden":
-                raise CoreError(403)
+                raise CoreError(403) from e
             elif e.code == "civitai_not_found":
-                raise CoreError(404)
+                raise CoreError(404) from e
             elif e.code in ("civitai_no_files", "civitai_no_url"):
-                raise CoreError(404)
+                raise CoreError(404) from e
             elif e.code == "civitai_api_error":
                 # 402 (платно / ранний доступ / Vault): повторять бессмысленно —
                 # сразу в ошибку без ретраев, иначе юзер видит «ошибку сети».
                 low = (e.message or "").lower()
                 if "402" in (e.message or "") or "payment" in low or "purchase" in low or "early access" in low:
-                    raise CoreError(402)
-                raise CoreError(-3, "network")
+                    raise CoreError(402) from e
+                raise CoreError(-3, "network") from e
             else:
-                raise CoreError(-3, "network")
+                raise CoreError(-3, "network") from e
 
     def _do_file_download():
         source = st.get("source", "hf")
@@ -1161,7 +1159,7 @@ def run_task(tid):
                 try:
                     _do_file_download()
                     break
-                except requests.exceptions.RequestException as e:
+                except requests.exceptions.RequestException:
                     # Сетевые ошибки (таймаут, обрыв соединения) — в ретраи.
                     # HTTP-ошибки (4xx/5xx) тоже пробуем повторить — вдруг это
                     # временная проблема сервера или прокси.
@@ -1173,7 +1171,7 @@ def run_task(tid):
                     _sleep_with_cancel(delay)
                     st["retry_delay"] = min(delay * 2, 30)
                     st["current"] = ""
-                except CoreError as ce:
+                except CoreError:
                     # HTTP-ошибки (4xx/5xx) пробрасываем дальше — они обрабатываются
                     # в finally с понятным сообщением юзеру.
                     raise
@@ -1184,7 +1182,7 @@ def run_task(tid):
                 try:
                     _do_repo_download()
                     break
-                except requests.exceptions.RequestException as e:
+                except requests.exceptions.RequestException:
                     st["retries"] = st.get("retries", 0) + 1
                     if st["retries"] > max_retries:
                         raise
@@ -1193,7 +1191,7 @@ def run_task(tid):
                     _sleep_with_cancel(delay)
                     st["retry_delay"] = min(delay * 2, 30)
                     st["current"] = ""
-                except CoreError as ce:
+                except CoreError:
                     raise
             st["status"] = "done"
             st["speed"] = 0
@@ -1216,7 +1214,7 @@ def run_task(tid):
             else:
                 logger.warn(f"Access denied ({e.status}) for {st.get('repo') or st.get('name') or 'unknown'} — token required")
         elif e.status == 404:
-            logger.warn("File not found (404): %s" % (st.get("name") or "unknown"))
+            logger.warn(f"File not found (404): {st.get('name') or 'unknown'}")
         elif e.status == 402:
             # 402 Payment Required — платная модель / ранний доступ / Vault.
             # Отдельный текст, чтобы не выглядело как «ошибка сети».
@@ -1242,6 +1240,20 @@ def run_task(tid):
                 st["error"] = None
                 st["speed"] = 0
                 logger.warn(f"Task deleted by user for {st.get('repo') or st.get('name') or 'unknown'}")
+        elif e.status == -3:
+            # Rate-limit / серверная ошибка, долетевшая до верха (напр. из
+            # _sleep_with_cancel): ждём и уходим в следующий цикл run_task.
+            # Отдельная except-ветка ниже была дубликатом — объединено здесь,
+            # чтобы не было B025 (duplicate exception).
+            if not st["cancel"]:
+                delay = min(st.get("retry_delay", 2) * 2, 60)
+                logger.warn(
+                    f"Rate limited / server error for {st.get('repo') or st.get('name') or 'unknown'} "
+                    f"(HTTP {e.status}). Retrying in {delay}s..."
+                )
+                _sleep_with_cancel(delay)
+            else:
+                raise CoreError(-2, "cancelled") from None
         else:
             logger.error(f"HTTP error {e.status} for {st.get('repo') or st.get('name') or 'unknown'}")
     except requests.exceptions.RequestException as e:
@@ -1250,51 +1262,7 @@ def run_task(tid):
         st["speed"] = 0
         # Логируем реальную причину (DNS/SSL/таймаут/прокси) — иначе «Network error»
         # невозможно отличить от обрыва сети.
-        logger.error("Network error for %s: %r" % (st.get("repo") or st.get("name") or "unknown", e))
-    except CoreError as ce:
-        """Обработка HTTP-ошибок и rate-limit."""
-        st["status"] = "error"
-        st["speed"] = 0
-        status = ce.status
-        if status == 401:
-            logger.warn(f"Token required or invalid for {st.get('repo') or st.get('name') or 'unknown'}")
-        elif status == 403:
-            source = st.get("source", "hf")
-            if source.startswith("civitai"):
-                logger.warn(f"CivitAI access denied (403) for {st.get('repo') or st.get('name') or 'unknown'} — token may be invalid")
-            else:
-                logger.warn(f"Access denied (403) for {st.get('repo') or st.get('name') or 'unknown'} — token required")
-        elif status == 402:
-            logger.warn(f"CivitAI paid/early-access model (402): {st.get('name') or 'unknown'} — purchase or wait for public release")
-        elif status == 404:
-            logger.warn("File not found (404): %s" % (st.get("name") or "unknown"))
-        elif status == -2:
-            if st.get("_shutdown"):
-                st["status"] = "downloading"
-                st["error"] = None
-                st["speed"] = 0
-                st["cancel"] = False
-                logger.warn(f"Task paused on shutdown for {st.get('repo') or st.get('name') or 'unknown'}")
-            else:
-                logger.warn(f"Task stopped (cancelled) for {st.get('repo') or st.get('name') or 'unknown'}")
-        elif status == -3:
-            if not st["cancel"]:
-                delay = min(st.get("retry_delay", 2) * 2, 60)
-                logger.warn(
-                    f"Rate limited / server error for {st.get('repo') or st.get('name') or 'unknown'} "
-                    f"(HTTP {status}). Retrying in {delay}s..."
-                )
-                _sleep_with_cancel(delay)
-            else:
-                raise CoreError(-2, "cancelled")
-        else:
-            logger.error(f"Unknown error for {st.get('repo') or st.get('name') or 'unknown'} (HTTP {status})")
-
-    except requests.exceptions.RequestException as e:
-        st["status"] = "error"
-        st["error"] = "unknown"
-        st["speed"] = 0
-        logger.error("Unexpected error for %s" % (st.get("repo") or st.get("name") or "unknown"))
+        logger.error(f"Network error for {st.get('repo') or st.get('name') or 'unknown'}: {e!r}")
         logger.error(traceback.format_exc())
     finally:
         # .part удаляем ТОЛЬКО при успехе: при ошибке/отмене он нужен для
