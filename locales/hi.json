@@ -1,35 +1,26 @@
 {
   "app_name": "HF Downloader",
-  
   "journal_button": "डायरी",
-  
   "console_start": "HF Downloader शुरू हुआ (ऑफ़लाइन)",
   "console_site": "साइट:",
   "console_core": "कोर:",
   "console_files": "फ़ाइलें:",
   "console_exit": "निकास: विंडो बंद करें या Ctrl+C",
-  
   "shutdown_title": "सर्वर बंद किए जा रहे हैं...",
   "shutdown_saved": "कार्य स्थिति .tasks.json में सहेजी गई",
   "shutdown_core": "कोर सर्वर बंद हुआ।",
   "shutdown_site": "साइट सर्वर बंद हुआ।",
   "shutdown_done": "पूर्ण।",
-  
   "no_pywebview": "pywebview इंस्टॉल नहीं है — सामान्य ब्राउज़र खोल रहा हूँ।",
   "install_pywebview": "pip install pywebview — एक अलग विंडो प्राप्त करने के लिए",
-  
   "core_start": "HF Core Server शुरू हुआ",
   "core_addr": "पता:",
   "core_dir": "फ़ोल्डर:",
   "core_stop": "Ctrl+C",
-  
   "restore_tasks": ".tasks.json से %d कार्य पुनर्स्थापित किए गए",
-  
   "signal_shutdown": "बंद करने का संकेत मिला — कार्य स्थिति सहेजी जा रही है...",
   "stopped": "बंद किया गया।",
-  
   "dir_title": "सहेजने के लिए फ़ोल्डर चुनें",
-  
   "error_origin_forbidden": "origin forbidden",
   "error_bad_path": "bad path",
   "error_not_found": "not found",
@@ -38,5 +29,13 @@
   "error_bad_body": "bad body",
   "error_write_failed": "write failed",
   "error_dialog_timeout": "dialog timeout",
-  "error_canceled": "canceled"
+  "error_canceled": "canceled",
+  "civitai_token_invalid": "CivitAI ने टोकन अस्वीकार कर दिया (401)। अपनी API कुंजी जांचें।",
+  "civitai_forbidden": "CivitAI पहुंच अस्वीकृत (403)। मॉडल प्रतिबंधित हो सकता है।",
+  "civitai_not_found": "CivitAI मॉडल नहीं मिला (404)।",
+  "civitai_no_files": "इस मॉडल संस्करण में डाउनलोड करने योग्य कोई फ़ाइल नहीं मिली।",
+  "civitai_no_url": "CivitAI ने डाउनलोड URL नहीं दिया। मॉडल को मान्य टोकन की आवश्यकता हो सकती है।",
+  "civitai_api_error": "CivitAI API त्रुटि।",
+  "pasteFail": "क्लिपबोर्ड पढ़ने में विफल",
+  "toastPasted": "क्लिपबोर्ड से डाला गया"
 }

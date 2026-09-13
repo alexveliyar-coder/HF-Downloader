@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -149,6 +149,8 @@
   .gbtn:active{transform:translateY(0)}
   .gbtn.amber{border-color:rgba(255,180,60,.45);color:var(--amber)}
   .gbtn.amber:hover{background:rgba(255,180,60,.14);border-color:rgba(255,180,60,.75);color:var(--amber-soft)}
+  .gbtn.danger{border-color:rgba(255,122,104,.45);color:var(--err)}
+  .gbtn.danger:hover{background:rgba(255,122,104,.14);border-color:rgba(255,122,104,.75);color:#ffa69c}
   .gbtn.icon-only{padding:0;width:32px;height:32px;justify-content:center}
   .detect{margin-top:8px;min-height:18px;font-family:var(--font-mono);font-size:10.5px}
   .detect .tag{border-radius:4px;padding:2px 6px;font-weight:700}
@@ -181,6 +183,7 @@
   .token-wrap.tok-off .field{border-color:rgba(255,200,87,.35)}
   .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--cream-500);cursor:pointer;padding:4px}
   .eye:hover{color:var(--amber)}
+  #pasteTokBtn{right:40px !important}
 
   .switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
   .switch input{display:none}
@@ -304,6 +307,20 @@
     *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
   }
 
+  /* ---------- source tabs ---------- */
+  .source-tabs{display:flex;gap:6px;margin:0 0 14px 0}
+  .source-tab{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:11px;border:1px solid var(--ink-700);
+    background:rgba(33,28,19,.5);color:var(--cream-500);font-family:var(--font-body);font-size:12.5px;font-weight:700;
+    cursor:pointer;transition:all .2s ease;letter-spacing:-.2px;flex:1;justify-content:center}
+  .source-tab:hover{border-color:var(--ink-600);color:var(--cream-100);background:rgba(42,35,24,.6)}
+  .source-tab svg{flex:none;opacity:.7}
+  .source-tab.active{background:linear-gradient(135deg,rgba(255,180,60,.18),rgba(224,140,20,.12));
+    border-color:var(--amber);color:var(--amber)}
+  .source-tab.active svg{opacity:1}
+  .source-tab[data-source="civitai_red"].active{background:linear-gradient(135deg,rgba(255,122,104,.15),rgba(224,60,20,.1));
+    border-color:var(--err);color:var(--err)}
+  .source-tab[data-source="civitai_red"]:hover{color:var(--err)}
+
   /* ---------- logs ---------- */
   .logs-modal{width:100%;max-width:700px;max-height:88vh;display:flex;flex-direction:column;border:1px solid var(--ink-600);border-radius:18px;background:var(--ink-900);box-shadow:0 40px 120px -30px rgba(0,0,0,.95);animation:modalin .35s cubic-bezier(.22,1,.36,1) both}
   .logs-body{flex:1;min-height:0;overflow-y:auto;padding:12px 16px}
@@ -385,6 +402,22 @@
     <h1><span id="h1a">Центр загрузок</span><br><span class="acc" id="h1b">Hugging Face</span></h1>
     <p class="sub" id="subTxt">Файлы и целые репозитории — в очередь, с паузой, токеном и автоподхватом ссылок из буфера обмена.</p>
 
+    <!-- Источник загрузки -->
+    <div class="source-tabs" id="sourceTabs">
+      <button type="button" class="source-tab" data-source="hf" id="srcHf">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span id="srcHfLbl">HF</span>
+      </button>
+      <button type="button" class="source-tab" data-source="civitai_blue" id="srcCivBlue">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0z"/><path d="M3.6 9h16.8"/><path d="M3.6 15h16.8"/></svg>
+        <span id="srcCivBlueLbl">CivitAI</span>
+      </button>
+      <button type="button" class="source-tab" data-source="civitai_red" id="srcCivRed">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span id="srcCivRedLbl">CivitAI.red</span>
+      </button>
+    </div>
+
     <div class="deck-card">
       <div class="sec">
         <div class="sec-head">
@@ -448,6 +481,9 @@
         <div class="token-wrap tok-on" id="tokWrap">
           <svg class="key" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4.2"/><path d="M11 11 20 3M16 5l2.5 2.5M13.5 7.5 16 10"/></svg>
           <input class="field" id="tokInp" type="password" spellcheck="false" autocomplete="off" placeholder="hf_xxxxxxxxxxxxxxxxxxxx">
+          <button class="eye" id="pasteTokBtn" type="button" title="Вставить из буфера" aria-label="Вставить токен">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>
+          </button>
           <button class="eye" id="eyeBtn" type="button" aria-label="show token">
             <svg id="eyeIco" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
           </button>
@@ -565,6 +601,28 @@
   </div>
 </div>
 
+<div class="overlay" id="confirmOv">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="m-head">
+      <span class="ic" style="color:var(--err)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </span>
+      <div style="flex:1;min-width:0">
+        <h2 id="confirmTtl">Подтверждение</h2>
+        <p id="confirmSub"></p>
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="m-sec"><p id="confirmBody"></p></div>
+    </div>
+    <div class="m-foot">
+      <span class="m-note" id="confirmNote"></span>
+      <button class="gbtn" id="confirmNoBtn" type="button">Отмена</button>
+      <button class="gbtn danger" id="confirmYesBtn" type="button">Удалить</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="authOv">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="m-head">
@@ -630,6 +688,12 @@
   'use strict';
   var CORE = 'http://127.0.0.1:%CORE_PORT%';
   var HF_RE = new RegExp('^https?://(?:www[.])?huggingface[.]co/.+', 'i');
+  var CIVITAI_RE = new RegExp('^https?://(?:www[.])?civitai[.](?:com|red)/.+/\\d+', 'i');
+  var CIVITAI_DIRECT_RE = new RegExp('^https?://(?:www[.])?civitai[.](?:com|red)/api/download/models/\\d+', 'i');
+  // URN-формат: urn:air:zimageturbo:diffusionmodel:civitai:620406@3161628+3042004
+  var CIVITAI_URN_RE = new RegExp('^urn:.*:civitai:(\\d+)(?:@(\\d+))?(?:\\+(\\d+))?$', 'i');
+  // Объединённая регулярка для валидации (HF или CivitAI URL или URN)
+  var LINK_RE = new RegExp('^(?:https?://(?:www[.])?(?:huggingface[.]co/.+|civitai[.](?:com|red)/.+/\\d+)|urn:.*:civitai:\\d+)', 'i');
 
   var T = {
     EN: {
@@ -642,7 +706,7 @@
       token:'Token', tokenHint:'for gated models', useTok:'Use token when downloading',
       add:'Add to queue and download',
       console:'Active downloads', speed:'Total speed', seq:'Sequential', clr:'Clear finished',
-      help:'Guide', helpTtl:'Guide', helpSub:'how to use the offline downloader',
+      help:'Guide', helpTtl:'Guide', helpSub:'how to use the offline downloader', helpFallback:'Guide unavailable in this language.',
       foot:'local tool — links and token never leave your PC',
       ver:'offline edition v3',
       watchOn:'clipboard watched', watchOff:'watching clipboard',
@@ -654,6 +718,7 @@
       stWaiting:'queued', stDown:'downloading', stPause:'paused', stDone:'done', stErr:'error',
       files:'files', nothing:'No finished tasks', saved:'Saved', pathExists:'This path is already saved',
       e401:'Access denied — token needed', e404:'File not found (404)', eNet:'Network unreachable', eUnk:'Download error',
+      eCancel:'Task cancelled', civErrGeneric:'CivitAI: API error — try again later',
       pasteFail:'No clipboard access — press Ctrl+V inside the field',
       permT:'Clipboard access', permS:'your choice — can be turned off at any time',
       perm1t:'What happens',
@@ -670,6 +735,20 @@
       auth2t:'How to fix', auth2b:'Create a token at huggingface.co/settings/tokens, tick “Use token when downloading” and retry the task.',
       authNote:'the token is sent only to huggingface.co',
       authOK:'Enter token', authClose:'Got it',
+
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Hugging Face token', tokNote:'sent only to huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'CivitAI API token', phCivTok:'Enter your CivitAI API key',
+      tokCivNote:'sent only to civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: token required — get one at civitai.com/user/account',
+      civErrForbidden:'CivitAI: access denied — check your API key',
+      confirmRemove:'This task is still downloading. Removing it will delete the partial file from disk. Continue?', confirmTitle:'Remove task?', confirmOk:'Remove',
+      civErrPaid:'CivitAI: paid / early-access model (402) — purchase it or wait for public release',
+      civErrNotFound:'CivitAI: model not found',
+      phCivUrn:'urn:...:civitai:123456@789+012',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'Support independent open-source development.',
@@ -729,6 +808,18 @@
       authNote:'令牌仅发送到 huggingface.co',
       authOK:'输入令牌', authClose:'知道了',
 
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Hugging Face 令牌', tokNote:'仅发送到 huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'CivitAI API 令牌', phCivTok:'输入您的 CivitAI API 密钥',
+      tokCivNote:'仅发送到 civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: 需要令牌 — 请在 civitai.com/user/account 获取',
+      civErrForbidden:'CivitAI: 访问被拒绝 — 请检查您的 API 密钥',
+      confirmRemove:'此任务仍在下载中。删除它将从磁盘中删除部分文件。继续？', confirmTitle:'删除任务？', confirmOk:'删除',
+      civErrNotFound:'CivitAI: 未找到模型',
+
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'支持独立开源开发。',
       supportTtl:'支持项目',
@@ -786,6 +877,18 @@ supportOpen:'支持',
       auth2t:'कैसे ठीक करें', auth2b:'huggingface.co/settings/tokens पर एक टोकन बनाएं, “डाउनलोड करते समय टोकन का उपयोग करें” को चेक करें और कार्य को पुनः प्रयास करें।',
       authNote:'टोकन केवल huggingface.co भेजा जाता है',
       authOK:'टोकन दर्ज करें', authClose:'मिल गया',
+
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Hugging Face टोकन', tokNote:'केवल huggingface.co पर भेजा जाता है',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'CivitAI API टोकन', phCivTok:'अपनी CivitAI API कुंजी दर्ज करें',
+      tokCivNote:'केवल civitai.com / civitai.red पर भेजा जाता है',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: टोकन आवश्यक — civitai.com/user/account पर प्राप्त करें',
+      civErrForbidden:'CivitAI: पहुंच अस्वीकृत — अपनी API कुंजी जांचें',
+      confirmRemove:'यह कार्य अभी भी डाउनलोड हो रहा है। हटाने से आंशिक फ़ाइल डिस्क से मिट जाएगी। जारी रखें?', confirmTitle:'कार्य हटाएँ?', confirmOk:'हटाएँ',
+      civErrNotFound:'CivitAI: मॉडल नहीं मिला',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'स्वतंत्र ओपन-सोर्स विकास का समर्थन करें।',
@@ -845,6 +948,18 @@ supportOpen:'समर्थन करें',
       authNote:'el token solo se envía a huggingface.co',
       authOK:'Ingresar token', authClose:'Entendido',
 
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Token de Hugging Face', tokNote:'se envía solo a huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'Token API CivitAI', phCivTok:'Ingrese su clave API de CivitAI',
+      tokCivNote:'se envía solo a civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: se requiere token — obténgalo en civitai.com/user/account',
+      civErrForbidden:'CivitAI: acceso deniegado — compruebe su clave API',
+      confirmRemove:'Esta tarea sigue descargándose. Eliminarla borrará el archivo parcial del disco. ¿Continuar?', confirmTitle:'¿Eliminar tarea?', confirmOk:'Eliminar',
+      civErrNotFound:'CivitAI: modelo no encontrado',
+
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'Apoya el desarrollo independiente de código abierto.',
           supportTtl:'Apoya el proyecto',
@@ -902,6 +1017,18 @@ supportOpen:'Apoyar',
       auth2t:'Comment réparer', auth2b:'Créez un jeton à huggingface.co/settings/tokens, cochez “Utiliser le jeton lors du téléchargement” et réessayez la tâche.',
       authNote:'le jeton n\'est envoyé qu\'à huggingface.co',
       authOK:'Entrer le jeton', authClose:'Compris',
+
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Jeton Hugging Face', tokNote:'envoyé uniquement à huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'Jeton API CivitAI', phCivTok:'Entrez votre clé API CivitAI',
+      tokCivNote:'envoyé uniquement à civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: jeton requis — obtenez-en un sur civitai.com/user/account',
+      civErrForbidden:'CivitAI: accès refusé — vérifiez votre clé API',
+      confirmRemove:'Cette tâche est toujours en cours de téléchargement. La supprimer effacera le fichier partiel du disque. Continuer?', confirmTitle:'Supprimer la tâche ?', confirmOk:'Supprimer',
+      civErrNotFound:'CivitAI: modèle introuvable',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'Soutenez le développement indépendant open-source.',
@@ -961,6 +1088,18 @@ supportOpen:'Soutenir',
       authNote:'يتم إرسال رمز الوصول فقط إلى huggingface.co',
       authOK:'أدخل رمز الوصول', authClose:'فهمت',
 
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'رمز Hugging Face', tokNote:'يُرسل فقط إلى huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'رمز API CivitAI', phCivTok:'أدخل مفتاح API الخاص بـ CivitAI',
+      tokCivNote:'يُرسل فقط إلى civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: الرمز مطلوب — احصل عليه من civitai.com/user/account',
+      civErrForbidden:'CivitAI: الوصول مرفوع — تحقق من مفتاح API',
+      confirmRemove:'هذه المهمة لا تزال قيد التنزيل. ستؤدي الإزالة إلى حذف الملف الجزئي من القرص. متابعة؟', confirmTitle:'حذف المهمة؟', confirmOk:'حذف',
+      civErrNotFound:'CivitAI: النموذج غير موجود',
+
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'ادعم التطوير المستقل مفتوح المصدر.',
           supportTtl:'دعم المشروع',
@@ -1018,6 +1157,18 @@ supportOpen:'دعم',
       auth2t:'কীভাবে ঠিক করবেন', auth2b:'huggingface.co/settings/tokens এ একটি টোকেন তৈরি করুন, “ডাউনলোড করার সময় টোকেন ব্যবহার করুন” চেক করুন এবং কাজটি আবার চেষ্টা করুন।',
       authNote:'টোকেন কেবল huggingface.co পাঠানো হয়',
       authOK:'টোকেন দিন', authClose:'বুঝতে পেরেছি',
+
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Hugging Face টোকেন', tokNote:'শুধুমাত্র huggingface.co তে পাঠানো হয়',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'CivitAI API টোকেন', phCivTok:'আপনার CivitAI API কী লিখুন',
+      tokCivNote:'শুধুমাত্র civitai.com / civitai.red তে পাঠানো হয়',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: টোকেন প্রয়োজন — civitai.com/user/account থেকে নিন',
+      civErrForbidden:'CivitAI: অ্যাক্সেস অস্বীকৃত — আপনার API কী যাচাই করুন',
+      confirmRemove:'এই কাজটি এখনও ডাউনলোড হচ্ছে। এটি অপসারণ করলে আংশিক ফাইলটি ডিস্ক থেকে মুছে যাবে। চালিয়ে যান?', confirmTitle:'কাজটি মুছবেন?', confirmOk:'মুছুন',
+      civErrNotFound:'CivitAI: মডেল পাওয়া যায়নি',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'স্বাধীন ওপেন-সোর্স উন্নয়ন সমর্থন করুন।',
@@ -1094,7 +1245,8 @@ supportOpen:'Apoiar',
          logsTtl:'Registro de eventos', logsSub:'avisos e erros', logsEmpty:'O registro está vazio',
          logsAll:'Todos', logsWarn:'Avisos', logsErr:'Erros',
          logsRefresh:'Atualizar', logsCopy:'Copiar', logsClear:'Limpar',
-         logsClose:'Fechar', logsNote:'os dados são armazenados apenas no seu PC'
+               confirmRemove:'Esta tarefa ainda está a descarregar. Removê-la irá apagar o ficheiro parcial do disco. Continuar?', confirmTitle:'Remover tarefa?', confirmOk:'Remover',
+      logsClose:'Fechar', logsNote:'os dados são armazenados apenas no seu PC'
     },
     RU: {
       h1a:'Центр загрузок', h1b:'Hugging Face',
@@ -1106,7 +1258,7 @@ supportOpen:'Apoiar',
       token:'Токен', tokenHint:'для закрытых моделей', useTok:'Использовать токен при скачивании',
       add:'Добавить в очередь и скачать',
       console:'Активные загрузки', speed:'Суммарная скорость', seq:'По очереди', clr:'Очистить завершённые',
-      help:'Обучение', helpTtl:'Обучение', helpSub:'как пользоваться офлайн-загрузчиком',
+      help:'Обучение', helpTtl:'Обучение', helpSub:'как пользоваться офлайн-загрузчиком', helpFallback:'Руководство недоступно на этом языке.',
       foot:'локальный инструмент — ссылки и токен хранятся только на вашем ПК',
       ver:'офлайн-редакция v3',
       watchOn:'буфер под наблюдением', watchOff:'наблюдение за буфером',
@@ -1118,6 +1270,7 @@ supportOpen:'Apoiar',
       stWaiting:'в очереди', stDown:'скачивание', stPause:'пауза', stDone:'готово', stErr:'ошибка',
       files:'файлы', nothing:'Нет завершённых задач', saved:'Сохранено', pathExists:'Этот путь уже сохранён',
       e401:'Доступ запрещён — нужен токен', e404:'Файл не найден (404)', eNet:'Сеть недоступна', eUnk:'Ошибка загрузки',
+      eCancel:'Задача отменена', civErrGeneric:'CivitAI: ошибка API — попробуйте позже',
       pasteFail:'Нет доступа к буферу — нажмите Ctrl+V в поле',
       permT:'Доступ к буферу обмена', permS:'решение за вами — выключается в любой момент',
       perm1t:'Что происходит',
@@ -1134,6 +1287,19 @@ supportOpen:'Apoiar',
       auth2t:'Как исправить', auth2b:'Создайте токен на huggingface.co/settings/tokens, включите «Использовать токен при скачивании» и повторите задачу.',
       authNote:'токен уходит только на huggingface.co',
       authOK:'Ввести токен', authClose:'Понятно',
+
+      // CivitAI
+      phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
+      tokLbl:'Токен Hugging Face', tokNote:'отправляется только на huggingface.co',
+      phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
+      tokCivLbl:'API токен CivitAI', phCivTok:'Введите API ключ CivitAI',
+      tokCivNote:'отправляется только на civitai.com / civitai.red',
+      detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
+      civErrToken:'CivitAI: требуется токен — получите на civitai.com/user/account',
+      civErrForbidden:'CivitAI: доступ запрещён — проверьте API ключ',
+      confirmRemove:'Эта задача ещё качается. Удаление сотрёт недокачанный файл с диска. Продолжить?', confirmTitle:'Удалить задачу?', confirmOk:'Удалить',
+      civErrPaid:'CivitAI: платная модель / ранний доступ (402) — купите её или дождитесь публичного релиза',
+      civErrNotFound:'CivitAI: модель не найдена',
 
       b:'Б', kb:'КБ', mb:'МБ', gb:'ГБ', bs:'Б/с',
       supportHeader:'Поддержи независимую open-source разработку.',
@@ -1210,7 +1376,8 @@ supportOpen:'حمایت کریں',
              logsTtl:'ایونٹ لاگ', logsSub:'انتباہات اور غلطیاں', logsEmpty:'لاگ خالی ہے',
              logsAll:'سب', logsWarn:'انتباہات', logsErr:'غلطیاں',
              logsRefresh:'تازہ کریں', logsCopy:'کاپی', logsClear:'صاف کریں',
-             logsClose:'بند کریں', logsNote:'ڈیٹا صرف آپ کے پی سی پر محفوظ ہوتا ہے'
+                   confirmRemove:'یہ ٹاسک ابھی ڈاؤن لوڈ ہو رہا ہے۔ اسے ہٹانے سے جزوی فائل ڈسک سے مٹ جائے گی۔ جاری رکھیں؟', confirmTitle:'ٹاسک ہٹائیں؟', confirmOk:'ہٹائیں',
+      logsClose:'بند کریں', logsNote:'ڈیٹا صرف آپ کے پی سی پر محفوظ ہوتا ہے'
     },
     DE: { h1a:'Download-Center', h1b:'Hugging Face',
       sub:'Einzelne Dateien und ganze Repositories — in Warteschlange, pausierbar, mit Token und automatischer Zwischenablage-Erkennung.',
@@ -1267,7 +1434,8 @@ supportOpen:'Unterstützen',
              logsTtl:'Ereignisprotokoll', logsSub:'Warnungen und Fehler', logsEmpty:'Protokoll ist leer',
              logsAll:'Alle', logsWarn:'Warnungen', logsErr:'Fehler',
              logsRefresh:'Aktualisieren', logsCopy:'Kopieren', logsClear:'Leeren',
-             logsClose:'Schließen', logsNote:'Daten werden nur auf Ihrem PC gespeichert'
+                   confirmRemove:'Diese Aufgabe lädt noch herunter. Beim Entfernen wird die Teildatei von der Festplatte gelöscht. Fortfahren?', confirmTitle:'Aufgabe entfernen?', confirmOk:'Entfernen',
+      logsClose:'Schließen', logsNote:'Daten werden nur auf Ihrem PC gespeichert'
     },
     JA: { h1a:'ダウンロードセンター', h1b:'Hugging Face',
       sub:'単一ファイルと entire リポジトリ — キュー、一時停止、トークン対応、クリップボード自動取得付き。',
@@ -1322,154 +1490,179 @@ supportOpen:'Unterstützen',
             logsTtl:'イベントログ', logsSub:'警告とエラー', logsEmpty:'ログは空です',
             logsAll:'すべて', logsWarn:'警告', logsErr:'エラー',
             logsRefresh:'更新', logsCopy:'コピー', logsClear:'クリア',
-            logsClose:'閉じる', logsNote:'データはあなたのPCのみに保存されます'
+                  confirmRemove:'このタスクはまだダウンロード中です。削除するとディスク上の部分ファイルが消去されます。続けますか？', confirmTitle:'タスクを削除しますか？', confirmOk:'削除',
+      logsClose:'閉じる', logsNote:'データはあなたのPCのみに保存されます'
     },
   };
   var HELP = {
     RU: [
-      ['1. Ссылка','Ссылка на файл содержит /blob/ или /resolve/ — она автоматически превращается в прямую. Ссылка на репозиторий вида huggingface.co/владелец/имя скачивает всю папку. Ветка распознаётся из ссылки или задаётся в поле branch (по умолчанию main).'],
-      ['2. Автоподхват из буфера','Раз в секунду страница тихо проверяет буфер обмена. Появилась HF-ссылка — она сама подставляется в поле и подсвечивается. Кнопка «Вставить» и Ctrl+V тоже работают.'],
-      ['3. Папка','Имя из поля «Папка» — это подпапка внутри downloads рядом с main.py. Закрепляйте часто используемые имена кнопкой «+», они сохранятся между запусками.'],
-      ['4. Токен','Для закрытых моделей (Llama и др.) создайте токен на huggingface.co/settings/tokens и вставьте в поле. Он уходит только на huggingface.co и хранится локально.'],
-      ['5. Очередь и «По очереди»','Задачи добавляются кнопкой. Переключатель «По очереди» заставляет запускать строго по одной задаче.'],
-      ['6. Пауза','Кнопка паузы останавливает загрузку, «Продолжить» возобновляет. Недокачанные файлы лежат как .part и продолжаются с того же байта.'],
-      ['7. Очистка','«Очистить завершённые» убирает карточки «готово» и «ошибка», активные не трогает.'],
-      ['8. Ошибки','401/403 — закрытый репозиторий, включите токен. 404 — файла нет. «Повторить» перезапускает задачу с докачкой.'],
-      ['9. ETA','В карточке загрузки показано оставшееся время (ETA), если скорость стабильная.'],
-      ['10. Офлайн','Эта страница полностью автономна: один HTML-файл, без внешних скриптов. Интернет нужен только для связи с huggingface.co. Точные шрифты подтягиваются из Google Fonts при наличии сети, без сети используются системные.']
+      ['1. Ссылки', 'Hugging Face: файл /blob/ или /resolve/ превращается в прямую ссылку автоматически; huggingface.co/владелец/имя качает всю папку. CivitAI: civitai.com/models/123, civitai.red/models/123 или urn:...:civitai:...'],
+      ['2. Табы источников', 'Кнопки HF / CivitAI / CivitAI.red открывают соответствующий сайт в браузере — их удобно использовать, чтобы скопировать ссылку. Источник задачи определяется по самой ссылке, кнопки его не переключают.'],
+      ['3. Автоподхват из буфера', 'Раз в секунду страница тихо проверяет буфер обмена. Появилась ссылка — она сама подставляется в поле. Кнопка «Вставить» и Ctrl+V тоже работают.'],
+      ['4. Папка', 'Имя из поля «Папка» — это подпапка внутри downloads. Закрепляйте частые имена кнопкой «+», они сохранятся между запусками.'],
+      ['5. Token', 'Hugging Face: gated-модели требуют token с huggingface.co/settings/tokens. CivitAI: API key создаётся на civitai.com/user/account — обязательно включите «Use your token when downloading», иначе даже открытые модели не скачаются. Кнопка «Вставить» считывает токен из буфера обмена.'],
+      ['6. Платные модели CivitAI', 'Модели за энергию/Buzz покупаются ТОЛЬКО на сайте civitai.com или civitai.red. Загрузчик показывает ошибку 402 и сам ничего не оплачивает. Скачивание работает, только если модель куплена на том же аккаунте, которому принадлежит API key.'],
+      ['7. Очередь и «По очереди»', 'Задачи добавляются кнопкой. Переключатель «По очереди» запускает строго по одной.'],
+      ['8. Пауза', 'Пауза останавливает загрузку, «Продолжить» возобновляет. Недокачанные файлы лежат как .part и докачиваются с того же байта (resume).'],
+      ['9. Очистка', '«Очистить завершённые» убирает карточки «готово» и «ошибка». Удаление активной задачи спросит подтверждение и сотрёт её .part с диска.'],
+      ['10. Ошибки', '401/403 — токен не принят или нет прав. 402 — модель платная, купите на сайте или ждите публичного релиза. 404 — файл удалён или скрыт. 429 — слишком много запросов, задача повторится сама с паузой.'],
+      ['11. ETA', 'В карточке загрузки показано оставшееся время, пока скорость стабильна.'],
+      ['12. Приватность и офлайн', 'Страница автономна: один HTML-файл без внешних скриптов. Токены отправляются ТОЛЬКО на huggingface.co и civitai.com/civitai.red, не сохраняются на диск и маскируются в логах.'],
     ],
     EN: [
-      ['1. The link','A file link contains /blob/ or /resolve/ and is converted to a direct one automatically. A repo link like huggingface.co/owner/name downloads the whole folder. The branch is detected from the URL or set in the branch field (default: main).'],
-      ['2. Clipboard pickup','Once a second the page quietly checks the clipboard. A HF link pasted anywhere fills the field and flashes. The Paste button and Ctrl+V work too.'],
-      ['3. Folder','The name in the Folder field becomes a subfolder inside downloads next to main.py. Pin frequent names with “+” — they persist between runs.'],
-      ['4. Token','Gated models (Llama etc.) need a token from huggingface.co/settings/tokens. It is sent only to huggingface.co and stored locally.'],
-      ['5. Queue and Sequential','Tasks are added with the button. The Sequential switch makes the page run strictly one task at a time.'],
-      ['6. Pause','Pause stops the download, Resume continues it. Partial files live as .part and continue from the same byte.'],
-      ['7. Cleaning','“Clear finished” removes done and error cards, active tasks untouched.'],
-      ['8. Errors','401/403 — private repo, enable the token. 404 — file gone. “Retry” restarts with resume.'],
-      ['9. ETA','The download card shows estimated remaining time when the speed is stable.'],
-      ['10. Offline','This page is fully standalone: one HTML file, no external scripts. Internet is only needed to reach huggingface.co. Exact fonts load from Google Fonts when online; system fonts are used offline.']
+      ['1. Links', 'Hugging Face: a /blob/ or /resolve/ file link converts to a direct one automatically; huggingface.co/owner/name downloads the whole folder. CivitAI: civitai.com/models/123, civitai.red/models/123 or urn:...:civitai:...'],
+      ['2. Source tabs', 'The HF / CivitAI / CivitAI.red buttons open the corresponding site in your browser — handy for grabbing a link. The task source is taken from the link itself; the buttons do not switch it.'],
+      ['3. Clipboard pickup', 'Once a second the page quietly checks the clipboard. A link pasted anywhere fills the field and flashes. The paste button and Ctrl+V work too.'],
+      ['4. Folder', 'The name in the Folder field becomes a subfolder inside downloads. Pin frequent names with “+” — they persist between runs.'],
+      ['5. Token', 'Hugging Face: gated models need a token from huggingface.co/settings/tokens. CivitAI: create an API key at civitai.com/user/account and make sure “Use your token when downloading” is enabled, otherwise even open models won\'t download. The paste button reads the token from the clipboard.'],
+      ['6. Paid CivitAI models', 'Models sold for energy/Buzz can be purchased ONLY on the civitai.com or civitai.red site. The downloader shows error 402 and never pays anything itself. Download works only if the model was bought on the same account that owns the API key.'],
+      ['7. Queue and Sequential', 'Tasks are added with the button. The Sequential switch runs strictly one task at a time.'],
+      ['8. Pause', 'Pause stops the download, Resume continues it. Partial files live as .part and continue from the same byte (resume).'],
+      ['9. Cleaning', '“Clear finished” removes done and error cards. Removing an active task asks for confirmation and deletes its .part from disk.'],
+      ['10. Errors', '401/403 — token rejected or no access. 402 — paid model, buy it on the site or wait for the public release. 404 — file removed or hidden. 429 — too many requests, the task will retry itself with a pause.'],
+      ['11. ETA', 'The download card shows estimated remaining time while the speed is stable.'],
+      ['12. Privacy and offline', 'The page is fully standalone: one HTML file, no external scripts. Tokens are sent ONLY to huggingface.co and civitai.com/civitai.red, are never written to disk and are masked in logs.'],
     ],
     ZH: [
-      ['1. 链接','文件链接包含 /blob/ 或 /resolve/——它会自动转换为直接链接。像 huggingface.co/owner/name 这样的仓库链接会下载整个文件夹。分支从 URL 检测或在分支字段中设置（默认：main）。'],
-      ['2. 剪贴板获取','页面每秒安静地检查一次剪贴板。任何地方粘贴的 HF 链接都会填充字段并闪烁。粘贴按钮和 Ctrl+V 也可以工作。'],
-      ['3. 文件夹','文件夹字段中的名称会成为 main.py 旁边 downloads 内的子文件夹。用“+”固定常用名称——它们会在运行之间保留。'],
-      ['4. 令牌','受限模型（Llama 等）需要从 huggingface.co/settings/tokens 获取令牌。它只发送到 huggingface.co 并本地存储。'],
-      ['5. 队列和顺序','任务通过按钮添加。顺序开关使页面一次严格运行一个任务。'],
-      ['6. 暂停','暂停停止下载，继续恢复它。部分文件作为 .part 存在并从同一字节继续。'],
-      ['7. 清理','“清除已完成”移除完成和错误卡片，活动任务不受影响。'],
-      ['8. 错误','401/403 — 私有仓库，启用令牌。404 — 文件丢失。“重试”使用恢复重新启动。'],
-      ['9. ETA','下载卡片在速度稳定时显示预计剩余时间。'],
-      ['10. 离线','此页面完全独立：一个 HTML 文件，没有外部脚本。互联网仅用于访问 huggingface.co。精确字体在在线时从 Google Fonts 加载；离线时使用系统字体。']
+      ['1. 链接', 'Hugging Face：/blob/ 或 /resolve/ 文件链接会自动变成直链；huggingface.co/所有者/名称 会下载整个文件夹。CivitAI：civitai.com/models/123、civitai.red/models/123 或 urn:...:civitai:...'],
+      ['2. 来源标签', 'HF / CivitAI / CivitAI.red 按钮会在浏览器中打开对应网站 — 方便复制链接。任务来源由链接本身决定；按钮不会切换来源。'],
+      ['3. 剪贴板自动识别', '页面每秒安静地检查一次剪贴板。出现链接时会自动填入输入框。粘贴按钮和 Ctrl+V 同样可用。'],
+      ['4. 文件夹', '「文件夹」字段中的名称会成为 downloads 内的子文件夹。用「+」固定常用名称 — 它们会在多次运行之间保留。'],
+      ['5. Token（令牌）', 'Hugging Face：gated 模型需要来自 huggingface.co/settings/tokens 的令牌。CivitAI：在 civitai.com/user/account 创建 API key，并且务必启用 「Use your token when downloading」，否则即使是开放模型也无法下载。粘贴按钮可从剪贴板读取令牌。'],
+      ['6. CivitAI 付费模型', '用能量/Buzz 购买的模型只能在 civitai.com 或 civitai.red 网站购买。下载器会显示错误 402，本身绝不支付任何费用。只有在购买模型所用的账户与 API key 属于同一账户时才能下载。'],
+      ['7. 队列和「依次下载」', '任务通过按钮添加。开启「依次下载」开关后严格一次只运行一个任务。'],
+      ['8. 暂停', '暂停停止下载，继续则恢复。部分文件以 .part 形式存在，并从同一字节继续（resume）。'],
+      ['9. 清理', '「清除已完成」会移除已完成和出错的任务卡片。删除活动任务会要求确认，并从磁盘删除其 .part 文件。'],
+      ['10. 错误', '401/403 — 令牌被拒绝或无权限。402 — 付费模型，请到网站购买或等待公开发布。404 — 文件已删除或隐藏。429 — 请求过多，任务会稍作暂停后自动重试。'],
+      ['11. ETA（预计剩余时间）', '速度稳定时，下载卡片会显示预计剩余时间。'],
+      ['12. 隐私与离线', '页面完全独立：一个 HTML 文件，无外部脚本。令牌只发送到 huggingface.co 和 civitai.com/civitai.red，绝不写入磁盘，并在日志中被遮蔽。'],
     ],
     HI: [
-      ['1. लिंक','एक फ़ाइल लिंक में /blob/ या /resolve/ होता है और इसे स्वचालित रूप से एक सीधे लिंक में बदल दिया जाता है। huggingface.co/owner/name जैसा एक रिपो लिंक पूरा फ़ोल्डर डाउनलोड करता है। शाखा URL से पहचानी जाती है या शाखा फ़ील्ड में सेट की जाती है (डिफ़ॉल्ट: main)।'],
-      ['2. क्लिपबोर्ड पिकअप','प्रति सेकंड पेज शांति से क्लिपबोर्ड की जांच करता है। कहीं भी चस्पाई किया गया HF लिंक फ़ील्ड को भरता है और फ्लैश होता है। पेस्ट बटन और Ctrl+V भी काम करते हैं।'],
-      ['3. फ़ोल्डर','फ़ोल्डर फ़ील्ड में नाम main.py के अंदर downloads के अंदर एक सबफ़ोल्डर बन जाता है। “+” से बार-बार नामों को पिन करें — वे रनों के बीच रहते हैं।'],
-      ['4. टोकन','गेटेड मॉडल (Llama आदि) को huggingface.co/settings/tokens से एक टोकन की आवश्यकता होती है। इसे केवल huggingface.co भेजा जाता है और स्थानीय रूप से संग्रहीत किया जाता है।'],
-      ['5. कतार और क्रमवार','कार्य बटन के साथ जोड़े जाते हैं। क्रमवार स्विच पेज को एक समय में सख्ती से एक कार्य चलाने का कारण बनता है।'],
-      ['6. विराम','विराम डाउनलोड को रोकता है, जारी रखना इसे जारी रखता है। आंशिक फ़ाइलें .part के रूप में रहती हैं और उसी बाइट से जारी रहती हैं।'],
-      ['7. सफाई','“समाप्त साफ़ करें” समाप्त और त्रुटि कार्ड्स हटा देता है, सक्रिय कार्य अपरिवर्तित छोड़ देता है।'],
-      ['8. त्रुटियां','401/403 — निजी रिपो, टोकन सक्षम करें। 404 — फ़ाइल गई। “पुनः प्रयास” रीज्यूम के साथ पुनः शुरू करता है।'],
-      ['9. ETA','डाउनलोड कार्ड गति स्थिर होने पर अनुमानित शेष समय दिखाता है।'],
-      ['10. ऑफ़लाइन','यह पेज पूरी तरह से अलग है: एक HTML फ़ाइल, कोई बाहरी स्क्रिप्ट नहीं। इंटरनेट केवल huggingface.co तक पहुंचने के लिए आवश्यक है। सटीक फ़ॉन्ट ऑनलाइन होने पर Google Fonts से लोड होते हैं; ऑफ़लाइन सिस्टम फ़ॉन्ट का उपयोग किया जाता है।']
+      ['1. लिंक', 'Hugging Face: /blob/ या /resolve/ वाला फ़ाइल लिंक स्वचालित रूप से सीधा लिंक बन जाता है; huggingface.co/स्वामी/नाम पूरी फ़ोल्डर डाउनलोड करता है। CivitAI: civitai.com/models/123, civitai.red/models/123 या urn:...:civitai:...'],
+      ['2. स्रोत टैब', 'HF / CivitAI / CivitAI.red बटन ब्राउज़र में संबंधित वेबसाइट खोलते हैं — लिंक कॉपी करने के लिए उपयोगी। कार्य का स्रोत लिंक से ही तय होता है; बटन उसे बदलते नहीं हैं।'],
+      ['3. क्लिपबोर्ड स्वतः पिकअप', 'पेज हर सेकंड चुपचाप क्लिपबोर्ड जाँचता है। लिंक आते ही वह फ़ील्ड में अपने आप भर जाता है। पेस्ट बटन और Ctrl+V भी काम करते हैं।'],
+      ['4. फ़ोल्डर', '«फ़ोल्डर» फ़ील्ड का नाम downloads के अंदर उपफ़ोल्डर बन जाता है। बार-बार उपयोग होने वाले नामों को «+» से पिन करें — वे सत्रों के बीच रहते हैं।'],
+      ['5. Token', 'Hugging Face: gated मॉडल को huggingface.co/settings/tokens से टोकन चाहिए। CivitAI: civitai.com/user/account पर API key बनाएँ और «Use your token when downloading» अनिवार्य रूप से सक्षम करें, वरना खुले मॉडल भी डाउनलोड नहीं होंगे। पेस्ट बटन क्लिपबोर्ड से टोकन पढ़ लेता है।'],
+      ['6. CivitAI के भुगतान मॉडल', 'ऊर्जा/Buzz से बेचे जाने वाले मॉडल केवल civitai.com या civitai.red साइट पर खरीदे जा सकते हैं। डाउनलोडर त्रुटि 402 दिखाता है और खुद कभी कुछ भुगतान नहीं करता। डाउनलोड तभी होता है जब मॉडल उसी खाते से खरीदा गया हो जिसका API key है।'],
+      ['7. क्यू और «क्रम से»', 'कार्य बटन से जोड़े जाते हैं। «क्रम से» स्विच सख्ती से एक-एक करके चलाता है।'],
+      ['8. रोकें', 'रोकें डाउनलोड रोकता है, फिर से शुरू उसे जारी रखता है। आंशिक फ़ाइलें .part के रूप में रहती हैं और उसी बाइट से जारी रहती हैं (resume)।'],
+      ['9. सफाई', '«पूर्ण साफ़ करें» पूर्ण और त्रुटि कार्ड हटाता है। सक्रिय कार्य हटाने पर पुष्टि माँगी जाती है और उसका .part डिस्क से मिट जाता है।'],
+      ['10. त्रुटियाँ', '401/403 — टोकन अस्वीकृत या पहुँच नहीं। 402 — भुगतान मॉडल, साइट पर खरीदें या सार्वजनिक रिलीज़ का इंतज़ार करें। 404 — फ़ाइल हटाई गई या छिपी है। 429 — बहुत सारे अनुरोध, कार्य थोड़ा रुककर खुद फिर कोशिश करेगा।'],
+      ['11. ETA', 'गति स्थिर होने पर डाउनलोड कार्ड में शेष समय दिखता है।'],
+      ['12. गोपनीयता और ऑफ़लाइन', 'पेज पूरी तरह स्वतंत्र है: एक HTML फ़ाइल, कोई बाहरी स्क्रिप्ट नहीं। टोकन केवल huggingface.co और civitai.com/civitai.red को भेजे जाते हैं, डिस्क पर कभी नहीं लिखे जाते और लॉग में मास्क होते हैं।'],
     ],
     ES: [
-      ['1. El enlace','Un enlace de archivo contiene /blob/ o /resolve/ y se convierte automáticamente en uno directo. Un enlace de repo como huggingface.co/owner/name descarga la carpeta entera. La rama se detecta desde la URL o se establece en el campo de rama (predeterminado: main).'  ],
-      ['2. Captura del portapapeles','Una vez por segundo, la página verifica silenciosamente el portapapeles. Un enlace HF pegado en cualquier lugar llena el campo y parpadea. El botón Pegar y Ctrl+V también funcionan.'],
-      ['3. Carpeta','El nombre en el campo de carpeta se convierte en una subcarpeta dentro de downloads junto a main.py. Fije nombres frecuentes con “+” — persisten entre ejecuciones.'],
-      ['4. Token','Los modelos restringidos (Llama, etc.) necesitan un token de huggingface.co/settings/tokens. Se envía solo a huggingface.co y se almacena localmente.'],
-      ['5. Cola y Secuencial','Las tareas se agregan con el botón. El interruptor Secuencial hace que la página ejecute estrictamente una tarea a la vez.'],
-      ['6. Pausa','Pausa detiene la descarga, Reanudarla continúa. Los archivos parciales viven como .part y continúan desde el mismo byte.'],
-      ['7. Limpieza','“Limpiar finalizados” elimina las tarjetas de hecho y error, las tareas activas permanecen intactas.'],
-      ['8. Errores','401/403 — repo privada, active el token. 404 — archivo desaparecido. “Reintentar” reinicia con reanudación.'],
-      ['9. ETA','La tarjeta de descarga muestra el tiempo restante estimado cuando la velocidad es estable.'],
-      ['10. Sin conexión','Esta página es completamente independiente: un archivo HTML, sin scripts externos. Internet solo se necesita para llegar a huggingface.co. Las fuentes exactas cargan desde Google Fonts cuando hay conexión; las fuentes del sistema se usan sin conexión.']
+      ['1. Enlaces', 'Hugging Face: un enlace de archivo /blob/ o /resolve/ se convierte automáticamente en enlace directo; huggingface.co/propietario/nombre descarga toda la carpeta. CivitAI: civitai.com/models/123, civitai.red/models/123 o urn:...:civitai:...'],
+      ['2. Pestañas de fuentes', 'Los botones HF / CivitAI / CivitAI.red abren el sitio correspondiente en su navegador, útil para copiar un enlace. La fuente se toma del propio enlace; los botones no la cambian.'],
+      ['3. Captura del portapapeles', 'Una vez por segundo la página revisa el portapapeles. Aparece un enlace y rellena el campo automáticamente. El botón pegar y Ctrl+V también funcionan.'],
+      ['4. Carpeta', 'El nombre del campo «Carpeta» se convierte en una subcarpeta dentro de downloads. Fije los nombres frecuentes con «+»: se guardan entre sesiones.'],
+      ['5. Token', 'Hugging Face: los modelos gated requieren un token de huggingface.co/settings/tokens. CivitAI: cree una API key en civitai.com/user/account y active obligatoriamente «Use your token when downloading», si no, ni los modelos abiertos se descargarán. El botón pegar lee el token del portapapeles.'],
+      ['6. Modelos de pago de CivitAI', 'Los modelos por energía/Buzz se compran SOLO en civitai.com o civitai.red. El descargador muestra el error 402 y no paga nada por sí mismo. La descarga funciona solo si el modelo se compró en la misma cuenta de la API key.'],
+      ['7. Cola y «De a uno»', 'Las tareas se agregan con el botón. El interruptor «De a uno» ejecuta estrictamente una tarea a la vez.'],
+      ['8. Pausa', 'Pausa detiene la descarga, Reanudar la continúa. Los archivos parciales viven como .part y continúan desde el mismo byte (resume).'],
+      ['9. Limpieza', '«Limpiar terminadas» quita las tarjetas terminadas y con error. Eliminar una tarea activa pide confirmación y borra su .part del disco.'],
+      ['10. Errores', '401/403 — token rechazado o sin acceso. 402 — modelo de pago, cómprelo en el sitio o espere el lanzamiento público. 404 — archivo eliminado u oculto. 429 — demasiadas solicitudes, la tarea reintentará sola con una pausa.'],
+      ['11. ETA', 'La tarjeta de descarga muestra el tiempo restante estimado mientras la velocidad sea estable.'],
+      ['12. Privacidad y sin conexión', 'La página es totalmente autónoma: un archivo HTML sin scripts externos. Los tokens van SOLO a huggingface.co y civitai.com/civitai.red, nunca se escriben en el disco y se enmascaran en los registros.'],
     ],
     FR: [
-      ['1. Le lien','Un lien de fichier contient /blob/ ou /resolve/ et est converti en un lien direct automatiquement. Un lien de dépôt comme huggingface.co/owner/repo télécharge tout le dossier. La branche est détectée depuis l\'URL ou définie dans le champ de branche (par défaut : main).'],
-      ['2. Récupération du presse-papiers','Une fois par seconde, la page vérifie silencieusement le presse-papiers. Un lien HF collé n\'importe où remplit le champ et clignote. Le bouton Coller et Ctrl+V fonctionnent aussi.'],
-      ['3. Dossier','Le nom dans le champ de dossier devient un sous-dossier dans downloads à côté de main.py. Épinglez les noms fréquents avec “+” — ils persistent entre les exécutions.'],
-      ['4. Jeton','Les modèles gardés (Llama, etc.) ont besoin d\'un jeton de huggingface.co/settings/tokens. Il n\'est envoyé qu\'à huggingface.co et stocké localement.'],
-      ['5. File et Séquentiel','Les tâches sont ajoutées avec le bouton. L\'interrupteur Séquentiel fait que la page exécute strictement une tâche à la fois.'],
-      ['6. Pause','Pause arrête le téléchargement, Reprendre le continue. Les fichiers partiels vivent comme .part et continuent depuis le même octet.'],
-      ['7. Nettoyage','“Effacer terminés” supprime les cartes terminé et erreur, les tâches actives restent intactes.'],
-      ['8. Erreurs','401/403 — dépôt privé, activez le jeton. 404 — fichier disparu. “Réessayer” redémarre avec reprise.'],
-      ['9. ETA','La carte de téléchargement affiche le temps restant estimé lorsque la vitesse est stable.'],
-      ['10. Hors-ligne','Cette page est entièrement autonome : un fichier HTML, aucun script externe. Internet n\'est nécessaire que pour atteindre huggingface.co. Les polices exactes se chargent depuis Google Fonts en ligne ; les polices système sont utilisées hors-ligne.']
+      ['1. Liens', 'Hugging Face : un lien de fichier /blob/ ou /resolve/ devient automatiquement un lien direct ; huggingface.co/propriétaire/nom télécharge tout le dossier. CivitAI : civitai.com/models/123, civitai.red/models/123 ou urn:...:civitai:...'],
+      ['2. Onglets sources', 'Les boutons HF / CivitAI / CivitAI.red ouvrent le site correspondant dans votre navigateur — pratique pour copier un lien. La source vient du lien lui-même ; les boutons ne la changent pas.'],
+      ['3. Récupération du presse-papiers', 'Une fois par seconde, la page vérifie discrètement le presse-papiers. Un lien apparaît — il remplit le champ automatiquement. Le bouton coller et Ctrl+V fonctionnent aussi.'],
+      ['4. Dossier', 'Le nom du champ « Dossier » devient un sous-dossier dans downloads. Épinglez les noms fréquents avec « + » — ils persistent entre les sessions.'],
+      ['5. Token', 'Hugging Face : les modèles gated nécessitent un token depuis huggingface.co/settings/tokens. CivitAI : créez une clé API sur civitai.com/user/account et activez impérativement « Use your token when downloading », sinon même les modèles ouverts ne se téléchargent pas. Le bouton coller lit le token depuis le presse-papiers.'],
+      ['6. Modèles payants CivitAI', 'Les modèles vendus contre de l\'énergie/Buzz s\'achètent UNIQUEMENT sur civitai.com ou civitai.red. Le téléchargeur affiche l\'erreur 402 et ne paie jamais lui-même. Le téléchargement ne fonctionne que si le modèle a été acheté sur le même compte que la clé API.'],
+      ['7. File d\'attente et « Un par un »', 'Les tâches s\'ajoutent avec le bouton. L\'interrupteur « Un par un » lance strictement une tâche à la fois.'],
+      ['8. Pause', 'Pause arrête le téléchargement, Reprendre le poursuit. Les fichiers partiels vivent en .part et continuent au même octet (resume).'],
+      ['9. Nettoyage', '« Effacer terminés » retire les cartes terminées et en erreur. Supprimer une tâche active demande une confirmation et efface son .part du disque.'],
+      ['10. Erreurs', '401/403 — token refusé ou accès manquant. 402 — modèle payant, achetez-le sur le site ou attendez la sortie publique. 404 — fichier retiré ou masqué. 429 — trop de requêtes, la tâche réessaiera d\'elle-même avec une pause.'],
+      ['11. ETA', 'La carte de téléchargement montre le temps restant estimé quand la vitesse est stable.'],
+      ['12. Confidentialité et hors-ligne', 'La page est entièrement autonome : un fichier HTML sans scripts externes. Les tokens partent UNIQUEMENT vers huggingface.co et civitai.com/civitai.red, ne sont jamais écrits sur le disque et sont masqués dans les journaux.'],
     ],
     AR: [
-      ['1. الرابط','يحتوي رابط الملف على /blob/ أو /resolve/ ويتم تحويله إلى رابط مباشر تلقائياً. رابط مستودع مثل huggingface.co/owner/repo يحمل المجلد بأكمله. الفرع يكتشف من الرابط أو يحدد في حقل الفرع (الافتراضي: main).'],
-      ['2. التقاط الحافظة','مرة واحدة في الثانية تتحقق الصفحة بصمت من الحافظة. أي رابط HF يتم لصقه في أي مكان يملأ الحقل وينبض. زر اللصق وCtrl+V يعملان أيضاً.'],
-      ['3. المجلد','الاسم في حقل المجلد يصبح مجلد فرعي داخل downloads بجانب main.py. ثبّت الأسماء المتكررة مع “+” — تبقى بين التشغيلات.'],
-      ['4. رمز الوصول','النماذج المقيدة (Llama وما إلى ذلك) تحتاج إلى رمز وصول من huggingface.co/settings/tokens. يتم إرساله فقط إلى huggingface.co وتخزينه محلياً.'],
-      ['5. الطابور والتتابعي','تُضاف المهام بالزر. يجعل التبديل التتابعي الصفحة تعمل بمهام واحدة صارمة في كل مرة.'],
-      ['6. الإيقاف المؤقت','الإيقاف يوقف التنزيل، الاستمرار يستمر به. الملفات الجزئية تعيش كـ .part وتستمر من نفس البايت.'],
-      ['7. التنظيف','“مسح المكتمل” يزيل بطاقات مكتمل وخطأ، المهام النشطة تظل دون تغيير.'],
-      ['8. الأخطاء','401/403 — مستودع خاص، فعل رمز الوصول. 404 — ملف مفقود. “إعادة المحاولة” يعيد التشغيل مع الاستئناف.'],
-      ['9. ETA','تظهر بطاقة التنزيل الوقت المتبقي المقدر عندما تكون السرعة مستقرة.'],
-      ['10. بدون اتصال','هذه الصفحة مستقلة تماماً: ملف HTML واحد، لا نصوص خارجية. الإنترنت مطلوب فقط للوصول إلى huggingface.co. الخطوط الدقيقة تُحمّل من Google Fonts عند الاتصال؛ يتم استخدام الخطوط النظامية بدون اتصال.']
+      ['1. الروابط', 'Hugging Face: رابط ملف يحتوي /blob/ أو /resolve/ يتحول تلقائياً إلى رابط مباشر; huggingface.co/المالك/الاسم يحمّل المجلد كاملاً. CivitAI: civitai.com/models/123 أو civitai.red/models/123 أو urn:...:civitai:...'],
+      ['2. تبويبات المصدر', 'أزرار HF / CivitAI / CivitAI.red تفتح الموقع المقابل في المتصفح — مفيدة لنسخ رابط. مصدر المهمة يُحدَّد من الرابط نفسه؛ الأزرار لا تغيّره.'],
+      ['3. التقاط الحافظة', 'تفحص الصفحة الحافظة بصمت مرة كل ثانية. يظهر رابط فيُعبَّأ الحقل تلقائياً. زر اللصق و Ctrl+V يعملان أيضاً.'],
+      ['4. المجلد', 'الاسم في حقل «المجلد» يصبح مجلداً فرعياً داخل downloads. ثبّت الأسماء المتكررة بزر «+» — ستبقى بين الجلسات.'],
+      ['5. Token (الرمز المميز)', 'Hugging Face: النماذج المقيدة تحتاج رمزاً من huggingface.co/settings/tokens. CivitAI: أنشئ مفتاح API في civitai.com/user/account وفعّل إلزامياً «Use your token when downloading»، وإلا فلن تُحمَّل حتى النماذج المفتوحة. زر اللصق يقرأ الرمز من الحافظة.'],
+      ['6. نماذج CivitAI المدفوعة', 'النماذج المباعة بالطاقة/Buzz تُشترى فقط على موقع civitai.com أو civitai.red. البرنامج يعرض الخطأ 402 ولا يدفع شيئاً بنفسه. يعمل التحميل فقط إذا كان النموذج مشترىً من الحساب نفسه الذي يملك مفتاح API.'],
+      ['7. قائمة الانتظار و«بالتسلسل»', 'تُضاف المهام بزر. مفتاح «بالتسلسل» يشغّل مهمة واحدة فقط في كل مرة.'],
+      ['8. إيقاف مؤقت', 'الإيقاف المؤقت يوقف التحميل، الاستئناف يكمله. الملفات الجزئية تبقى بصيغة .part وتكمل من نفس البايت (resume).'],
+      ['9. التنظيف', '«مسح المكتملة» يزيل بطاقات المكتمل والأخطاء. حذف مهمة نشطة يطلب تأكيداً ويمسح ملف .part من القرص.'],
+      ['10. الأخطاء', '401/403 — الرمز مرفوض أو لا يوجد وصول. 402 — نموذج مدفوع، اشترِه من الموقع أو انتظر الإصدار العام. 404 — الملف محذوف أو مخفي. 429 — طلبات كثيرة جداً، المهمة ستعيد المحاولة تلقائياً بعد مهلة.'],
+      ['11. ETA', 'بطاقة التحميل تعرض الوقت المتبقي المتوقع عندما تكون السرعة مستقرة.'],
+      ['12. الخصوصية وبدون اتصال', 'الصفحة مستقلة تماماً: ملف HTML واحد بدون سكربتات خارجية. تُرسل الرموز فقط إلى huggingface.co و civitai.com/civitai.red، ولا تُكتب على القرص وتُخفى في السجلات.'],
     ],
     BN: [
-      ['1. লিঙ্ক','একটি ফাইল লিঙ্কে /blob/ বা /resolve/ থাকে এবং এটি স্বয়ংক্রিয়ভাবে একটি সরাসরি লিঙ্কে রূপান্তরিত হয়। huggingface.co/owner/repo জাতীয় একটি রিপো লিঙ্ক পুরো ফোল্ডার ডাউনলোড করে। শাখা URL থেকে সনাক্ত করা হয় বা শাখা ক্ষেত্র框中 সেট করা হয় (ডিফল্ট: main)।'],
-      ['2. ক্লিপবোর্ড পিকআপ','প্রতি সেকেন্ডে পেজটি নীরবে ক্লিপবোর্ড চেক করে। যেকোনো জায়গায় পেস্ট করা HF লিঙ্ক ফিল্ড পূরণ করে এবং ঝলকান দেয়। পেস্ট বাটন এবং Ctrl+Vও কাজ করে।'],
-      ['3. ফোল্ডার','ফোল্ডার ফিল্ডে নাম main.py পাশের downloads এর ভিতরে একটি সাবফোল্ডারে পরিণত হয়। “+” দিয়ে প্রায়ই নামগুলি পিন করুন — এগুলো রান之间的 থাকে।'],
-      ['4. টোকেন','গেটেড মডেল (Llama ইত্যাদি) কে huggingface.co/settings/tokens থেকে একটি টোকেন দরকার। এটি শুধুমাত্র huggingface.co তে পাঠানো হয় এবং স্থানীয়ভাবে সংরক্ষিত হয়।'],
-      ['5. কিউ এবং ক্রমানুসারে','কাজ বাটন দিয়ে যোগ করা হয়। ক্রমানুসারে সুইচ পেজকে একবারে একটি কাজ চালানোর জন্য করে।'],
-      ['6. বিরতি','বিরতি ডাউনলোড থামায়, চালিয়ে যাওয়া এটি চালিয়ে যায়। আংশিক ফাইল .part হিসাবে থাকে এবং একই বাইট থেকে চালিয়ে যায়।'],
-      ['7. পরিষ্কার করা','“সম্পন্ন মুছুন” সম্পন্ন এবং ত্রুটি কার্ড অপসারণ করে, সক্রিয় কাজ অক্ষত রাখে।'],
-      ['8. ত্রুটি','401/403 — প্রাইভেট রিপো, টোকেন সক্ষম করুন। 404 — ফাইল চলে গেছে। “পুনরায় চেষ্টা” পুনরুদ্ধার সহ পুনরায় শুরু করে।'],
-      ['9. ETA','ডাউনলোড কার্ড গতি স্থির হলে অনুমানিত বাকি সময় দেখায়।'],
-      ['10. অফলাইন','এই পেজটি সম্পূর্ণভাবে স্বতন্ত্র: একটি HTML ফাইল, কোনো বহিঃসৃত স্ক্রিপ্ট নেই। huggingface.co তে পৌঁছানোর জন্য ইন্টারনেট প্রয়োজন। অনলাইনে থাকলে নির্ভুল ফন্ট Google Fonts থেকে লোড হয়; অফলাইনে সিস্টেম ফন্ট ব্যবহার করা হয়।']
+      ['1. লিংক', 'Hugging Face: /blob/ বা /resolve/ থাকা ফাইল লিংক স্বয়ংক্রিয়ভাবে সরাসরি লিংকে রূপান্তরিত হয়; huggingface.co/মালিক/নাম সম্পূর্ণ ফোল্ডার ডাউনলোড করে। CivitAI: civitai.com/models/123, civitai.red/models/123 অথবা urn:...:civitai:...'],
+      ['2. সোর্স ট্যাব', 'HF / CivitAI / CivitAI.red বাটনগুলো ব্রাউজারে সংশ্লিষ্ট সাইট খুলে — লিংক কপি করার জন্য সুবিধাজনক। টাস্কের সোর্স লিংক থেকেই নির্ধারিত হয়; বাটনগুলো তা বদলায় না।'],
+      ['3. ক্লিপবোর্ড অটো-পিকআপ', 'পেজ প্রতি সেকেন্ডে নীরবে ক্লিপবোর্ড পরীক্ষা করে। লিংক এলে তা ফিল্ডে নিজেই ভরে যায়। পেস্ট বাটন এবং Ctrl+V-ও কাজ করে।'],
+      ['4. ফোল্ডার', '«ফোল্ডার» ফিল্ডের নাম downloads-এর ভেতরে সাবফোল্ডার হয়ে যায়। ঘন ঘন ব্যবহৃত নাম «+» দিয়ে পিন করুন — সেগুলো সেশনের মধ্যে টিকে থাকে।'],
+      ['5. Token', 'Hugging Face: gated মডেলের জন্য huggingface.co/settings/tokens থেকে টোকেন প্রয়োজন। CivitAI: civitai.com/user/account-এ API key তৈরি করুন এবং অত্যাবশ্যকভাবে «Use your token when downloading» সক্রিয় করুন, নাহলে খোলা মডেলও ডাউনলোড হবে না। পেস্ট বাটন ক্লিপবোর্ড থেকে টোকেন পড়ে নেয়।'],
+      ['6. CivitAI-এর পেইড মডেল', 'এনার্জি/Buzz দিয়ে বিক্রি হওয়া মডেল শুধুমাত্র civitai.com বা civitai.red সাইটে কেনা যায়। ডাউনলোডার 402 ত্রুটি দেখায় এবং নিজে কখনো কিছু দেয় না। ডাউনলোড তখনই হয় যখন মডেলটি API key-এর একই অ্যাকাউন্ট দিয়ে কেনা থাকে।'],
+      ['7. কিউ এবং «একসাথে এক»', 'টাস্ক বাটনে যোগ হয়। «একসাথে এক» সুইচ কঠোরভাবে একবারে একটি টাস্ক চালায়।'],
+      ['8. বিরতি', 'বিরতি ডাউনলোড থামায়, আবার শুরু তা চালিয়ে যায়। আংশিক ফাইল .part হিসেবে থাকে এবং একই বাইট থেকে চালিয়ে যায় (resume)।'],
+      ['9. পরিষ্কার করা', '«শেষ করা পরিষ্কার» শেষ এবং ত্রুটি কার্ড সরায়। সক্রিয় টাস্ক মুছতে নিশ্চিতকরণ চাওয়া হয় এবং এর .part ডিস্ক থেকে মুছে যায়।'],
+      ['10. ত্রুটি', '401/403 — টোকেন প্রত্যাখ্যাত বা প্রবেশাধিকার নেই। 402 — পেইড মডেল, সাইটে কিনুন বা পাবলিক রিলিজের জন্য অপেক্ষা করুন। 404 — ফাইল মুছে বা লুকানো হয়েছে। 429 — অনেক বেশি অনুরোধ, টাস্ক স্বয়ংক্রিয়ভাবে বিরতি দিয়ে আবার চেষ্টা করবে।'],
+      ['11. ETA', 'গতি স্থির থাকলে ডাউনলোড কার্ডে অবশিষ্ট সময় দেখানো হয়।'],
+      ['12. গোপনীয়তা এবং অফলাইন', 'পেজ সম্পূর্ণ স্বাধীন: একটি HTML ফাইল, কোনো বাহ্যিক স্ক্রিপ্ট নেই। টোকেন শুধুমাত্র huggingface.co এবং civitai.com/civitai.red-এ পাঠানো হয়, ডিস্কে কখনো লেখা হয় না এবং লগে মুখোশ করা হয়।'],
     ],
     PT: [
-      ['1. O link','Um link de arquivo contém /blob/ ou /resolve/ e é convertido em um direto automaticamente. Um link de repo como huggingface.co/owner/repo baixa a pasta inteira. O branch é detectado a partir do URL ou definido no campo de branch (padrão: main).'  ],
-      ['2. Captura da área de transferência','Uma vez por segundo, a página verifica silenciosamente a área de transferência. Um link do CP colado em qualquer lugar preenche o campo e pisca. O botão Colar e Ctrl+V também funcionam.'],
-      ['3. Pasta','O nome no campo de pasta se torna uma subpasta dentro de downloads ao lado de main.py. Fixe nomes frequentes com “+” — eles persistem entre execuções.'],
-      ['4. Token','Modelos restritos (Llama, etc.) precisam de um token de huggingface.co/settings/tokens. É enviado apenas para huggingface.co e armazenado localmente.'],
-      ['5. Fila e Sequencial','As tarefas são adicionadas com o botão. A alternância Sequencial faz a página executar estritamente uma tarefa por vez.'],
-      ['6. Pausa','Pausa para o download, Retomar continua. Arquivos parciais vivem como .part e continuam do mesmo byte.'],
-      ['7. Limpeza','“Limpar concluídos” remove cartões de feito e erro, tarefas ativas permanecem intactas.'],
-      ['8. Erros','401/403 — repo privada, ative o token. 404 — arquivo desaparecido. “Tentar novamente” reinicia com retomada.'],
-      ['9. ETA','O cartão de download mostra o tempo restante estimado quando a velocidade está estável.'],
-      ['10. Offline','Esta página é totalmente independente: um arquivo HTML, sem scripts externos. A internet só é necessária para alcançar huggingface.co. Fontes exatas carregam do Google Fonts quando online; fontes do sistema são usadas offline.']
+      ['1. Links', 'Hugging Face: um link de arquivo /blob/ ou /resolve/ vira um link direto automaticamente; huggingface.co/dono/nome baixa a pasta inteira. CivitAI: civitai.com/models/123, civitai.red/models/123 ou urn:...:civitai:...'],
+      ['2. Abas de fonte', 'Os botões HF / CivitAI / CivitAI.red abrem o site correspondente no navegador — útil para copiar um link. A fonte vem do próprio link; os botões não a trocam.'],
+      ['3. Captura da área de transferência', 'Uma vez por segundo a página verifica a área de transferência. Apareceu um link — ele preenche o campo sozinho. O botão colar e Ctrl+V também funcionam.'],
+      ['4. Pasta', 'O nome no campo «Pasta» vira uma subpasta dentro de downloads. Fixe nomes frequentes com «+» — eles persistem entre sessões.'],
+      ['5. Token', 'Hugging Face: modelos gated exigem um token de huggingface.co/settings/tokens. CivitAI: crie uma API key em civitai.com/user/account e ative obrigatoriamente «Use your token when downloading», senão nem os modelos abertos baixam. O botão colar lê o token da área de transferência.'],
+      ['6. Modelos pagos do CivitAI', 'Modelos por energia/Buzz são comprados SOMENTE no site civitai.com ou civitai.red. O downloader mostra o erro 402 e nunca paga nada sozinho. O download funciona apenas se o modelo foi comprado na mesma conta da API key.'],
+      ['7. Fila e «Um por vez»', 'As tarefas são adicionadas com o botão. O interruptor «Um por vez» executa estritamente uma tarefa de cada vez.'],
+      ['8. Pausa', 'Pausa para o download, Continuar o retoma. Arquivos parciais ficam como .part e continuam do mesmo byte (resume).'],
+      ['9. Limpeza', '«Limpar concluídas» remove cartões concluídos e com erro. Remover uma tarefa ativa pede confirmação e apaga o .part do disco.'],
+      ['10. Erros', '401/403 — token rejeitado ou sem acesso. 402 — modelo pago, compre no site ou aguarde o lançamento público. 404 — arquivo removido ou oculto. 429 — muitas solicitações, a tarefa tentará novamente sozinha com uma pausa.'],
+      ['11. ETA', 'O cartão de download mostra o tempo restante estimado enquanto a velocidade estiver estável.'],
+      ['12. Privacidade e offline', 'A página é totalmente autônoma: um arquivo HTML sem scripts externos. Tokens vão SOMENTE para huggingface.co e civitai.com/civitai.red, nunca são gravados no disco e ficam mascarados nos registros.'],
     ],
     UR: [
-      ['1. لنک','فائل کے لنک میں /blob/ یا /resolve/ ہوتا ہے اور یہ خودکار طور پر براہ راست لنک میں تبدیل ہو جاتا ہے۔ huggingface.co/owner/repo جیسا ذخیرہ لنک پورا فولڈر ڈاؤن لوڈ کرتا ہے۔ شاخ URL سے پہچانی جاتی ہے یا برانچ فیلڈ میں سیٹ کی جاتی ہے (پہلے سے طے شدہ: main)।'],
-      ['2. کلیپ بورڈ اٹھانا','فی سیکنڈ صفحہ خاموشی سے کلیپ بورڈ چیک کرتا ہے۔ کہیں بھی چسپاں کیا گیا HF لنک فیلڈ بھر دیتا ہے اور چمکتا ہے۔ پیسٹ بٹن اور Ctrl+V بھی کام کرتے ہیں۔'],
-      ['3. فولڈر','فولڈر فیلڈ میں نام main.py کے پاس downloads کے اندر ایک ذیلی فولڈر بن جاتا ہے۔ “+” سے بار بار ناموں کو پِن کریں — وہ رنز کے درمیان رہتے ہیں۔'],
-      ['4. ٹوکن','گیٹڈ ماڈلز (Llama وغیرہ) کو huggingface.co/settings/tokens سے ایک ٹوکن کی ضرورت ہوتی ہے۔ یہ صرف huggingface.co کو بھیجا جاتا ہے اور مقامی طور پر محفوظ کیا جاتا ہے۔'],
-      ['5. قطار اور ترتیب وار','کام بٹن کے ساتھ شامل کیے جاتے ہیں۔ ترتیب وار سوئچ صفحہ کو ایک بار میں سختی سے ایک کام چلانے کا سبب بناتا ہے۔'],
-      ['6. وقفہ','وقفہ ڈاؤن لوڈ روکتا ہے، جاری رکھنا اسے جاری رکھتا ہے۔ جزوی فائلیں .part کے طور پر رہتی ہیں اور اسی بائیٹ سے جاری رہتی ہیں۔'],
-      ['7. صفائی','“مکمل صاف کریں” مکمل اور غلطی کارڈز ہٹا دیتی ہے، فعال کام بغیر متاثر کیے چھوڑ دیتا ہے۔'],
-      ['8. غلطیاں','401/403 — پرائیویٹ ذخیرہ، ٹوکن فعال کریں۔ 404 — فائل گئی۔ “دوبارہ کوشش” بحالی کے ساتھ دوبارہ شروع کرتا ہے۔'],
-      ['9. ETA','ڈاؤن لوڈ کارڈ جب سرعت مستحکم ہوتی ہے تو تخمینہ باقی وقت دکھاتا ہے۔'],
-      ['10. آف لائن','یہ صفحہ مکمل طور پر آزاد ہے: ایک HTML فائل، کوئی بیرونی اسکرپٹ نہیں۔ huggingface.co تک پہنچنے کے لیے صرف انٹرنیٹ درکار ہے۔ آن لائن ہونے پر درست فونٹس Google Fonts سے لوڈ ہوتے ہیں؛ آف لائن سسٹم فونٹس استعمال کیے جاتے ہیں۔']
+      ['1. لنکس', 'Hugging Face: /blob/ یا /resolve/ والا فائل لنکس خودکار سیدھا لنکس بن جاتا ہے؛ huggingface.co/مالک/نام پورا فولڈر ڈاؤن لوڈ کرتا ہے۔ CivitAI: civitai.com/models/123، civitai.red/models/123 یا urn:...:civitai:...'],
+      ['2. سورس ٹیبز', 'HF / CivitAI / CivitAI.red بٹن براؤزر میں متعلقہ ویب سائٹ کھولتے ہیں — لنک کاپی کرنے کے لیے آسان۔ ٹاسک کا ذریعہ لنک سے ہی طے ہوتا ہے؛ بٹن اسے تبدیل نہیں کرتے۔'],
+      ['3. کلپ بورڈ سے خودکار اضافہ', 'صفحہ ہر سیکنڈ خاموشی سے کلپ بورڈ چیک کرتا ہے۔ لنک آتے ہی فیلڈ میں خود بھر جاتا ہے۔ پیسٹ بٹن اور Ctrl+V بھی کام کرتے ہیں۔'],
+      ['4. فولڈر', '«فولڈر» فیلڈ کا نام downloads کے اندر ذیلی فولڈر بن جاتا ہے۔ کثرت والے نام «+» سے پن کریں — وہ سیشنز کے درمیان محفوظ رہتے ہیں۔'],
+      ['5. Token', 'Hugging Face: gated ماڈلز کو huggingface.co/settings/tokens سے ٹوکن چاہیے۔ CivitAI: civitai.com/user/account پر API key بنائیں اور لازمی طور پر «Use your token when downloading» فعال کریں، ورنہ کھلے ماڈل بھی ڈاؤن لوڈ نہیں ہوں گے۔ پیسٹ بٹن ٹوکن کو کلپ بورڈ سے پڑھ لیتا ہے۔'],
+      ['6. CivitAI کے معاوضہ ماڈلز', 'انرجی/Buzz سے فروخت ہونے والے ماڈل صرف civitai.com یا civitai.red سائٹ پر خریدے جا سکتے ہیں۔ ڈاؤن لوڈر ایرر 402 دکھاتا ہے اور خود کبھی کچھ ادا نہیں کرتا۔ ڈاؤن لوڈ تبھی ہوتا ہے جب ماڈل اسی اکاؤنٹ سے خریدا گیا ہو جس کا API key ہے۔'],
+      ['7. قطار اور «باری باری»', 'ٹاسک بٹن سے شامل ہوتے ہیں۔ «باری باری» سوئچ سختی سے ایک وقت میں ایک ٹاسک چلاتا ہے۔'],
+      ['8. روکنا', 'روکنا ڈاؤن لوڈ روکتا ہے، دوبارہ شروع اسے جاری رکھتا ہے۔ جزوی فائلیں .part کے طور پر رہتی ہیں اور اسی بائٹ سے جاری رہتی ہیں (resume)۔'],
+      ['9. صفائی', '«مکمل صاف کریں» مکمل اور ایرر کارڈز ہٹاتا ہے۔ فعال ٹاسک ہٹانے پر تصدیق مانگی جاتی ہے اور اس کا .part ڈسک سے مٹ جاتا ہے۔'],
+      ['10. ایررز', '401/403 — ٹوکن مسترد یا رسائی نہیں۔ 402 — معاوضہ ماڈل، سائٹ پر خریدیں یا پبلک ریلیز کا انتظار کریں۔ 404 — فائل حذف یا پوشیدہ۔ 429 — بہت سارے درخواستیں، ٹاسک خود وقفے کے بعد دوبارہ کوشش کرے گا۔'],
+      ['11. ETA', 'رفتار مستحکم ہونے پر ڈاؤن لوڈ کارڈ باقی وقت دکھاتا ہے۔'],
+      ['12. رازداری اور آف لائن', 'صفحہ مکمل طور پر خود مختار ہے: ایک HTML فائل، کوئی بیرونی سکرپٹ نہیں۔ ٹوکن صرف huggingface.co اور civitai.com/civitai.red کو بھیجے جاتے ہیں، ڈسک پر کبھی نہیں لکھے جاتے اور لاگز میں چھپائے جاتے ہیں۔'],
     ],
     DE: [
-      ['1. Der Link','Ein Dateilink enthält /blob/ oder /resolve/ und wird automatisch in einen direkten Link umgewandelt. Ein Repo-Link wie huggingface.co/owner/name lädt den gesamten Ordner. Der Branch wird aus der URL erkannt oder im Branch-Feld festgelegt (Standard: main).'],
-      ['2. Zwischenablage-Erkennung','Einmal pro Sekunde prüft die Seite stillschweigend die Zwischenablage. Ein beliebig eingefügter HF-Link füllt das Feld und blinkt. Der Einfügen-Button und Ctrl+V funktionieren ebenfalls.'],
-      ['3. Ordner','Der Name im Ordnerfeld wird zu einem Unterordner in downloads neben main.py. Heften Sie häufige Namen mit „+“ an — sie bleiben zwischen den Ausführungen erhalten.'],
-      ['4. Token','Geschlossene Modelle (Llama etc.) benötigen einen Token von huggingface.co/settings/tokens. Er wird nur an huggingface.co gesendet und lokal gespeichert.'],
-      ['5. Warteschlange und Sequentiell','Aufgaben werden mit dem Button hinzugefügt. Der Sequentiell-Schalter lässt die Seite streng eine Aufgabe nach der anderen ausführen.'],
-      ['6. Pause','Pause stoppt den Download, Fortsetzen setzt ihn fort. Partielle Dateien liegen als .part und werden ab dem gleichen Byte fortgesetzt.'],
-      ['7. Aufräumen','„Fertiggestellte löschen“ entfernt Fertig- und Fehlerkarten, aktive Aufgaben bleiben unangetastet.'],
-      ['8. Fehler','401/403 — privates Repo, Token aktivieren. 404 — Datei verschwunden. „Wiederholen“ startet mit Wiederaufnahme neu.'],
-      ['9. ETA','Die Download-Karte zeigt die geschätzte verbleibende Zeit bei stabiler Geschwindigkeit.'],
-      ['10. Offline','Diese Seite ist vollständig eigenständig: eine HTML-Datei, keine externen Skripte. Internet wird nur zum Erreichen von huggingface.co benötigt. Genaue Schriftarten werden online von Google Fonts geladen; offline werden Systemschriftarten verwendet.']
+      ['1. Links', 'Hugging Face: Ein /blob/- oder /resolve/-Dateilink wird automatisch in einen direkten Link umgewandelt; huggingface.co/Besitzer/Name lädt den ganzen Ordner. CivitAI: civitai.com/models/123, civitai.red/models/123 oder urn:...:civitai:...'],
+      ['2. Quellen-Tabs', 'Die Schaltflächen HF / CivitAI / CivitAI.red öffnen die jeweilige Website im Browser — praktisch zum Kopieren eines Links. Die Quelle ergibt sich aus dem Link selbst; die Schaltflächen schalten sie nicht um.'],
+      ['3. Zwischenablage', 'Einmal pro Sekunde prüft die Seite leise die Zwischenablage. Erscheint ein Link, wird er automatisch ins Feld übernommen. Die Einfügen-Schaltfläche und Strg+V funktionieren auch.'],
+      ['4. Ordner', 'Der Name im Feld „Ordner“ wird ein Unterordner in downloads. Häufige Namen mit „+“ anheften — sie bleiben zwischen den Sitzungen erhalten.'],
+      ['5. Token', 'Hugging Face: gated-Modelle brauchen ein Token von huggingface.co/settings/tokens. CivitAI: API key unter civitai.com/user/account anlegen und unbedingt „Use your token when downloading“ aktivieren, sonst laden selbst offene Modelle nicht. Die Einfügen-Schaltfläche liest den Token aus der Zwischenablage.'],
+      ['6. Bezahlte CivitAI-Modelle', 'Modelle gegen Energie/Buzz werden NUR auf civitai.com oder civitai.red gekauft. Der Downloader zeigt Fehler 402 und zahlt selbst nichts. Download klappt nur, wenn das Modell auf demselben Konto gekauft wurde, dem der API key gehört.'],
+      ['7. Warteschlange und „Der Reihe nach“', 'Aufgaben werden mit der Schaltfläche hinzugefügt. Der Schalter „Der Reihe nach“ startet streng eine Aufgabe nach der anderen.'],
+      ['8. Pause', 'Pause stoppt den Download, Weiter fortsetzen. Teildateien liegen als .part und werden ab dem gleichen Byte fortgesetzt (resume).'],
+      ['9. Aufräumen', '„Erledigte löschen“ entfernt erledigte und Fehler-Karten. Das Entfernen einer aktiven Aufgabe fragt nach Bestätigung und löscht ihre .part von der Festplatte.'],
+      ['10. Fehler', '401/403 — Token abgelehnt oder kein Zugriff. 402 — bezahltes Modell, kaufe es auf der Website oder warte auf die Veröffentlichung. 404 — Datei entfernt oder versteckt. 429 — zu viele Anfragen, die Aufgabe versucht es selbst erneut mit Pause.'],
+      ['11. ETA', 'Die Download-Karte zeigt die geschätzte Restzeit, solange die Geschwindigkeit stabil ist.'],
+      ['12. Privatsphäre und offline', 'Die Seite ist vollständig eigenständig: eine HTML-Datei ohne externe Skripte. Tokens werden NUR an huggingface.co und civitai.com/civitai.red gesendet, nie auf die Festplatte geschrieben und in Logs maskiert.'],
     ],
     JA: [
-      ['1. リンク','ファイルリンクには /blob/ または /resolve/ が含まれ、自動的に直接リンクに変換されます。huggingface.co/owner/name のようなリポジトリリンクはフォルダ全体をダウンロードします。ブランチはURLから検出されるか、ブランチフィールドで設定されます（デフォルト：main）。'],
-      ['2. クリップボード取得','ページは1秒ごとに静かにクリップボードを確認します。どこかに貼り付けたHFリンクはフィールドに入力され点滅します。貼り付けボタンとCtrl+Vも機能します。'],
-      ['3. フォルダ','フォルダフィールドの名前はmain.pyの横にあるdownloads内のサブフォルダになります。「+」で頻繁な名前を固定 — 実行間で維持されます。'],
-      ['4. トークン','ゲート付きモデル（Llamaなど）はhuggingface.co/settings/tokensからのトークンが必要です。huggingface.coにのみ送信されローカルに保存されます。'],
-      ['5. キューと順次','タスクはボタンで追加されます。順次スイッチはページが一度に厳密に1つのタスクを実行するようにします。'],
-      ['6. 一時停止','一時停止はダウンロードを停止し、再開は続行します。部分ファイルは.partとして存在し同じバイトから続行されます。'],
-      ['7. クリーンアップ','「完了をクリア」は完了とエラーカードを削除し、アクティブなタスクは触りません。'],
-      ['8. エラー','401/403 — プライベートリポ、トークンを有効にしてください。404 — ファイルがありません。「再試行」は再開付きで再起動します。'],
-      ['9. ETA','ダウンロードカードは速度が安定しているときに推定残り時間を表示します。'],
-      ['10. オフライン','このページは完全にスタンドアロンです：1つのHTMLファイル、外部スクリプトなし。インターネットはhuggingface.coに到達するためにのみ必要です。正確なフォントはオンライン時にGoogle Fontsからロードされます。オフライン時はシステムフォントが使用されます。']
-    ]
+      ['1. リンク', 'Hugging Face: /blob/ または /resolve/ を含むファイルリンクは自動的に直リンクになります; huggingface.co/owner/name でフォルダ全体をダウンロードします。 CivitAI: civitai.com/models/123、civitai.red/models/123、または urn:...:civitai:...'],
+      ['2. ソースタブ', 'HF / CivitAI / CivitAI.red のボタンは、ブラウザで対応サイトを開きます — リンクをコピーするのに 便利です。タスクのソースはリンク自身から決まり、ボタンで切り替わりません。'],
+      ['3. クリップボードの自動取得', 'ページは毎秒クリップボードを静かに確認します。リンクが現れると自動で入力欄に反映されます。貼り付けボタンと Ctrl+V も使えます。'],
+      ['4. フォルダ', '「フォルダ」フィールドの名前は downloads 内のサブフォルダになります。よく使う名前は「+」で 固定できます — セッションをまたいで保持されます。'],
+      ['5. Token', 'Hugging Face: gated モデルには huggingface.co/settings/tokens のトークンが必要です。CivitAI: civitai.com/user/account で API key を作成し、「Use your token when downloading」を 必ず有効にしてください。無効だと公開モデルさえダウンロードできません。貼り付けボタンでトークンをクリップボードから読み取れます。'],
+      ['6. CivitAI の有料モデル', 'エネルギー/Buzz で購入するモデルは civitai.com または civitai.red のサイトでしか購入できません。ダウンローダはエラー 402 を表示し、自分では一切支払いません。モデルが API key と同じアカウントで 購入されている場合のみダウンロードできます。'],
+      ['7. キューと「順番」', 'タスクはボタンで追加します。「順番」スイッチを有効にすると、厳密に一度に1タスクずつ実行します。'],
+      ['8. 一時停止', '一時停止でダウンロードを止め、再開で続行します。部分ファイルは .part として保存され、同じバイトから続行されます（resume）。'],
+      ['9. クリーンアップ', '「完了をクリア」は完了済み・エラーのカードを削除します。アクティブなタスクの削除は確認を求め、ディスク上の .part も削除します。'],
+      ['10. エラー', '401/403 — トークンが拒否されたか権限がありません。402 — 有料モデルです。サイトで購入するか、公開リリースを待ってください。404 — ファイルが削除または非表示です。429 — リクエスト過多です。タスクは少し待って自動的に再試行します。'],
+      ['11. ETA', '速度が安定しているとき、ダウンロードカードに予想残り時間が表示されます。'],
+      ['12. プライバシーとオフライン', 'このページは完全にスタンドアロンです: 外部スクリプトのないHTMLファイル1つ。トークンは huggingface.co と civitai.com/civitai.red にのみ送信され、ディスクに書き込まれることはなく、ログではマスクされます。'],
+    ],
   };
 
   /* ---------- state ---------- */
@@ -1567,7 +1760,7 @@ supportOpen:'Unterstützen',
   /* ---------- pending links buffer ---------- */
   function addPendingLink(raw){
     var url = String(raw || '').trim();
-    if (!url || !HF_RE.test(url)) return false;
+    if (!url || !LINK_RE.test(url)) return false;
     var p = parseLink(url);
     if (!p) return false;
     for (var i = 0; i < pendingLinks.length; i++){
@@ -1678,7 +1871,7 @@ supportOpen:'Unterstützen',
     if (pendingLinks.length === 0) return;
     var baseDir = $('dirInp').value.trim() || 'downloads';
     var seq = $('seqChk').checked;
-    var token = ($('useTokChk').checked ? $('tokInp').value.trim() : '');
+    var token = ($('useTokChk').checked ? tokVal() : '');
     var branch = $('branchInp').value.trim() || 'main';
     var speedLimit = ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0);
 
@@ -1919,9 +2112,84 @@ supportOpen:'Unterstützen',
     return Math.round(n) + ' ' + u.bs;
   }
 
+  /* ---------- token helpers ---------- */
+  // Токен с переносами строк или невидимыми символами (копипаст) ломает
+  // Bearer-заголовок на сервере — requests падает с InvalidHeader ещё до
+  // отправки. Чистим прямо в поле ввода и при отправке.
+  function tokVal(){
+    return ($('tokInp').value || '')
+      .replace(/[\s'"`]+/g, '')
+      .replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+  }
+
+  /* ---------- source detection ---------- */
+  function detectSource(url){
+    var u = String(url || '').trim().toLowerCase();
+    if (u.indexOf('urn:') === 0 && u.indexOf('civitai:') !== -1) return 'civitai_blue';
+    if (u.indexOf('civitai.red') !== -1) return 'civitai_red';
+    if (u.indexOf('civitai.com') !== -1) return 'civitai_blue';
+    if (u.indexOf('huggingface.co') !== -1) return 'hf';
+    return 'unknown';
+  }
+
   /* ---------- link parsing ---------- */
+  function parseCivitaiUrn(urn){
+    // URN-формат: urn:air:zimageturbo:diffusionmodel:civitai:620406@3161628+3042004
+    // Извлекает model_id, version_id, file_id
+    var raw = String(urn || '').trim();
+    var m = raw.match(CIVITAI_URN_RE);
+    if (!m) return null;
+    var model_id = m[1];
+    var version_id = m[2] || null;
+    var file_id = m[3] || null;
+    return {
+      kind:'file',
+      source:'civitai_blue', // URN по умолчанию Blue (SFW)
+      model_id:model_id,
+      version_id:version_id,
+      file_id:file_id || version_id,
+      name:'civitai_model_' + model_id + (version_id ? '_v' + version_id : ''),
+      link:raw,
+      isUrn:true
+    };
+  }
+
+  function parseCivitaiLink(url){
+    var raw = String(url || '').trim();
+    var source = detectSource(raw);
+    if (source !== 'civitai_blue' && source !== 'civitai_red') return null;
+    // Прямая ссылка /api/download/models/{id}
+    var dm = raw.match(CIVITAI_DIRECT_RE);
+    if (dm) {
+      var did = raw.match(/models\/(\d+)/);
+      return { kind:'file', source:source, model_id:null, version_id:did?did[1]:null, file_id:did?did[1]:null, name:'civitai_model_'+did[1]+'.safetensors', link:raw };
+    }
+    // /models/{id}?modelVersionId={vid}
+    var mm = raw.match(CIVITAI_RE);
+    if (mm) {
+      var mid = raw.match(/models\/(\d+)/);
+      var qs = raw.split('?');
+      var vid = null;
+      if (qs.length > 1){
+        var params = new URLSearchParams(qs[1]);
+        vid = params.get('modelVersionId') || params.get('version');
+      }
+      return { kind:'file', source:source, model_id:mid?mid[1]:null, version_id:vid, file_id:vid, name:'civitai_model_'+(mid?mid[1]:'unknown'), link:raw };
+    }
+    return null;
+  }
+
   function parseLink(raw){
     var url = String(raw || '').trim().replace(/^['"]+|['"]+$/g, '');
+    // Пробуем URN-формат (urn:...:civitai:...)
+    if (url.toLowerCase().indexOf('urn:') === 0){
+      var urn = parseCivitaiUrn(url);
+      if (urn) return urn;
+    }
+    // Пробуем CivitAI URL
+    var civ = parseCivitaiLink(url);
+    if (civ) return civ;
+    // Hugging Face
     if (!HF_RE.test(url)) return null;
     var branch = 'main';
     if (url.indexOf('/blob/') !== -1 || url.indexOf('/resolve/') !== -1){
@@ -1930,7 +2198,7 @@ supportOpen:'Unterstützen',
       if (!name || name.indexOf('.') === -1) return null;
       var bm = direct.match(/\/(?:blob|resolve)\/([^/]+)\//);
       if (bm) branch = bm[1];
-      return { kind:'file', name:name, link:url.replace('/blob/','/resolve/').split('?')[0], branch:branch };
+      return { kind:'file', source:'hf', name:name, link:url.replace('/blob/','/resolve/').split('?')[0], branch:branch };
     }
     var path = url.replace(/^https?:\/\/(?:www[.])?huggingface[.]co\//i, '').split('?')[0].replace(/\/+$/,'').split('/');
     var rtype = 'models';
@@ -1939,18 +2207,31 @@ supportOpen:'Unterstützen',
     }
     var tm = url.match(/\/tree\/([^/?#]+)/);
     if (tm) branch = tm[1];
-    if (path.length >= 2) return { kind:'repo', repo:path[0] + '/' + path[1], rtype:rtype, name:path[1], link:url, branch:branch };
+    if (path.length >= 2) return { kind:'repo', source:'hf', repo:path[0] + '/' + path[1], rtype:rtype, name:path[1], link:url, branch:branch };
     return null;
   }
 
   /* ---------- detect line ---------- */
   function detect(){
     var u = L(), raw = $('urlInp').value, line = $('detectLine');
-    if (!raw.trim()){ line.innerHTML = '<span class="d-dim">huggingface.co → blob · resolve · owner/repo</span>'; return; }
+    if (!raw.trim()){
+      line.innerHTML = '<span class="d-dim">' + esc(u.detectHint || 'huggingface.co / civitai.com → blob · resolve · owner/repo') + '</span>';
+      return;
+    }
     var p = parseLink(raw);
-    if (!p){ line.innerHTML = '<span class="d-bad">' + esc(u.notHf) + '</span>'; return; }
+    if (!p){ line.innerHTML = '<span class="d-bad">' + esc(u.notHf || 'unrecognized link') + '</span>'; return; }
+    // Вкладка источника следует за вставленной ссылкой: вставили civitai.com —
+    // активной стала вкладка CivitAI и т.п. На скачивание это не влияет
+    // (источник для задачи берётся из самой ссылки), только подсказки UI.
+    if (p.source && p.source !== currentSource){
+      setActiveSourceTab(p.source);
+    }
     var branchSuffix = (p.branch && p.branch !== 'main') ? ' · branch: ' + esc(p.branch) : '';
-    if (p.kind === 'file'){
+    if (p.source && p.source.indexOf('civitai') !== -1){
+      var civLabel = p.source === 'civitai_red' ? 'CivitAI.red' : 'CivitAI';
+      line.innerHTML = '<span class="d-ok"><span class="tag tag-file">' + esc(civLabel) + '</span> ' +
+        esc(p.name || ('model_' + (p.model_id || p.version_id || 'unknown'))) + branchSuffix + '</span>';
+    } else if (p.kind === 'file'){
       line.innerHTML = '<span class="d-ok"><span class="tag tag-file">' + u.file + '</span> ' +
         esc(p.name) + ' · ' + esc(u.direct) + branchSuffix + '</span>';
     } else {
@@ -2280,11 +2561,38 @@ supportOpen:'Unterstützen',
     if (t.status === 'error') return '<span class="st st-error">' + u.stErr + '</span>';
     return '<span class="st st-waiting">' + u.stWaiting + '</span>';
   }
+  // Код ошибки мог прийти с задвоенным префиксом (civitai_civitai_...) из
+  // старых версий ядра — нормализуем, чтобы текст ошибки был осмысленным.
+  function normErr(e){
+    var s = String(e || '');
+    while (s.indexOf('civitai_civitai_') === 0) s = s.slice(8);
+    if (s.indexOf('civitai_') === 0) s = s.slice(8);
+    return s;
+  }
   function errText(t){
     var u = L();
-    if (t.error === 'http_401' || t.error === 'http_403') return u.e401;
+    // CivitAI errors
+    if (t.error && String(t.error).indexOf('civitai') !== -1){
+      var ce = normErr(t.error);
+      if (ce === 'token_invalid' || ce === 'token_required') return u.civErrToken || 'CivitAI: token required';
+      if (ce === 'forbidden') return u.civErrForbidden || 'CivitAI: access denied';
+      if (ce === 'not_found') return u.civErrNotFound || 'CivitAI: model not found';
+      if (ce === 'api_error' || ce === 'no_files' || ce === 'no_url') return u.civErrGeneric || 'CivitAI: API error — try again later';
+      return u.eUnk;
+    }
+    if (t.error === 'http_-2' || normErr(t.error) === 'cancelled') return u.eCancel || 'Task cancelled';
+    // Для civitai-задач 401/403 — почти наверняка токен/доступ CivitAI:
+    // показываем специализированный текст, а не общий «нужен токен HF».
+    var isCiv = String(t.source || detectSource(t.link) || '').indexOf('civitai') === 0;
+    if (t.error === 'http_401') return isCiv ? (u.civErrToken || u.e401) : u.e401;
+    if (t.error === 'http_403') return isCiv ? (u.civErrForbidden || u.e401) : u.e401;
+    // 402 Payment Required — платная модель / ранний доступ / Vault.
+    // Отдельный текст, чтобы не выглядело как «ошибка сети».
+    if (t.error === 'http_402') return isCiv ? (u.civErrPaid || u.eUnk) : u.eUnk;
     if (t.error === 'http_404') return u.e404;
     if (t.error === 'network') return u.eNet;
+    if (t.error === 'bad_link') return u.errFile || u.eUnk;
+    if (t.error === 'bad_dir') return u.errDir || u.eUnk;
     return u.eUnk;
   }
   function taskText(t){
@@ -2388,9 +2696,10 @@ supportOpen:'Unterstützen',
   function startCoreTask(t){
     var payload = {
       link: t.link,
+      source: t.source || detectSource(t.link),
       dir: t.dir,
       seq: $('seqChk').checked,
-      token: ($('useTokChk').checked ? $('tokInp').value.trim() : ''),
+      token: ($('useTokChk').checked ? tokVal() : ''),
       branch: t.branch || 'main',
       speed_limit: ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0)
     };
@@ -2399,7 +2708,15 @@ supportOpen:'Unterstützen',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    .then(function(r){ if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(r){
+      // Читаем тело ответа ДО throw: ядро кладёт в {"error": "..."} причину
+      // отказа (bad link / bad dir) — раньше она терялась, и UI показывал
+      // безликую «неизвестную ошибку».
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if (!r.ok) throw new Error('http ' + r.status + (j && j.error ? '|' + j.error : ''));
+        return j;
+      });
+    })
     .then(function(j){
       var tt = findTask(t.id);
       if (!tt) return;
@@ -2410,10 +2727,15 @@ supportOpen:'Unterstützen',
       if (j.status) tt.status = j.status;
       renderTasks();
     })
-    .catch(function(){
+    .catch(function(err){
       var tt = findTask(t.id);
       if (!tt) return;
-      tt.status = 'error'; tt.error = 'network';
+      var msg = String((err && err.message) || '');
+      // 400 с причиной bad link / bad dir — это НЕ сетевая проблема:
+      // показываем осмысленный текст вместо «неизвестной ошибки».
+      tt.status = 'error';
+      tt.error = (msg.indexOf('http 400|') === 0) ? 'bad_link' : 'network';
+      if (msg.indexOf('http 400|bad dir') === 0) tt.error = 'bad_dir';
       renderTasks();
       tickQueue();
     });
@@ -2478,6 +2800,7 @@ supportOpen:'Unterstützen',
           tasks.push({
             id: 'task' + (++uid) + '-' + Date.now() + '-' + i,
             kind: isFile ? 'file' : 'repo',
+            source: bk.source || (bk.link && String(bk.link).indexOf('civitai') !== -1 ? 'civitai_blue' : 'hf'),
             name: bk.name || (isFile ? (bk.link ? fname(bk.link) : (bk.link || '')) : (bk.repo || bk.link || '')),
             repo: bk.repo || '',
             link: bk.link || '',
@@ -2491,6 +2814,9 @@ supportOpen:'Unterstützen',
             filesTotal: bk.files_total || 0,
             current: bk.current || '',
             error: bk.error || null,
+            // Ядро помечает восстановленные безтокенные CivitAI-задачи
+            // флагом needs_token: им нужен ввод токена + resume.
+            needsToken: !!bk.needs_token,
             branch: bk.branch || 'main',
             speedLimit: bk.speed_limit || 0,
             hadSkip: !!bk.had_skip
@@ -2527,9 +2853,10 @@ supportOpen:'Unterstützen',
 
       var payload = {
         link: item.link,
+        source: item.source || detectSource(item.link),
         dir: item.folder ? dir + '/' + item.folder : dir,
         seq: $('seqChk').checked,
-        token: ($('useTokChk').checked ? $('tokInp').value.trim() : ''),
+        token: ($('useTokChk').checked ? tokVal() : ''),
         branch: item.branch || 'main',
         speed_limit: ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0)
       };
@@ -2547,7 +2874,7 @@ supportOpen:'Unterstützen',
         var absDir = j.dir || payload.dir;
         var t = {
           id: 'task' + (++uid) + '-' + Date.now(),
-          kind: item.kind, name: item.name, repo: item.repo || '', link: item.link,
+          kind: item.kind, source: item.source || 'hf', name: item.name, repo: item.repo || '', link: item.link,
           dir: absDir, backendId: j.id,
           status: j.status || 'waiting', downloaded: 0, total: 0, speed: 0,
           filesDone: 0, filesTotal: 0, current: '', error: null,
@@ -2590,7 +2917,7 @@ supportOpen:'Unterstützen',
     uid++;
     var t = {
       id: 'task' + uid + '-' + Date.now(),
-      kind: p.kind, name: p.name, repo: p.repo || '', link: p.link,
+      kind: p.kind, source: p.source || 'hf', name: p.name, repo: p.repo || '', link: p.link,
       dir: dir, backendId: null,
       status: 'waiting', downloaded: 0, total: 0, speed: 0,
       filesDone: 0, filesTotal: 0, current: '', error: null,
@@ -2602,6 +2929,80 @@ supportOpen:'Unterstützen',
     detect();
     renderTasks();
     tickQueue();
+  }
+
+  /* ---------- source tab handling ---------- */
+  var currentSource = 'hf';
+  var switchingSource = false; // защита от рекурсии detect ↔ updateUIForSource
+  function setActiveSourceTab(src, syncUI){
+    // Выделить вкладку src как активную. syncUI=true — обновить подсказки
+    // (placeholder, подпись токена) через updateUIForSource.
+    if (src !== 'hf' && src !== 'civitai_blue' && src !== 'civitai_red') return;
+    var tabs = document.querySelectorAll('.source-tab');
+    tabs.forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-source') === src); });
+    currentSource = src;
+    ls('hfdl_source', src);
+    if (syncUI && !switchingSource){
+      switchingSource = true;
+      try { updateUIForSource(src); } finally { switchingSource = false; }
+    }
+  }
+  function initSourceTabs(){
+    var tabs = document.querySelectorAll('.source-tab');
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        var src = tab.getAttribute('data-source');
+        if (!src) return;
+        // Табы источников теперь открывают соответствующий сайт,
+        // чтобы юзер мог быстро перейти за ссылкой на модель.
+        var url = '';
+        if (src === 'hf') {
+          url = 'https://huggingface.co/models';
+        } else if (src === 'civitai_blue') {
+          url = 'https://civitai.com/models';
+        } else if (src === 'civitai_red') {
+          url = 'https://civitai.red/models';
+        }
+        if (url) {
+          try {
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.open_external) {
+              window.pywebview.api.open_external(url);
+            } else {
+              window.open(url, '_blank');
+            }
+          } catch(e) {
+            window.open(url, '_blank');
+          }
+        }
+      });
+    });
+  }
+  function updateUIForSource(src){
+    var u = L();
+    var urlInp = $('urlInp');
+    var tokRow = $('tokRow');
+    var tokLbl = $('tokLbl');
+    var tokInp = $('tokInp');
+    var tokNote = $('tokNote');
+    if (src === 'hf'){
+      urlInp.setAttribute('placeholder', u.phUrl || 'https://huggingface.co/owner/repo');
+      if (tokLbl) tokLbl.textContent = u.tokLbl || 'Hugging Face token';
+      if (tokInp) tokInp.setAttribute('placeholder', u.phTok || 'hf_...');
+      if (tokNote) tokNote.textContent = u.tokNote || 'sent only to huggingface.co';
+    } else {
+      var isRed = src === 'civitai_red';
+      var civPh = isRed ? u.phCivRed : u.phCiv;
+      // Показываем оба варианта: URL и URN
+      urlInp.setAttribute('placeholder', civPh || 'civitai.com/models/123 or urn:...:civitai:123@456+789');
+      if (tokLbl) tokLbl.textContent = u.tokCivLbl || 'CivitAI API token';
+      if (tokInp) tokInp.setAttribute('placeholder', u.phCivTok || 'Enter your CivitAI API key');
+      if (tokNote) tokNote.textContent = u.tokCivNote || 'sent only to civitai.com / civitai.red';
+      // CivitAI always requires token — show the token row
+      if (tokRow) tokRow.style.display = 'block';
+      var useTokChk = $('useTokChk');
+      if (useTokChk) useTokChk.checked = true;
+    }
+    detect();
   }
 
   /* task actions (delegated) */
@@ -2633,13 +3034,34 @@ supportOpen:'Unterstützen',
       return;
     }
     if (act === 'remove'){
-      if (t.backendId){
-        fetch(CORE + '/api/tasks/' + t.backendId + '/cancel', { method: 'POST' }).catch(function(){});
+      // Подтверждение при удалении активной задачи: если задача качается
+      // или ждёт очереди и имеет backendId — есть недокачанный .part на диске.
+      // Предупреждаем юзера, что прогресс будет потерян (backend удалит .part).
+      // Стилизованная модалка вместо браузерного window.confirm.
+      var doRemove = function(){
+        var dropLocal = function(){
+          delete authWarnedTasks[t.id];
+          tasks = tasks.filter(function(x){ return x.id !== t.id; });
+          renderTasks();
+          tickQueue(); // активная удалена/отменена — запускаем следующую
+        };
+        if (t.backendId){
+          // Ждём ответа ядра (POST /cancel), и только потом убираем карточку:
+          // раньше карточка исчезала мгновенно, а периодический автосейв ядра
+          // (каждые 5 с) успевал перезаписать .tasks.json до того, как cancel
+          // долетал до сервера, — задача «воскресала» после перезапуска.
+          // Ответ при ошибке игнорируем: задача из UI всё равно убирается.
+          fetch(CORE + '/api/tasks/' + t.backendId + '/cancel', { method: 'POST' })
+            .then(dropLocal, dropLocal);
+          return;
+        }
+        dropLocal();
+      };
+      if (t.backendId && (t.status === 'downloading' || t.status === 'waiting' || t.status === 'paused')){
+        confirmDialog({ body: (L().confirmRemove || 'This task is still in progress. Removing it will delete the partial download from disk. Continue?'), onOk: doRemove });
+        return;
       }
-      delete authWarnedTasks[t.id];
-      tasks = tasks.filter(function(x){ return x.id !== t.id; });
-      renderTasks();
-      tickQueue(); // активная удалена/отменена — запускаем следующую
+      doRemove();
       return;
     }
     if (act === 'pause' && t.backendId){
@@ -2650,8 +3072,19 @@ supportOpen:'Unterstützen',
       return;
     }
     if (act === 'resume' && t.backendId){
-      fetch(CORE + '/api/tasks/' + t.backendId + '/resume', { method: 'POST' }).catch(function(){});
-      t.status = 'downloading';
+      // Восстановленная CivitAI-задача ждёт токена (needs_token): прикладываем
+      // текущий токен из поля, иначе resume снова упадёт с 401.
+      var rbody = {};
+      if (t.needsToken && $('useTokChk') && $('useTokChk').checked){
+        var tv = tokVal();
+        if (tv) rbody.token = tv;
+      }
+      fetch(CORE + '/api/tasks/' + t.backendId + '/resume', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rbody)
+      }).catch(function(){});
+      if (t.needsToken && !rbody.token){ toast(L().tokMissing || 'Enter CivitAI API token first'); return; }
+      t.status = 'downloading'; t.needsToken = false;
       renderTasks();
       return;
     }
@@ -2704,7 +3137,7 @@ supportOpen:'Unterstützen',
                cur.maxRetries = typeof j.max_retries === 'number' ? j.max_retries : cur.maxRetries || 3;
                cur.speedLimit = typeof j.speed_limit === 'number' ? j.speed_limit : cur.speedLimit || 0;
                if (j.error) cur.error = j.error;
-              if (cur.status === 'error' && (cur.error === 'http_401' || cur.error === 'http_403')) showAuthModal(cur.id);
+              if (cur.status === 'error' && (cur.error === 'http_401' || cur.error === 'http_403' || cur.error === 'civitai_token_invalid' || cur.error === 'civitai_forbidden')) showAuthModal(cur.id);
               var bar = document.querySelector('[data-bar="' + cur.id + '"]');
               var txt = document.querySelector('[data-txt="' + cur.id + '"]');
               var spd = document.querySelector('[data-spd="' + cur.id + '"]');
@@ -2822,7 +3255,7 @@ supportOpen:'Unterstützen',
       lastSeenClip = v;
       return;
     }
-    if (!v || !HF_RE.test(v)) { lastSeenClip = v; return; }
+    if (!v || !LINK_RE.test(v)) { lastSeenClip = v; return; }
     if (v === lastSeenClip) return;   // уже видели это содержимое буфера
     lastSeenClip = v;
     var r = addPendingLink(v);
@@ -2840,7 +3273,7 @@ supportOpen:'Unterstützen',
   function applyClip(raw) {
     var v = (raw || '').trim();
     setWatcherOn();
-    if (!v || !HF_RE.test(v)) return;
+    if (!v || !LINK_RE.test(v)) return;
     if (($('urlInp').value || '').trim() !== v) {
       $('urlInp').value = v;
       detect();
@@ -2894,7 +3327,7 @@ supportOpen:'Unterstützen',
       var text = clipboardData.getData('text/plain') || clipboardData.getData('text');
       if (text) {
         var v = text.trim();
-        if (v && HF_RE.test(v)) {
+        if (v && LINK_RE.test(v)) {
           $('urlInp').value = v;
           detect();
           var inp = $('urlInp');
@@ -2917,7 +3350,7 @@ supportOpen:'Unterstützen',
         if (v) {
           $('urlInp').value = v;
           detect();
-          if (HF_RE.test(v)) {
+          if (LINK_RE.test(v)) {
             var inp = $('urlInp');
             inp.classList.remove('flash');
             void inp.offsetWidth;
@@ -2937,7 +3370,7 @@ supportOpen:'Unterstützen',
     if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
       setTimeout(function() {
         var v = $('urlInp').value.trim();
-        if (v && HF_RE.test(v)) {
+        if (v && LINK_RE.test(v)) {
           detect();
           var inp = $('urlInp');
           inp.classList.remove('flash');
@@ -2961,6 +3394,35 @@ supportOpen:'Unterstützen',
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2600);
   }
+
+  /* ---------- styled confirm dialog ---------- */
+  // Стилизованное окно подтверждения (вместо браузерного window.confirm):
+  // единый дизайн приложения, локализация, закрытие по Escape/фону.
+  var confirmCb = null;
+  function confirmDialog(opts){
+    opts = opts || {};
+    var u = L();
+    $('confirmTtl').textContent = opts.title || u.confirmTitle || 'Confirm';
+    $('confirmSub').textContent = opts.sub || '';
+    $('confirmBody').textContent = opts.body || u.confirmRemove || 'Continue?';
+    $('confirmNote').textContent = opts.note || '';
+    $('confirmNoBtn').textContent = opts.cancelText || u.logsClose || 'Cancel';
+    $('confirmYesBtn').textContent = opts.okText || u.confirmOk || 'Remove';
+    confirmCb = (typeof opts.onOk === 'function') ? opts.onOk : null;
+    $('confirmOv').classList.add('show');
+  }
+  function closeConfirm(){
+    $('confirmOv').classList.remove('show');
+    confirmCb = null;
+  }
+  $('confirmNoBtn').addEventListener('click', closeConfirm);
+  $('confirmOv').addEventListener('mousedown', function(e){ if (e.target === this) closeConfirm(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && $('confirmOv').classList.contains('show')) closeConfirm(); });
+  $('confirmYesBtn').addEventListener('click', function(){
+    var cb = confirmCb;
+    closeConfirm();
+    if (cb) cb();
+  });
 
   /* ---------- wiring ---------- */
   $('addBtn').addEventListener('click', addTask);
@@ -3048,18 +3510,75 @@ supportOpen:'Unterstützen',
   });
   $('langMenu').addEventListener('mousedown', function(e){ e.stopPropagation(); });
   document.addEventListener('click', function(){ $('langDd').classList.remove('open'); });
-  $('helpBtn').addEventListener('click', function(){ $('helpOv').classList.add('show'); });
+  function renderHelp(){
+    var box = $('helpBody');
+    if (!box) return;
+    var steps = (HELP && HELP[lang]) ? HELP[lang] : (HELP ? HELP['EN'] || [] : []);
+    var html = '';
+    steps.forEach(function(s){
+      if (Array.isArray(s) && s.length >= 2){
+        html += '<div class="m-sec"><h4>' + esc(s[0]) + '</h4><p>' + esc(s[1]) + '</p></div>';
+      }
+    });
+    box.innerHTML = html || '<div class="m-sec"><p>' + (L().helpFallback || 'Guide unavailable in this language.') + '</p></div>';
+  }
+  $('helpBtn').addEventListener('click', function(){ renderHelp(); $('helpOv').classList.add('show'); });
   $('helpClose').addEventListener('click', function(){ $('helpOv').classList.remove('show'); });
   $('helpOv').addEventListener('mousedown', function(e){ if (e.target === this) this.classList.remove('show'); });
   $('eyeBtn').addEventListener('click', function(){
     var inp = $('tokInp');
     inp.type = inp.type === 'password' ? 'text' : 'password';
   });
+  $('pasteTokBtn').addEventListener('click', function(){
+    try {
+      var inp = $('tokInp');
+      if (!inp) return;
+      
+      // 1) Try pywebview API
+      if (window.pywebview && window.pywebview.api && window.pywebview.api.clipboard_text) {
+        try {
+          var pv = window.pywebview.api.clipboard_text();
+          if (pv && pv.trim()) {
+            inp.value = pv.trim().replace(/[\s"'+`]+/g, '').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+            return;
+          }
+        } catch(e){}
+      }
+      
+      // 2) Try fetch to core
+      fetch(CORE + '/api/clipboard')
+        .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
+        .then(function(j){
+          var v = (j && j.text || '').trim();
+          if (v) {
+            inp.value = v.replace(/[\s"'+`]+/g, '').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+          } else {
+            fallbackNav();
+          }
+        })
+        .catch(function(){ fallbackNav(); });
+      
+      function fallbackNav(){
+        if (navigator.clipboard && navigator.clipboard.readText){
+          navigator.clipboard.readText().then(function(text){
+            if (text && text.trim()) {
+              inp.value = text.trim().replace(/[\s"'+`]+/g, '').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+            }
+          }).catch(function(){});
+        }
+      }
+    } catch(e){}
+  });
   $('useTokChk').addEventListener('change', function(){
     $('tokWrap').className = 'token-wrap ' + (this.checked ? 'tok-on' : 'tok-off');
     ls('hfdl_usetoken', this.checked ? '1' : '0');
   });
-  $('tokInp').addEventListener('input', function(){ ls('hfdl_token', this.value); });
+  $('tokInp').addEventListener('input', function(){
+    // Чистим вставленный токен прямо в поле (переносы, кавычки, zero-width)
+    var v = tokVal();
+    if (v !== this.value) this.value = v;
+    ls('hfdl_token', v);
+  });
   $('branchInp').addEventListener('input', function(){ ls('hfdl_branch', this.value); });
   $('seqChk').addEventListener('change', function(){
     tickQueue();
@@ -3122,7 +3641,8 @@ supportOpen:'Unterstützen',
   /* ---------- init ---------- */
   try {
     var p0 = localStorage.getItem('hfdl_path'); if (p0) $('dirInp').value = p0;
-    var t0 = localStorage.getItem('hfdl_token'); if (t0) $('tokInp').value = t0;
+    var t0 = localStorage.getItem('hfdl_token');
+    if (t0){ $('tokInp').value = t0.replace(/[\s'"`]+/g,'').replace(/[\u200b-\u200d\u2060\ufeff]/g,''); ls('hfdl_token', $('tokInp').value); }
     $('useTokChk').checked = localStorage.getItem('hfdl_usetoken') !== '0';
     var br = localStorage.getItem('hfdl_branch'); if (br) $('branchInp').value = br;
     var sp = localStorage.getItem('hfdl_speed');
@@ -3158,6 +3678,7 @@ supportOpen:'Unterstützen',
   applyLang();
   loadBackendTasks();
   initClipPerm();
+  initSourceTabs();
 
   /* Debug: проверяем доступность API */
   console.log('Page loaded. window.external:', typeof window.external);

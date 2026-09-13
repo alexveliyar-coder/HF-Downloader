@@ -1,35 +1,26 @@
 {
   "app_name": "HF Downloader",
-
   "journal_button": "Tagebuch",
-  
   "console_start": "HF Downloader gestartet (offline)",
   "console_site": "Seite:",
   "console_core": "Kern:",
   "console_files": "Dateien:",
   "console_exit": "Beenden: Fenster schließen oder Ctrl+C",
-  
   "shutdown_title": "Server werden gestoppt...",
   "shutdown_saved": "Aufgabenstatus in .tasks.json gespeichert",
   "shutdown_core": "Kern-Server gestoppt.",
   "shutdown_site": "Seiten-Server gestoppt.",
   "shutdown_done": "Fertig.",
-  
   "no_pywebview": "pywebview nicht installiert — öffne normalen Browser.",
   "install_pywebview": "pip install pywebview — um ein separates Fenster zu erhalten",
-  
   "core_start": "HF Core Server gestartet",
   "core_addr": "Adresse:",
   "core_dir": "Ordner:",
   "core_stop": "Ctrl+C",
-  
   "restore_tasks": "%d Aufgabe(n) aus .tasks.json wiederhergestellt",
-  
   "signal_shutdown": "Stopp-Signal empfangen — Aufgabenstatus wird gespeichert...",
   "stopped": "Gestoppt.",
-  
   "dir_title": "Ordner zum Speichern auswählen",
-  
   "error_origin_forbidden": "origin forbidden",
   "error_bad_path": "bad path",
   "error_not_found": "not found",
@@ -38,5 +29,13 @@
   "error_bad_body": "bad body",
   "error_write_failed": "write failed",
   "error_dialog_timeout": "dialog timeout",
-  "error_canceled": "canceled"
+  "error_canceled": "canceled",
+  "civitai_token_invalid": "CivitAI hat das Token abgelehnt (401). Bitte API-Schlüssel prüfen.",
+  "civitai_forbidden": "Zugriff auf CivitAI verweigert (403). Das Modell könnte eingeschränkt sein.",
+  "civitai_not_found": "CivitAI-Modell nicht gefunden (404).",
+  "civitai_no_files": "Keine herunterladbaren Dateien in dieser Modellversion gefunden.",
+  "civitai_no_url": "CivitAI hat keine Download-URL geliefert. Eventuell wird ein gültiges Token benötigt.",
+  "civitai_api_error": "Fehler in der CivitAI-API.",
+  "pasteFail": "Zwischenablage kann nicht gelesen werden",
+  "toastPasted": "Aus Zwischenablage eingefügt"
 }

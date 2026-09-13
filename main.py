@@ -36,39 +36,75 @@ _core_server_ref = None
 
 try:
     import hf_core_server  # ядро скачивания
-# Ядро требует requests; если зависимости не установлены (например, нет
-# интернета при первом запуске), даём понятное сообщение вместо краша.
+# Ядро требует requests; если зависимости не установлены (например, первый
+# запуск) — пробуем поставить их автоматически через pip, и только если
+# это не удалось, показываем инструкцию вместо молчаливого краша.
 except ImportError as _imp_err:
     import sys
-    sys.stderr.write(
-        "\n[HF Downloader] Не найдены зависимости (requests).\n"
-        "Установите их командой:  python -m pip install -r requirements.txt\n"
-        f"Текст ошибки: {_imp_err}\n"
+    _missing = getattr(_imp_err, "name", None) or "requests"
+    print(f"\n[HF Downloader] Не найдена зависимость: {_missing}")
+    print("Пробую установить автоматически (python -m pip install -r requirements.txt)...")
+    import subprocess
+    _rc = subprocess.call(
+        [sys.executable, "-m", "pip", "install", "-r",
+         str(Path(__file__).resolve().parent / "requirements.txt")]
     )
-    raise SystemExit(1) from None
+    if _rc == 0:
+        try:
+            import hf_core_server  # повторная попытка после установки
+            print("[HF Downloader] Зависимости установлены, продолжаю.")
+        except ImportError as _imp_err2:
+            sys.stderr.write(
+                "\n[HF Downloader] Установка прошла, но импорт всё равно не удался.\n"
+                f"Текст ошибки: {_imp_err2}\n"
+                "Попробуйте вручную:  python -m pip install -r requirements.txt\n"
+            )
+            raise SystemExit(1) from None
+    else:
+        sys.stderr.write(
+            "\n[HF Downloader] Не удалось установить зависимости автоматически.\n"
+            "Установите их вручную командой:  python -m pip install -r requirements.txt\n"
+            f"Текст ошибки: {_imp_err}\n"
+        )
+        raise SystemExit(1) from None
 
 
 def _graceful_shutdown():
     """Корректная остановка всех компонентов."""
     global _site_server, _core_server_ref
+    # Защита от двойного вызова (SIGINT + закрытие окна + KeyboardInterrupt
+    # могут прийти друг за другом): второй вызов — no-op.
+    if getattr(_graceful_shutdown, "_done", False):
+        return
+    _graceful_shutdown._done = True
     L = init_locale()  # получаем локализацию (уже инициализирована в main())
 
     print("\n\n" + L.t("shutdown_title"))
 
-    # Устанавливаем cancel для всех активных задач в core-сервере
-    with hf_core_server.LOCK:
-        for _tid, st in hf_core_server.TASKS.items():
-            if isinstance(st.get("run"), threading.Event) and st["status"] in ("downloading", "paused"):
-                st["cancel"] = True
-                st["run"].set()
+    # Помечаем выключение как «паузу», а не отмену юзером.
+    try:
+        hf_core_server._shutting_down = True
+    except AttributeError:
+        pass
 
-    # Сохраняем состояние задач
+    # ВАЖНО: сначала сохраняем состояние, потом сигналим потокам. Иначе
+    # run_task успевает перевести задачи в error/HISTORY до сохранения,
+    # и .tasks.json оказывается пустым — после перезапуска список пуст
+    # и «скачивается с начала» (та же гонка, что и в _shutdown_handler).
     try:
         hf_core_server.save_tasks_state()
         print("  " + L.t("shutdown_saved"))
     except Exception:
         import sys
         sys.stderr.write("  [warn] shutdown: save_tasks_state failed\n")
+
+    # Устанавливаем cancel для всех активных задач в core-сервере
+    with hf_core_server.LOCK:
+        for _tid, st in hf_core_server.TASKS.items():
+            if isinstance(st.get("run"), threading.Event) and st["status"] in ("downloading", "paused"):
+                st["_shutdown"] = True
+                st["cancel"] = True
+                st["run"].set()
 
     # Корректно останавливаем core-сервер (не вызывает KeyboardInterrupt)
     if _core_server_ref:
@@ -216,6 +252,22 @@ class Api:
 
     В JS доступен как window.pywebview.api (методы объекта).
     """
+
+    def open_external(self, url):
+        """Открыть ссылку в системном браузере (не внутри pywebview)."""
+        import webbrowser
+        try:
+            webbrowser.open(url, new=2)  # new=2 — новая вкладка если возможно
+            return True
+        except Exception:
+            return False
+
+    def clipboard_text(self):
+        """Текст из системного буфера обмена (для кнопки «Вставить» у токена)."""
+        try:
+            return hf_core_server.clipboard_text()
+        except Exception:
+            return ""
 
     def _folder_dialog_native(self, base):
         """Нативный диалог pywebview — открывается ПОВЕРХ окна приложения.
@@ -369,6 +421,10 @@ def main():
             js_api=Api(),
         )
         webview.start()
+        # Закрытие окна (крестик) возвращает управление сюда, а не в signal
+        # handler: без явного вызова сохранение держалось бы только на
+        # 5-секундном автосейве. Сохраняем состояние явно.
+        _graceful_shutdown()
     except ImportError:
         print(" " + L.t("no_pywebview"))
         print(" (" + L.t("install_pywebview") + ")")

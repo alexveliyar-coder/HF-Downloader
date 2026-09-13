@@ -30,6 +30,9 @@ def _mask(msg):
     # Authorization Bearer
     msg = re.sub(r'(Authorization:\s*Bearer\s+)\S+', r'\1***', msg, flags=re.I)
 
+    # Токен в query-параметре (CivitAI: ?token=...)
+    msg = re.sub(r'(token=)[A-Za-z0-9_\-.]{6,}', r'\1***MASKED***', msg, flags=re.I)
+
     # URL huggingface.co/owner/repo — маскируем owner/repo (до путей файлов!)
     def _mask_hf_url(m):
         prefix = m.group(1)
@@ -63,6 +66,9 @@ class Logger:
         self._lines = deque(maxlen=max_lines)
         self._log_file = log_file
 
+    def info(self, msg):
+        self._add("INFO", msg)
+
     def warn(self, msg):
         self._add("WARN", msg)
 
@@ -71,7 +77,13 @@ class Logger:
 
     def _add(self, level, msg):
         ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        masked = _mask(msg)
+        try:
+            masked = _mask(msg)
+        except Exception:
+            # Маскирование никогда не должно ломать запись в лог: если _mask
+            # упадёт внутри обработчика ошибки потока, задача умрёт молча и в
+            # лог не попадёт вообще ничего (диагностика станет невозможной).
+            masked = msg if isinstance(msg, str) else str(msg)
         entry = {"time": ts, "level": level, "msg": masked}
         with self._lock:
             self._lines.append(entry)

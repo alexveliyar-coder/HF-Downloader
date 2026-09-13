@@ -16,11 +16,12 @@
 ## What it does
 
 - **Download** any model, dataset or space — single files or whole repos
+- **Multi-source**: [Hugging Face](https://huggingface.co) and [CivitAI](https://civitai.com) (Blue & Red)
 - **Pause & resume** downloads (HTTP Range headers + `.part` files, survives crashes)
 - **Queue** with optional strict one-at-a-time mode
 - **Bookmarks** for repos you grab often
-- **Clipboard watch** — paste a HF link anywhere, the app picks it up
-- **Token support** for gated models (sent directly to huggingface.co, never logged)
+- **Clipboard watch** — paste a HF or CivitAI link anywhere, the app picks it up
+- **Token support** for gated models (sent directly to the source, never logged)
 - **12 languages** in the UI: English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português, Русский, اردو, Deutsch, 日本語
 
 All traffic is local (`127.0.0.1`). The app does not phone home, except a single check for new releases on startup (you can disable it — see [Configuration](#configuration)).
@@ -43,11 +44,32 @@ If you prefer running from source (developers, contributors) — see [Building f
 
 ---
 
+## Supported Sources
+
+### Hugging Face
+- **Whole repos**: paste `huggingface.co/owner/repo` → gets everything
+- **Single files**: paste `huggingface.co/owner/repo/blob/main/file.bin` → gets that file
+- **Token** (optional): required for gated models. Get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+
+### CivitAI (Blue & Red)
+- **Models**: paste `civitai.com/models/12345` or `civitai.red/models/12345` → downloads the model
+- **Specific version**: paste `civitai.com/models/12345?modelVersionId=67890` → downloads that version
+- **URN format**: paste `urn:...:civitai:620406@3161628+3042004` → downloads directly (model@version+file)
+- **API token** (required): CivitAI requires an API key for downloads. Get one at [civitai.com/user/account](https://civitai.com/user/account)
+- **Two domains**: 
+  - `civitai.com` (Blue) — main site, SFW content
+  - `civitai.red` (Red) — separate domain for NSFW content
+
+> **URN format** is used by some Stable Diffusion UIs (ComfyUI, Fooocus, etc.) when direct URL copying is not available. The format is `urn:...:civitai:{modelId}@{versionId}+{fileId}`.
+
+> **Note**: CivitAI token is mandatory — without it, the API won't return a download URL. The token is sent only to civitai.com / civitai.red and is never saved to disk.
+
+---
+
 ## Features in detail
 
 ### Downloads
-- **Whole repos**: paste `huggingface.co/owner/repo` → gets everything
-- **Single files**: paste `huggingface.co/owner/repo/blob/main/file.bin` → gets that file
+- **Multi-source**: Hugging Face and CivitAI from a single interface
 - **Resume**: every byte is tracked, kill the app mid-download and pick up where you left off
 - **Retry with backoff**: configurable, handles flaky networks
 - **Speed limit**: cap your bandwidth so the app doesn't kill your video call

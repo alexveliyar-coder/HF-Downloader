@@ -1,35 +1,26 @@
 {
   "app_name": "HF Downloader",
-  
   "journal_button": "Diario",
-  
   "console_start": "HF Downloader iniciado (sin conexión)",
   "console_site": "sitio:",
   "console_core": "núcleo:",
   "console_files": "archivos:",
   "console_exit": "salir: cerrar ventana o Ctrl+C",
-  
   "shutdown_title": "Deteniendo servidores...",
   "shutdown_saved": "estado de tareas guardado en .tasks.json",
   "shutdown_core": "servicio núcleo detenido.",
   "shutdown_site": "servicio sitio detenido.",
   "shutdown_done": "Listo.",
-  
   "no_pywebview": "pywebview no está instalado — abriendo navegador normal.",
   "install_pywebview": "pip install pywebview — para obtener una ventana separada",
-  
   "core_start": "HF Core Server iniciado",
   "core_addr": "dirección:",
   "core_dir": "carpeta:",
   "core_stop": "Ctrl+C",
-  
   "restore_tasks": "%d tarea(s) restauradas desde .tasks.json",
-  
   "signal_shutdown": "Señal de parada recibida — guardando estado de tareas...",
   "stopped": "Detenido.",
-  
   "dir_title": "Seleccionar carpeta para guardar",
-  
   "error_origin_forbidden": "origin forbidden",
   "error_bad_path": "bad path",
   "error_not_found": "not found",
@@ -38,5 +29,13 @@
   "error_bad_body": "bad body",
   "error_write_failed": "write failed",
   "error_dialog_timeout": "dialog timeout",
-  "error_canceled": "canceled"
+  "error_canceled": "canceled",
+  "civitai_token_invalid": "CivitAI rechazó el token (401). Compruebe su clave API.",
+  "civitai_forbidden": "Acceso denegado a CivitAI (403). El modelo puede estar restringido.",
+  "civitai_not_found": "Modelo CivitAI no encontrado (404).",
+  "civitai_no_files": "No se encontraron archivos descargables en esta versión del modelo.",
+  "civitai_no_url": "CivitAI no devolvió una URL de descarga. El modelo puede requerir un token válido.",
+  "civitai_api_error": "Error de API de CivitAI.",
+  "pasteFail": "No se puede leer el portapapeles",
+  "toastPasted": "Insertado desde el portapapeles"
 }

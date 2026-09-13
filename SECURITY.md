@@ -6,6 +6,7 @@ HF Downloader is designed so that nothing important leaks:
 
 - **Servers listen only on `127.0.0.1`** — they cannot be reached from the internet or your local network. Only you, on your own machine.
 - **Hugging Face token** is sent directly from the browser (or pywebview window) to `huggingface.co` over HTTPS. No intermediate server ever sees or stores it. By default the token is not persisted at all — it lives only in the window's `localStorage` while the app is running.
+- **CivitAI API token** is sent directly to `civitai.com` or `civitai.red` over HTTPS. Like the HF token, it is never saved to disk and is not logged. The token is required for all CivitAI downloads.
 - **Local cache** (`downloads/`, `.tasks.json`, `.lang.txt`, `.last_dir.txt`) sits next to the app and is accessible only to you.
 - **Downloaded files** go to `downloads/<the folder you chose>/` and never leave your computer.
 
@@ -37,6 +38,7 @@ We aim to respond within **72 hours**. We don't promise a specific fix timeline 
 
 - Vulnerabilities in **dependencies** (`requests`, `pywebview`) — report them upstream, not to us.
 - Vulnerabilities in **Hugging Face itself** — that's not our project.
+- Vulnerabilities in **CivitAI itself** — report them to CivitAI directly.
 - Theoretical attacks that require physical access to an unlocked machine.
 
 ## Thanks

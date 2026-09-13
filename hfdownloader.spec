@@ -21,7 +21,7 @@ block_cipher = None
 APP_MODE = os.environ.get("HF_APP_MODE", "onedir")
 
 # Version from updater.py — the single source of truth.
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 
 # Icon: taken from build/icon.ico (Windows) / build/icon.icns (macOS) /
 # build/icon.png (Linux). Can be omitted — a default one will be used.
