@@ -23,6 +23,12 @@ jobs:
       - name: Install ruff
         run: pip install ruff
 
+      - name: Install runtime dependencies
+        # Smoke tests import src/hf_core_server (and model_naming through it),
+        # which needs requests at import time. CI used to install only ruff —
+        # that was fine when tests never touched the core, but v1.2.0 tests do.
+        run: pip install -r requirements.txt
+
       - name: Lint
         run: ruff check .
 
