@@ -116,6 +116,7 @@ def check_no_secrets_in_history():
 def check_model_naming():
     """model_naming: префикс из метаданных, тип модели, подпапка, расширение."""
     print("5. Проверка model_naming (префикс и авто-раскладка) …")
+    import os
     sys.path.insert(0, str(ROOT / "src"))
     import hf_core_server as core
     import model_naming as mn
@@ -287,10 +288,17 @@ def check_model_naming():
     # тихого авто-поиска (иначе «тыкнул, а ушло не туда»).
     pbms = ["D:/SD15/loras", "D:/SDXL/loras"]
     assert mn.match_pinned_dir("D:/SDXL/loras", pbms) == "D:/SDXL/loras"
-    # Регистр и слеши не важны
-    assert mn.match_pinned_dir("d:/sdxl\\loras", pbms) == "D:/SDXL/loras"
     # Путь не из закладок -> "" (работает тихий авто-поиск)
     assert mn.match_pinned_dir("D:/Models", pbms) == ""
+    # Регистр и слеши «не важны» только на Windows: os.path.normcase там
+    # сводит регистр и приводит \ к /. На POSIX normcase — идентичность
+    # (файловая система регистрозависима), сравнение идёт байт-в-байт.
+    # Это осознанное поведение ядра: на Linux слэши-и-регистр-фолдинг
+    # схлопнул бы реальные разные папки (/home/u/Vae и /home/u/vae).
+    if os.name == "nt":
+        assert mn.match_pinned_dir("d:/sdxl\\loras", pbms) == "D:/SDXL/loras"
+    else:
+        assert mn.match_pinned_dir("d:/sdxl\\loras", pbms) == ""
     assert mn.match_pinned_dir("", pbms) == ""
     assert mn.match_pinned_dir("D:/Models", []) == ""
     print("  OK")
@@ -498,15 +506,22 @@ def check_open_location_cmd():
         sys.path.insert(0, _src)
     from src import hf_core_server as H
 
-    # Кейс-регрессия: имя файла и папка с пробелами
-    cmd = H._explorer_select_cmd(r"C:\My Models\Cool Model-v8-lora.safetensors")
-    assert cmd == 'explorer.exe /select,"C:\\My Models\\Cool Model-v8-lora.safetensors"', cmd
+    # Кейс-регрессия: имя файла и папки с пробелами.
+    # Ожидание строим через os.path.abspath — прод-функция делает то же.
+    # На Windows это ровно введённый win-путь; на POSIX abspath лишь
+    # префиксует cwd (сам формат — флаг, слитый с путём, в кавычках —
+    # проверяется одинаково везде; точное «как в Windows» невоспроизводимо
+    # вне Windows и здесь не проверяется).
+    win_path = r"C:\My Models\Cool Model-v8-lora.safetensors"
+    cmd = H._explorer_select_cmd(win_path)
+    assert cmd == 'explorer.exe /select,"' + os.path.abspath(win_path) + '"', cmd
     # Флаг и открывающая кавычка слитны, отдельного "/select, " не осталось
     assert ' /select,"' in cmd
     assert " /select, " not in cmd
     # Путь без пробелов — тот же формат
-    cmd2 = H._explorer_select_cmd(r"D:\Models\loras\file.safetensors")
-    assert cmd2 == 'explorer.exe /select,"D:\\Models\\loras\\file.safetensors"', cmd2
+    win_path2 = r"D:\Models\loras\file.safetensors"
+    cmd2 = H._explorer_select_cmd(win_path2)
+    assert cmd2 == 'explorer.exe /select,"' + os.path.abspath(win_path2) + '"', cmd2
     # Относительный путь превращается в абсолютный
     cmd3 = H._explorer_select_cmd("rel\\file.bin")
     inner = cmd3.split('/select,"', 1)[1].rstrip('"')
