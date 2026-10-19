@@ -31,6 +31,7 @@ import threading
 import time
 import traceback
 import urllib.parse
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -39,6 +40,17 @@ import requests
 from civitai_client import CivitAIError, parse_civitai_link
 from locale_loader import SUPPORTED_LANGUAGES, get_locale, init_locale
 from logger import logger
+from model_naming import (
+    FALLBACK_TYPE,
+    apply_prefix,
+    build_prefix,
+    classify_civitai,
+    classify_hf,
+    is_weight_file,
+    match_bookmark_dir,
+    match_pinned_dir,
+    type_subdir,
+)
 
 # Allow running this file directly (`python src/hf_core_server.py`) — its
 # sibling modules live next to it, so this is a no-op in that case, but it
@@ -95,7 +107,15 @@ def find_free_port(host, start_port, max_tries=20):
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.join(_PROJECT_ROOT, "downloads")
 CHUNK = 1 * 1024 * 1024  # 1 МБ (было 4 МБ — крупные чанки давали MemoryError)
+# Watchdog зависшего CDN: нет байт дольше — рвём как Timeout, дальше ретрай
+# через Range с .part (см. stream_to_file / _stream_with_retry).
+STALL_TIMEOUT = 60.0  # секунд без прогресса
 BOOKMARKS_FILE = os.path.join(_PROJECT_ROOT, "hfdl_bookmarks.json")
+# История скачивания (путь файла + метаданные завершённых задач). .tasks.json
+# хранит ТОЛЬКО незавершённые задачи, поэтому после done путь файла терялся
+# вместе с выгрузкой из TASKS. Токены в историю не пишутся (см. _history_entry).
+HISTORY_FILE = os.path.join(_PROJECT_ROOT, ".history.json")
+HISTORY_MAX = 500
 
 # Доступ к ядру разрешён только локальному интерфейсу. Без проверки Origin любой
 # сайт в браузере мог бы записать задачи/пути на ваш ПК (недоступно из сети —
@@ -127,6 +147,11 @@ _server_instance = None
 _TASKS_FILE = os.path.join(_PROJECT_ROOT, ".tasks.json")
 LANG_FILE = os.path.join(_PROJECT_ROOT, ".lang.txt")
 LAST_DIR_FILE = os.path.join(_PROJECT_ROOT, ".last_dir.txt")
+AUTO_ROOT_FILE = os.path.join(_PROJECT_ROOT, ".last_auto_root.txt")
+# Полный СПИСОК корней авто-раскладки (активный = [0]). Раньше он жил только в
+# localStorage: при слетевшем профиле WebView2 терялись все корни, кроме
+# активного, и раскладка вырождалась в «всё в активный корень».
+AUTO_ROOTS_FILE = os.path.join(_PROJECT_ROOT, ".last_auto_roots.json")
 
 
 # Выключение приложения — это ПАУЗА, а не отмена юзером.
@@ -135,18 +160,82 @@ LAST_DIR_FILE = os.path.join(_PROJECT_ROOT, ".last_dir.txt")
 _shutting_down = False
 
 
-def load_tasks_state():
-    """Загрузить состояние активных задач из файла при старте."""
+_TASKS_BAK_FILE = os.path.join(_PROJECT_ROOT, ".tasks.bak.json")
+
+
+def _atomic_write_text(path, text):
+    """Атомарно записать текст в файл: tmp + fsync + os.replace.
+
+    Прямая запись open(path, "w") при kill/BSOD в середине оставляет
+    обрезанный файл — для .tasks.json это молчаливая потеря всех задач.
+    os.replace атомарен на NTFS: либо старый файл, либо новый целиком.
+    Возвращает True при успехе.
+    """
+    tmp = path + ".tmp"
     try:
-        with open(_TASKS_FILE, encoding="utf-8") as fh:
-            data = json.load(fh)
+        with open(tmp, "w", encoding="utf-8") as fh:
+            fh.write(text)
+            try:
+                fh.flush()
+                os.fsync(fh.fileno())
+            except OSError:
+                pass
+        os.replace(tmp, path)
+        return True
+    except OSError:
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except OSError:
+            pass
+        return False
+
+
+def _atomic_write_json(path, obj):
+    """Атомарно записать JSON (через _atomic_write_text)."""
+    try:
+        text = json.dumps(obj, ensure_ascii=False, indent=2)
+    except (TypeError, ValueError):
+        return False
+    return _atomic_write_text(path, text)
+
+
+def _read_json_with_backup(path, bak_path=None):
+    """Прочитать JSON; если основной файл бит — попробовать .bak.
+
+    Возвращает (data, from_backup). data=None, если оба недоступны/биты.
+    FileNotFoundError основного файла — норма (первый запуск): (None, False).
+    """
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh), False
     except FileNotFoundError:
-        # Файла ещё нет (первый запуск) — это норма, а не ошибка. Раньше
-        # каждый старт писал бессмысленный WARN «load_tasks_state failed».
+        return None, False
+    except (OSError, ValueError):
+        pass
+    if bak_path:
+        try:
+            with open(bak_path, encoding="utf-8") as fh:
+                return json.load(fh), True
+        except (OSError, ValueError):
+            pass
+    return None, False
+
+
+def load_tasks_state():
+    """Загрузить состояние активных задач из файла при старте.
+
+    Если .tasks.json обрезан крашем в середине записи — берём .tasks.bak.json
+    (предыдущий успешный сейв), а не теряем все задачи молча.
+    """
+    data, from_bak = _read_json_with_backup(_TASKS_FILE, _TASKS_BAK_FILE)
+    if data is None:
+        # Файла нет (первый запуск) — норма; оба биты — уже залогировано ниже.
+        if os.path.exists(_TASKS_FILE):
+            logger.warn("load_tasks_state failed: tasks file and backup unreadable")
         return {}
-    except (OSError, ValueError) as e:
-        logger.warn(f"load_tasks_state failed: {e!r}")
-        return {}
+    if from_bak:
+        logger.warn("load_tasks_state: tasks file corrupt, restored from backup")
     if not isinstance(data, list):
         return {}
     # Восстанавливаем задачи в статусе "downloading", "paused" и "waiting"
@@ -221,13 +310,32 @@ def save_tasks_state():
                             pass
                     entry["id"] = tid
                     active.append(entry)
-        with open(_TASKS_FILE, "w", encoding="utf-8") as fh:
-            json.dump(active, fh, ensure_ascii=False, indent=2)
+        # Атомарная запись: tmp + fsync + os.replace. Предыдущий успешный
+        # снапшот сохраняем в .bak — если ЭТУ запись оборвёт краш, при старте
+        # load_tasks_state подхватит бэкап вместо обрезанного файла.
+        try:
+            prev = None
+            if os.path.exists(_TASKS_FILE):
+                with open(_TASKS_FILE, encoding="utf-8") as fh:
+                    prev = fh.read()
+        except OSError:
+            prev = None
+        try:
+            text = json.dumps(active, ensure_ascii=False, indent=2)
+        except (TypeError, ValueError):
+            # Один несериализуемый ключ не должен терять весь файл.
+            logger.warn("save_tasks_state failed: unserializable entry")
+            return
+        if not _atomic_write_text(_TASKS_FILE, text):
+            logger.warn("save_tasks_state failed")
+            return
+        if prev is not None:
+            try:
+                _atomic_write_text(_TASKS_BAK_FILE, prev)
+            except Exception:
+                pass
     except OSError:
         logger.warn("save_tasks_state failed")
-    except (TypeError, ValueError):
-        # Один несериализуемый ключ не должен терять весь файл.
-        logger.warn("save_tasks_state failed: unserializable entry")
 
 
 def _periodic_save_state():
@@ -258,7 +366,15 @@ def _periodic_save_state():
 def _shutdown_handler(signum, frame):
     """Обработчик сигналов для graceful shutdown."""
     global _server_instance, _shutting_down
-    print("\n\nПолучен сигнал остановки — сохраняю состояние задач...")
+    try:
+        _loc = _server_locale or init_locale(_read_saved_lang())
+    except Exception:
+        _loc = None
+    try:
+        msg = _loc.t("signal_shutdown") if _loc is not None else "Received stop signal — saving task state..."
+    except Exception:
+        msg = "Received stop signal — saving task state..."
+    print("\n\n" + msg)
     _shutting_down = True
 
     # ВАЖНО: сначала сохраняем, потом сигналим потокам. Иначе потоки
@@ -312,11 +428,80 @@ def save_bookmarks(items):
         if s and s not in clean:
             clean.append(s)
     try:
-        with open(BOOKMARKS_FILE, "w", encoding="utf-8") as fh:
-            json.dump(clean, fh, ensure_ascii=False, indent=2)
-    except OSError:
+        text = json.dumps(clean, ensure_ascii=False, indent=2)
+    except (TypeError, ValueError):
+        sys.stderr.write("  [warn] save_bookmarks failed\n")
+        return clean
+    if not _atomic_write_text(BOOKMARKS_FILE, text):
         sys.stderr.write("  [warn] save_bookmarks failed\n")
     return clean
+
+
+def _history_entry(st):
+    """Запись истории скачивания: путь файла + метаданные задачи (без токена).
+
+    Путь собирается так же, как его пишет stream_to_file: папка задачи +
+    имя на диске (final_name = с префиксом). Для repo-задач «путь файла» —
+    сама папка репозитория (файлов много).
+    """
+    if not isinstance(st, dict):
+        return None
+    d = str(st.get("dir") or "")
+    name = disk_name(st) if st.get("kind") == "file" else ""
+    path = os.path.join(d, sanitize(name)) if (d and name) else d
+    return {
+        "ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "id": str(st.get("id") or ""),
+        "status": str(st.get("status") or ""),
+        "kind": str(st.get("kind") or "file"),
+        "source": str(st.get("source") or "hf"),
+        "name": str(st.get("name") or ""),
+        "final_name": str(st.get("final_name") or name),
+        "type": str(st.get("type") or ""),
+        "dir": d,
+        "path": path,
+        "size": int(st.get("downloaded") or 0),
+        "files_done": int(st.get("files_done") or 0),
+        "files_total": int(st.get("files_total") or 0),
+        "dir_source": str(st.get("dir_source") or ""),
+        "error": st.get("error"),
+    }
+
+
+def append_history(st):
+    """Добавить запись в .history.json (best-effort: задачу не роняем)."""
+    try:
+        entry = _history_entry(st)
+        if not entry:
+            return
+        items = load_history(limit=HISTORY_MAX - 1)
+        items.insert(0, entry)
+        save_history(items)
+    except Exception:
+        logger.warn("history: append failed")
+
+
+def load_history(limit=None):
+    """История скачивания, новейшие первыми. Битый файл — пустой список."""
+    data, _ = _read_json_with_backup(HISTORY_FILE)
+    if not isinstance(data, list):
+        return []
+    out = [x for x in data if isinstance(x, dict)]
+    if isinstance(limit, int) and limit >= 0:
+        return out[:limit]
+    return out
+
+
+def save_history(items):
+    """Атомарно записать историю (не более HISTORY_MAX записей)."""
+    if not isinstance(items, list):
+        return False
+    return _atomic_write_json(HISTORY_FILE, items[:HISTORY_MAX])
+
+
+def clear_history():
+    """Очистить историю — файл остаётся валидным JSON-списком."""
+    return _atomic_write_json(HISTORY_FILE, [])
 
 
 def load_last_dir():
@@ -331,11 +516,42 @@ def load_last_dir():
 
 
 def save_last_dir(path):
-    try:
-        with open(LAST_DIR_FILE, "w", encoding="utf-8") as fh:
-            fh.write(path)
-    except OSError:
+    if not _atomic_write_text(LAST_DIR_FILE, path):
         sys.stderr.write("  [warn] save_last_dir failed\n")
+
+
+def load_auto_root():
+    """Активный корень авто-раскладки (серверный слой для localStorage).
+
+    В отличие от load_last_dir, НЕ требуем существования папки: юзер вправе
+    указать корень заранее — create-on-demand создаст его при первой задаче.
+    Пусто/файла нет — "" (фронт решает fallback сам: localStorage → downloads).
+    """
+    try:
+        with open(AUTO_ROOT_FILE, encoding="utf-8") as fh:
+            return fh.read().strip()
+    except OSError:
+        return ""
+
+
+def save_auto_root(path):
+    """Сохранить активный корень авто-раскладки в .last_auto_root.txt."""
+    if not _atomic_write_text(AUTO_ROOT_FILE, str(path or "")):
+        sys.stderr.write("  [warn] save_auto_root failed\n")
+
+
+def load_auto_roots():
+    """Полный список корней авто-раскладки из .last_auto_roots.json.
+
+    Файла нет / битый JSON — пустой список (фронт решает fallback сам).
+    """
+    data, _ = _read_json_with_backup(AUTO_ROOTS_FILE)
+    return _clean_auto_roots(data)
+
+
+def save_auto_roots(roots):
+    """Сохранить список корней авто-раскладки (нормализованный, активный = [0])."""
+    return _atomic_write_json(AUTO_ROOTS_FILE, _clean_auto_roots(roots))
 
 
 def resolve_choose_initial_dir(requested):
@@ -490,6 +706,17 @@ def sanitize(name):
     return s[:180]
 
 
+def disk_name(st):
+    """Имя файла НА ДИСКЕ для задачи: с префиксом (final_name) либо логическое.
+
+    Логическое st["name"] остаётся «человеческим» именем для UI и журнала
+    (без префикса): по нему задача понятнее в списке. А на диске файл лежит
+    под final_name — если префикс ещё не посчитан (задача не дошла до
+    скачивания), оба совпадают.
+    """
+    return str(st.get("final_name") or st.get("name") or "")
+
+
 def safe_subdir(rel, allow_absolute=True):
     """Папка для сохранения.
 
@@ -516,6 +743,51 @@ def safe_subdir(rel, allow_absolute=True):
     return full
 
 
+def _clean_auto_roots(value, max_roots=8):
+    """Нормализовать список корней авто-раскладки из payload задачи.
+
+    Фронт шлёт весь autoRoots[] (активный = [0]); порядок = приоритет
+    поиска существующей подпапки типа. Пустые/не-строки отбрасываем,
+    дубликаты схлопываем, максимум max_roots (защита от раздутого payload).
+    """
+    if not isinstance(value, list):
+        return []
+    out = []
+    for item in value:
+        if not isinstance(item, str):
+            continue
+        s = item.strip()
+        if not s or s in out:
+            continue
+        out.append(s)
+        if len(out) >= max_roots:
+            break
+    return out
+
+
+def _effective_auto_roots(auto_dir, auto_root, auto_roots, dest, max_roots=8):
+    """Корни авто-раскладки для задачи: активный корень ВСЕГДА первый.
+
+    Фронт присылает весь список autoRoots[] (активный = [0]), но может
+    прислать и ПУСТОЙ список — если юзер ввёл корень в поле и не нажал
+    чипс «+». Тогда задача уходила в классическую раскладку
+    (pinned > папка типа из закладок > dir_base/type) и могла попасть в
+    папку ручной закладки вместо «корень/тип». Активный корень в этом
+    случае берём из поля «Путь» (dest).
+
+    Возвращает [] — режим авто-раскладки по корням не применять.
+    """
+    if not (auto_dir and auto_root):
+        return []
+    roots = _clean_auto_roots(auto_roots, max_roots=max_roots)
+    active = _clean_auto_roots([dest], max_roots=1)
+    if not active:
+        return roots
+    key = os.path.normcase(os.path.normpath(active[0]))
+    rest = [r for r in roots if os.path.normcase(os.path.normpath(r)) != key]
+    return (active + rest)[:max_roots]
+
+
 def hf_headers(token):
     h = {"User-Agent": "HF-Downloader/1.0 (+https://github.com/alexveliyar-coder/HF-Downloader)"}
     if token:
@@ -539,6 +811,22 @@ def _clean_token(token):
     return t
 
 
+def repo_path_from_file_url(url):
+    """Полный путь файла внутри репозитория из ссылки HF.
+
+    "https://huggingface.co/o/r/resolve/main/clip_vision/x.safetensors"
+        -> "clip_vision/x.safetensors"
+    "" — если ссылка не файловая. Используется классификатором типа:
+    первая папка пути — прямое указание назначения весов
+    (diffusion_models/, clip_vision/, vae/, text_encoders/, …).
+    """
+    u = str(url or "").replace("/blob/", "/resolve/").split("?")[0].rstrip("/")
+    m = re.search(r"/resolve/[^/?#]+/(.+)$", u)
+    if not m:
+        return ""
+    return urllib.parse.unquote(m.group(1))
+
+
 def parse_link(raw):
     """Разбор ссылки: файл (blob/resolve) или репозиторий."""
     url = raw.strip().strip("'\"")
@@ -560,7 +848,10 @@ def parse_link(raw):
         bm = re.search(r"/(?:blob|resolve)/([^/?#]+)", direct)
         if bm:
             branch = bm.group(1)
-        return {"kind": "file", "url": direct, "name": name, "branch": branch}
+        # Полный путь файла внутри репо (например "clip_vision/x.safetensors")
+        # — классификатор типа определяет по первой папке путь-признак.
+        return {"kind": "file", "url": direct, "name": name, "branch": branch,
+                "repo_path": repo_path_from_file_url(direct)}
     # Ветка из /tree/<branch> в репозитории
     tm = re.search(r"/tree/([^/?#]+)", url)
     if tm:
@@ -675,6 +966,233 @@ def fetch_tree(rtype, repo, token, branch="main"):
     return out
 
 
+def repo_from_file_url(url):
+    """owner/repo и rtype из ПРЯМОЙ ссылки на файл (resolve/blob).
+
+    parse_link() для kind=file намеренно не хранит репозиторий, но он нужен,
+    чтобы спросить у HF-API метаданные модели (теги, pipeline_tag, класс
+    diffusers) — из них строится префикс имени и определяется папка.
+    """
+    p = urllib.parse.urlparse(str(url or ""))
+    if "huggingface.co" not in (p.netloc or "").lower():
+        return "models", ""
+    seg = [s for s in p.path.strip("/").split("/") if s]
+    rtype = "models"
+    if seg and seg[0] in ("datasets", "spaces"):
+        rtype, seg = seg[0], seg[1:]
+    if len(seg) >= 2:
+        return rtype, f"{seg[0]}/{seg[1]}"
+    return rtype, ""
+
+
+def fetch_hf_model_meta(rtype, repo, token):
+    """Метаданные модели с HF-API: теги, pipeline_tag, класс diffusers.
+
+    Best-effort: при любой сетевой ошибке возвращаем пустой dict. От этих
+    данных зависит только имя файла и подпапка, поэтому падать из-за них
+    задача не должна (тем более что для приватных репо API может ответить 401).
+    """
+    meta = {}
+    if not repo:
+        return meta
+    try:
+        res = requests.get(
+            f"https://huggingface.co/api/{rtype}/{repo}",
+            headers=hf_headers(token),
+            timeout=15,
+        )
+        if res.status_code != 200:
+            return meta
+        data = res.json()
+    except (requests.exceptions.RequestException, ValueError):
+        return meta
+    if not isinstance(data, dict):
+        return meta
+    meta["tags"] = [str(t) for t in (data.get("tags") or [])]
+    meta["pipeline_tag"] = str(data.get("pipeline_tag") or "")
+    meta["library_name"] = str(data.get("library_name") or "")
+    diffusers = (data.get("config") or {}).get("diffusers") or {}
+    meta["diffusers_class"] = str(diffusers.get("_class_name") or "")
+    meta["repo_name"] = str(data.get("modelId") or data.get("id") or repo)
+    return meta
+
+
+def prepare_naming(st, branch="main", tid=""):
+    """Посчитать тип модели, подпапку и читаемый префикс имени файла.
+
+    Вызывается после CivitAI-resolve: настоящее имя файла и тип модели
+    появляются только там. Идемпотентна — базовую папку запоминаем в
+    dir_base, поэтому повторный вызов (ретрай, докачка) не дописывает
+    "loras/loras" второй раз.
+
+    Репозитории (kind=repo) НЕ раскладываем: у diffusers-репо своя структура
+    (vae/, text_encoder/, unet/), и перенос её ломает.
+    """
+    if not isinstance(st, dict) or st.get("kind") != "file":
+        return
+    # Идемпотентность: раскладка выполняется один раз на задачу. После неё
+    # st["dir"] — уже финальная папка, а st["dir_base"] — исходная из поля
+    # «Путь». Иначе ретрай/докачка перекладывали бы файл, если юзер успел
+    # переупорядочить закладки между попытками.
+    if st.get("dir_resolved"):
+        return
+    base_dir = st.get("dir_base") or st["dir"]
+    st["dir_base"] = base_dir
+    src = str(st.get("source", "hf"))
+    display_name = st.get("name") or ""
+    if not display_name:
+        return
+    meta = dict(st.get("meta") or {})
+    meta["weight_file"] = is_weight_file(display_name)
+    repo = ""
+    if src.startswith("civitai"):
+        mtype = classify_civitai(meta.get("model_type", ""), display_name)
+    else:
+        # Метаданные HF тянем один раз на задачу: теги и класс diffusers дают
+        # точный тип там, где имя файла бессмысленно
+        # (diffusion_pytorch_model.safetensors).
+        if not meta.get("hf_loaded"):
+            rtype, repo = repo_from_file_url(st.get("link") or st.get("url") or "")
+            meta.update(fetch_hf_model_meta(rtype, repo, st.get("token", "")))
+            meta["hf_loaded"] = True
+        repo = repo or str(meta.get("repo_name") or "")
+        if not repo:
+            _, repo = repo_from_file_url(st.get("link") or st.get("url") or "")
+        # Полный путь файла в репозитории ("clip_vision/x.safetensors") —
+        # приоритетный признак типа: структура ComfyUI-репо говорит сама.
+        file_path = str(st.get("repo_path") or "")
+        if not file_path:
+            # Задачи, созданные до появления repo_path (старый .tasks.json):
+            # достаём путь из ссылки на лету.
+            file_path = repo_path_from_file_url(st.get("link") or st.get("url") or "")
+        mtype = classify_hf(meta, file_path=file_path or display_name, repo=repo)
+    st["meta"] = meta
+    st["type"] = mtype or FALLBACK_TYPE
+    # Свитч «Префикс имени»: выкл (use_prefix=False, дефолт для старых задач
+    # без поля — True) = имя файла НЕ трогаем, final_name = исходное.
+    # Иначе — авто-префикс из метаданных + ручной первым токеном.
+    if st.get("use_prefix", True):
+        st["final_name"] = apply_prefix(display_name, build_prefix(
+            source=src, kind="file", repo=repo, branch=branch, meta=meta,
+            model_type=mtype, user_prefix=st.get("prefix") or "",
+        ))
+    else:
+        st["final_name"] = display_name
+    # При включённом свитче папка есть ВСЕГДА, даже для неопознанного типа:
+    # файл, сваленный в корень вместе со всем остальным, — ровно та проблема,
+    # ради которой свитч и делался. "other" честно показывает, что тип не
+    # определился, и его видно в списке.
+    #
+    # Приоритет: 1) pinned — поле «Путь» совпало с закладкой (юзер явно
+    # тыкнул, его выбор важнее догадок); 2) тихий поиск папки типа среди
+    # закладок (первое совпадение имени); 3) подпапка dir_base + type_subdir.
+    # Закладки читаются с диска (hfdl_bookmarks.json), фронт синкает их
+    # заранее; при гонке задача уйдёт по старому списку — это осознанный
+    # компромисс тихого режима без настроек.
+    st["dir_source"] = ""
+    # --- Режим 2: авто-раскладка по КОРНЯМ (autoRootChips) ---
+    # Юзер задал один или несколько корней (D:/Models, downloads, ...),
+    # фронт прислал весь список: активный = [0]. Ищем ПЕРВЫЙ корень,
+    # в котором уже существует подпапка этого типа (loras/checkpoints/...),
+    # иначе — активный корень + подпапка. Никаких закладок/pinned:
+    # при включённом свитче ручной выбор полностью недоступен.
+    if st.get("auto_dir") and st.get("auto_root") and st.get("auto_roots"):
+        roots = [r for r in st["auto_roots"] if isinstance(r, str) and r.strip()]
+        if not roots:
+            # Список пришёл, но после чистки пуст — раскладываем от dir_base
+            # (то же поведение, что у классического fallback ниже).
+            roots = [base_dir]
+        subdir = type_subdir(mtype or FALLBACK_TYPE)
+        # АКТИВНЫЙ корень (roots[0]) — это то, что юзер явно выбрал в поле
+        # «Путь», и он побеждает БЕЗУСЛОВНО. Раньше здесь искался
+        # «первый корень, где уже есть подпапка типа», и активный пропускался, если
+        # подпапки ещё не было — файл уезжал в другой корень
+        # (dir_source='auto-root-hit'). На живых данных юзер выбрал ...\models\test_download,
+        # а файл лёг в ...\models\loras — там loras уже был только там. Оставные
+        # корни — запасные: в них уходим только если активный
+        # недоступен (нет диска/прав).
+        chosen = None
+        for i, r in enumerate(roots):
+            try:
+                cand = (os.path.join(safe_subdir(r), subdir) if subdir
+                        else safe_subdir(r))
+            except (CoreError, OSError):
+                continue  # корень недоступен — пробуем следующий
+            chosen = cand
+            if i > 0:
+                # Активный корень недоступен — ушли в запасной,
+                # помечаем отдельно (видно в карточке).
+                st["dir_source"] = "auto-root-hit"
+            break
+        if chosen is None:
+            chosen = os.path.join(safe_subdir(roots[0]), subdir) if subdir else safe_subdir(roots[0])
+        st["dir"] = chosen
+        # Превентивное создание: корень и подпапка типа появляются сразу при
+        # резолве задачи, а не в момент открытия файла на запись. Безопасно:
+        # ошибку диска (нет диска, права) не роняем — run_task всё равно
+        # повторит makedirs перед скачиванием, там будет честный Exception.
+        try:
+            os.makedirs(st["dir"], exist_ok=True)
+            logger.info(f"Task {tid or '?'} auto: ensured dir {st['dir']}")
+        except OSError as e:
+            logger.warning(f"Task {tid or '?'} auto: could not pre-create {st['dir']}: {e}")
+        if st["type"] == FALLBACK_TYPE:
+            # Неопознанный тип: файл ляжет в корень/other. dir_source оставляем
+            # пустым — фронтовский фильтр «Нераспределённые» (needsReview)
+            # собирает такие ссылки за сессию.
+            st["dir_source"] = ""
+            logger.info(f"Task {tid or '?'} auto: type unknown -> {st['dir']} (unsorted)")
+        elif not st["dir_source"]:
+            st["dir_source"] = "auto-root"
+    # --- Режим 1: классическая авто-раскладка (pinned > bookmark > base/type) ---
+    elif st.get("auto_dir"):
+        try:
+            bookmarks = load_bookmarks()
+        except OSError:
+            bookmarks = []
+        pinned = match_pinned_dir(base_dir, bookmarks)
+        # ВАЖНО: pinned и тихий bookmark-хит — уже КОНЕЧНЫЕ папки
+        # ("D:/SDXL/loras" содержит тип в имени), подпапку НЕ дописываем.
+        # А fallback dir_base + type_subdir — только когда НЕТ попаданий.
+        # Ошибка прошлого кода: pinned ставил dir, а общий else ниже
+        # дописывал type_subdir поверх (".../loras/loras").
+        dest_dir = None
+        if pinned:
+            try:
+                dest_dir = safe_subdir(pinned)
+                st["dir_source"] = "pinned"
+                logger.info(f"Task {tid or '?'} dir: pinned bookmark -> {dest_dir}")
+            except (CoreError, OSError):
+                dest_dir = None
+        if dest_dir is None and not pinned:
+            try:
+                bm_hit = match_bookmark_dir(mtype, bookmarks)
+            except OSError:
+                bm_hit = ""
+            if bm_hit:
+                try:
+                    dest_dir = safe_subdir(bm_hit)
+                    st["dir_source"] = "bookmark"
+                    logger.info(f"Task {tid or '?'} dir: bookmark hit -> {dest_dir}")
+                except (CoreError, OSError):
+                    dest_dir = None
+        if dest_dir is not None:
+            st["dir"] = dest_dir
+        else:
+            # Сюда попадаем в трёх случаях: битая закладка, нет попаданий,
+            # либо pinned/bookmark не смогли резолвиться. Во всех — честный
+            # fallback: подпапка типа под dir_base.
+            subdir = type_subdir(mtype or FALLBACK_TYPE)
+            st["dir"] = os.path.join(base_dir, subdir) if subdir else base_dir
+    else:
+        st["dir"] = base_dir
+    st["dir_resolved"] = True
+    logger.info(
+        f"Task {tid or '?'} naming: type={st['type']} auto_dir={bool(st.get('auto_dir'))} "
+        f"dir={st['dir']} file={st['final_name']}"
+    )
+
+
 def _civitai_headers(url, token):
     """Заголовки для скачивания файла с CivitAI.
 
@@ -709,8 +1227,13 @@ def stream_to_file(url, dest, token, st, headers_fn=None):
     if start > 0:
         headers["Range"] = f"bytes={start}-"
         resume_attempted = True
+        # Докачанный объём показываем сразу, до первого чанка: редирект
+        # на CDN и TLS занимают секунды, и всё это время восстановленная
+        # задача выглядела бы как «0 Б» вместо реального места.
+        with LOCK:
+            st["downloaded"] = st["base"] + start
 
-    res = requests.get(url, headers=headers, stream=True, timeout=(15, 900))
+    res = requests.get(url, headers=headers, stream=True, timeout=(15, 60))
     try:
         if res.status_code in (401, 403):
             raise CoreError(res.status_code)
@@ -765,6 +1288,12 @@ def stream_to_file(url, dest, token, st, headers_fn=None):
         limit_b = limit * 1024 * 1024  # MB/s -> bytes/s
         window_start = time.monotonic()
         window_bytes = 0
+        # Watchdog зависшего CDN: если сервер держит соединение, но байты не
+        # идут дольше STALL_TIMEOUT — рвём как сетевую ошибку, и
+        # _stream_with_retry докачает через Range с .part. Одного read-timeout
+        # мало: requests продлевает его каждым пришедшим байтом, а итератор
+        # iter_content может ждать следующий чанк неопределённо долго.
+        last_progress = time.monotonic()
         with open(part, mode) as fh:
             for chunk in res.iter_content(chunk_size=CHUNK):
                 # пауза: ждём, пока не разрешат продолжать
@@ -772,11 +1301,14 @@ def stream_to_file(url, dest, token, st, headers_fn=None):
                     if st["cancel"]:
                         raise CoreError(-2, "cancelled")
                     time.sleep(0.2)
+                    # Пауза — не стагнация CDN: сдвигаем watchdog.
+                    last_progress = time.monotonic()
                 if st["cancel"]:
                     raise CoreError(-2, "cancelled")
                 if chunk:
                     fh.write(chunk)
                     downloaded += len(chunk)
+                    last_progress = time.monotonic()
                     window_bytes += len(chunk)
                     now = time.time()
                     dt = now - last_t
@@ -832,16 +1364,46 @@ def stream_to_file(url, dest, token, st, headers_fn=None):
                                 # window_bytes — иначе после паузы лимит сбивается.
                                 window_start = wnow - (window_bytes / limit_b)
                     with LOCK:
-                        st["downloaded"] = st["base"] + (downloaded - start)
+                        # ВАЖНО: start здесь НЕ вычитаем. Локальный
+                        # downloaded стартует со start и копит байты, то
+                        # есть это ВСЕГО байт в .part на диске. Раньше
+                        # было `downloaded - start` — только байты текущей
+                        # попытки, поэтому после ЛЮБОЙ докачки (ретрай по
+                        # сети, рестарт приложения, «Продолжить») прогресс
+                        # прыгал на ~0 %, хотя файл дописывался. Замерено
+                        # на живой задаче: .part = 5.30 ГБ, UI = 2.05 ГБ —
+                        # ровно минус докачанный префикс 3.25 ГБ.
+                        st["downloaded"] = st["base"] + downloaded
                         st["total"] = st["base_total"] if st["base_total"] else (st["base"] + total_size)
                         st["speed"] = speed
+                # Watchdog зависшего CDN. ВАЖНО: ветка elif — часть ЭТОГО ЖЕ if,
+                # поэтому всё, что стоит после raise, недостижимо. Так «умерли»
+                # расчёт скорости, лимит скорости и запись st["downloaded"],
+                # st["total"], st["speed"]: файл качался, а UI вечно показывал
+                # 0 Б и 0 % (и .tasks.json сохранял нули). Пустые чанки отдаёт
+                # только мок/нестандартный CDN — реальная стагнация ловится
+                # сокет-таймаутом (15, 60), эта ветка бесплатная страховка.
+                elif time.monotonic() - last_progress > STALL_TIMEOUT:
+                    raise requests.exceptions.Timeout(
+                        f"stalled for {STALL_TIMEOUT}s at {downloaded} bytes"
+                    )
 
         # Если докачка не удалась — удаляем .part и начинаем с чистого листа
         if not resume_attempted and start > 0:
             os.remove(part)
 
         os.replace(part, dest)
-        return os.path.getsize(dest)
+        actual = os.path.getsize(dest)
+        # Сверка размера: усечённый файл (прокси оборвал, CDN отдал меньше
+        # заявленного) не должен помечаться done. total_size==0 — сервер не
+        # сообщил размер: сверить не с чем, принимаем как есть.
+        if total_size and actual != total_size:
+            try:
+                os.remove(dest)
+            except OSError:
+                pass
+            raise CoreError(-3, "truncated")
+        return actual
     finally:
         res.close()
 
@@ -892,6 +1454,20 @@ def _stream_with_retry(url, dest, token, st, headers_fn=None, max_retries=5):
             # цикл продолжается — попытка снова
 
 
+def _explorer_select_cmd(path):
+    """Командная строка для «выделить файл в проводнике» (Windows).
+
+    explorer.exe парсит аргументы ПО-СВОЕМУ, не как обычные программы:
+    путь должен быть слит с флагом в один токен — `/select,"C:\\...\\file"`.
+    Разделённые аргументы ("/select," + путь) subprocess склеивает через
+    пробел и кавычки list2cmdline ("/select, C:\\..."), и для путей с
+    пробелами парсинг ломается — explorer молча открывает окно по умолчанию
+    (рабочий стол) вместо папки с файлом. Поэтому возвращаем ГОТОВУЮ строку
+    для subprocess.Popen (на Windows строка уходит в CreateProcess как есть).
+    """
+    return 'explorer.exe /select,"' + os.path.abspath(path) + '"'
+
+
 def open_location(path):
     """Открыть файл/папку в системном файловом менеджере.
 
@@ -905,7 +1481,10 @@ def open_location(path):
     try:
         if os.name == "nt":
             if os.path.isfile(path):
-                subprocess.Popen(["explorer.exe", "/select,", path])
+                # Строковый вызов: см. _explorer_select_cmd — списковый
+                # subprocess.Popen(["explorer.exe", "/select,", path])
+                # ломается на путях с пробелами (открывается рабочий стол).
+                subprocess.Popen(_explorer_select_cmd(path))
             else:
                 os.startfile(path)
         elif sys.platform == "darwin":
@@ -947,6 +1526,10 @@ def _start_next_if_seq():
 
 def run_task(tid):
     st = TASKS[tid]
+    # id задачи живёт КЛЮЧОМ в TASKS, а в самом словаре задачи его нет —
+    # из-за этого _history_entry писал в .history.json пустой id. setdefault:
+    # у задач, восстановленных из .tasks.json, id уже есть и не перетирается.
+    st.setdefault("id", tid)
     branch = st.get("branch", "main")
     max_retries = st.get("max_retries", 3)
     # Жизненный цикл задачи в лог: без этой строки невозможно понять, дошло ли
@@ -976,7 +1559,7 @@ def run_task(tid):
         if not token:
             raise CoreError(401)
         try:
-            filename, url, size_bytes = get_civitai_download_url(
+            filename, url, size_bytes, info = get_civitai_download_url(
                 model_id=model_id,
                 version_id=version_id,
                 file_id=file_id,
@@ -1020,6 +1603,20 @@ def run_task(tid):
                 # Плейсхолдер из ссылки заменяем настоящим именем файла
                 st["name"] = filename
             st["url"] = url
+            # Метаданные модели — из них собирается читаемый префикс имени
+            # файла (DreamShaper-v8-sd15-checkpoint-fp16) и определяется
+            # подпапка. Всё это уже пришло в ответе API, лишних запросов нет.
+            st["meta"] = {
+                "model_name": info.get("model_name", ""),
+                "version_name": info.get("version_name", ""),
+                "base_model": info.get("base_model", ""),
+                "model_type": info.get("model_type", ""),
+                "format": info.get("format", ""),
+                "fp": info.get("fp", ""),
+                "size": info.get("size", ""),
+                "trained_words": info.get("trained_words") or [],
+                "weight_file": is_weight_file(filename),
+            }
             if size_bytes > 0:
                 st["total"] = size_bytes
             logger.info(f"CivitAI resolved: {filename} ({size_bytes} bytes)")
@@ -1073,9 +1670,13 @@ def run_task(tid):
                         st["name"] = civ.get("name", "")
                     st["url"] = ""
             _do_civitai_resolve()
+        # Тип модели, подпапка и читаемый префикс — после resolve, чтобы у
+        # CivitAI уже было настоящее имя файла из API.
+        prepare_naming(st, branch=branch, tid=tid)
         # name может отсутствовать для HF-задач после восстановления из .tasks.json —
-        # берём имя из URL как fallback (последний сегмент пути).
-        name = st.get("name") or st.get("current") or urllib.parse.urlparse(st.get("url", "")).path.rstrip("/").split("/")[-1] or "model"
+        # берём имя из URL как fallback (последний сегмент пути). На диск пишем
+        # final_name (с префиксом), логическое st["name"] остаётся для UI.
+        name = disk_name(st) or urllib.parse.urlparse(st.get("url", "")).path.rstrip("/").split("/")[-1] or "model"
         dest = os.path.join(st["dir"], sanitize(name))
         # Если файл уже на диске и размер совпадает с заявленным — считаем
         # его скачанным, не трогаем. Для CivitAI размер уже известен из
@@ -1241,10 +1842,10 @@ def run_task(tid):
                 st["speed"] = 0
                 logger.warn(f"Task deleted by user for {st.get('repo') or st.get('name') or 'unknown'}")
         elif e.status == -3:
-            # Rate-limit / серверная ошибка, долетевшая до верха (напр. из
-            # _sleep_with_cancel): ждём и уходим в следующий цикл run_task.
-            # Отдельная except-ветка ниже была дубликатом — объединено здесь,
-            # чтобы не было B025 (duplicate exception).
+            # Rate-limit / серверная ошибка / усечённый файл, долетевшие до
+            # верха (напр. из _sleep_with_cancel): ждём и уходим в следующий
+            # цикл run_task. Отдельная except-ветка ниже была дубликатом —
+            # объединено здесь, чтобы не было B025 (duplicate exception).
             if not st["cancel"]:
                 delay = min(st.get("retry_delay", 2) * 2, 60)
                 logger.warn(
@@ -1265,11 +1866,18 @@ def run_task(tid):
         logger.error(f"Network error for {st.get('repo') or st.get('name') or 'unknown'}: {e!r}")
         logger.error(traceback.format_exc())
     finally:
+        # История скачивания: после done/error задача уходит из TASKS (и из
+        # .tasks.json), поэтому путь файла сохраняем отдельным файлом. Не
+        # пишем при выключении приложения (это пауза — задача будет докачана)
+        # и не пишем при отмене: недокачанный .part удаляется, запоминать
+        # нечего. Токены в запись не попадают (см. _history_entry).
+        if not st.get("_shutdown") and st.get("status") in ("done", "error"):
+            append_history(st)
         # .part удаляем ТОЛЬКО при успехе: при ошибке/отмене он нужен для
         # докачки (Range). Раньше удалялся всегда — «Попробовал и прервал»
         # означало качать заново с нуля, а при ретрае прогресс терялся.
         if st.get("status") == "done":
-            part = os.path.join(st["dir"], sanitize(st.get("name", "")) + ".part")
+            part = os.path.join(st["dir"], sanitize(disk_name(st)) + ".part")
             if os.path.exists(part):
                 try:
                     os.remove(part)
@@ -1330,7 +1938,8 @@ def _cleanup_task_parts(st):
     if not isinstance(st, dict):
         return
     d = st.get("dir")
-    name = st.get("name")
+    # Имя на диске — с префиксом (final_name): именно так файл лежит на диске.
+    name = disk_name(st)
     if not d or not name:
         return
     base = sanitize(str(name))
@@ -1369,20 +1978,37 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
+    def _ref_ok(self, ref):
+        """Referer указывает на нашу же страницу (любой вариант записи)."""
+        if not ref:
+            return False
+        return (ref.startswith(f"http://127.0.0.1:{_actual_web_port}/") or
+                ref.startswith(f"http://localhost:{_actual_web_port}/"))
+
     def _origin_ok(self):
         """Разрешаем только локальному интерфейсу обращаться к ядру."""
         o = self.headers.get("Origin")
-        if not o:  # curl / серверные вызовы
-            return True
+        ref = self.headers.get("Referer") or ""
+        if not o:
+            # ВАЖНО: браузеры НЕ отправляют Origin на no-cors GET-подресурсы
+            # (<img>, <script>, <link>), поэтому «нет Origin» ≠ «можно».
+            # Различаем два случая:
+            #   - ни Origin, ни Referer  → curl/CLI/серверный вызов (разрешаем);
+            #   - Referer есть и он не наш → cross-site запрос (запрещаем).
+            # Это закрывает самый обычный вариант подделки; окончательную
+            # гарантию даёт то, что ВСЕ мутирующие операции доступны только
+            # через POST (на POST браузер всегда шлёт Origin, а его проверяет
+            # ветка ниже), а GET-эндпоинты ядра — только чтение.
+            if not ref:
+                return True  # curl / серверные вызовы
+            return self._ref_ok(ref)
         if o in ALLOWED_ORIGINS:
             return True
         # pywebview/WebView2 может присылать Origin: null. Пропускаем ТОЛЬКО
         # нашу собственную страницу (проверка по Referer), чтобы file://-страница
         # из браузера (у неё Origin тоже null) не получила доступ к ядру.
         if o == "null":
-            ref = self.headers.get("Referer") or ""
-            return (ref.startswith(f"http://127.0.0.1:{_actual_web_port}/") or
-                    ref.startswith(f"http://localhost:{_actual_web_port}/"))
+            return self._ref_ok(ref)
         return False
 
     def _json(self, obj, code=200):
@@ -1421,6 +2047,23 @@ class Handler(BaseHTTPRequestHandler):
             return
         if u.path == "/api/last_dir":
             self._json({"path": load_last_dir()})
+            return
+        if u.path == "/api/last_auto_root":
+            self._json({"path": load_auto_root()})
+            return
+        if u.path == "/api/last_auto_roots":
+            # Полный список корней авто-раскладки: фронт восстанавливает его
+            # при старте, если localStorage пуст (слетевший профиль WebView2).
+            self._json({"roots": load_auto_roots()})
+            return
+        if u.path == "/api/history":
+            # История скачивания (новейшие первыми). limit в query — для UI.
+            qs = urllib.parse.parse_qs(u.query)
+            try:
+                limit = int((qs.get("limit") or [200])[0])
+            except (TypeError, ValueError):
+                limit = 200
+            self._json({"items": load_history(limit=max(1, min(HISTORY_MAX, limit)))})
             return
         if u.path == "/api/resolve_dir":
             # Юзер ввёл что-то в поле "Путь" — возвращаем реальный путь
@@ -1468,22 +2111,15 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == "/api/logs":
             self._json({"logs": logger.all()})
             return
-        if u.path == "/api/logs/clear":
-            logger.clear()
-            self._json({"ok": True})
-            return
-        # Установка предпочтительного языка (вызывается frontend при смене языка)
-        if u.path == "/api/lang":
-            global _server_locale
-            lang = urllib.parse.unquote(u.query or "")
-            # u.query — это строка "lang=ru"; выделяем значение параметра.
-            if "=" in lang:
-                lang = lang.split("=", 1)[1]
-            if lang in SUPPORTED_LANGUAGES:
-                _server_locale = get_locale(lang)
-                self._json({"lang": lang})
-                return
-            self._json({"error": "unsupported language"}, 400)
+        if u.path in ("/api/logs/clear", "/api/lang"):
+            # Раньше и очистка журнала, и смена языка ядра были доступны ещё и
+            # через GET. Это мутирующие операции, а браузер не отправляет Origin
+            # на no-cors GET-подресурсы (<img>/<script>/<link>) — значит чужой
+            # сайт мог стереть журнал (уничтожить диагностику) или подменить
+            # язык ядра, вообще не проходя проверку Origin. Оба эндпоинта
+            # теперь только POST: на POST браузер ВСЕГДА шлёт Origin, и
+            # _origin_ok() такие запросы отклоняет.
+            self._json({"error": "method not allowed"}, 405)
             return
         if u.path == "/api/tasks":
             # Список всех задач — фронтенд подгружает его при старте, чтобы
@@ -1496,6 +2132,11 @@ class Handler(BaseHTTPRequestHandler):
                         "kind": st["kind"],
                         "source": st.get("source", "hf"),
                         "name": st.get("name", ""),
+                        "final_name": st.get("final_name", ""),
+                        "type": st.get("type", ""),
+                        "auto_dir": bool(st.get("auto_dir", False)),
+                        "use_prefix": bool(st.get("use_prefix", True)),
+                        "dir_source": st.get("dir_source", ""),
                         "repo": st.get("repo", ""),
                         "dir": st.get("dir", ""),
                         "link": st.get("url", ""),
@@ -1533,6 +2174,14 @@ class Handler(BaseHTTPRequestHandler):
                     "retries": st.get("retries", 0),
                     "max_retries": st.get("max_retries", 3),
                     "speed_limit": st.get("speed_limit", 0),
+                    # Итоговые папка/имя и тип модели: UI должен показать, куда
+                    # реально попадёт файл, ещё во время скачивания.
+                    # dir_source=bookmark — файл ушёл в папку из закладок,
+                    # а не в подпапку поля «Путь».
+                    "dir": st.get("dir", ""),
+                    "dir_source": st.get("dir_source", ""),
+                    "final_name": st.get("final_name", ""),
+                    "type": st.get("type", ""),
                 })
             return
         self._json({"error": "not found"}, 404)
@@ -1547,6 +2196,14 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(n).decode("utf-8")) if n else {}
         except Exception:
             body = {}
+
+        if u.path == "/api/logs/clear":
+            # Очистка журнала — только POST (см. комментарий в do_GET): через
+            # GET этот мутирующий эндпоинт был доступен чужому сайту.
+            # Фронтенд уже вызывает его методом POST.
+            logger.clear()
+            self._json({"ok": True})
+            return
 
         if u.path == "/api/lang":
             # Сохранение предпочтения языка. main.py при старте читает .lang.txt
@@ -1600,6 +2257,14 @@ class Handler(BaseHTTPRequestHandler):
             # сохранения/восстановления имя файла не терялось.
             if not parsed.get("name") and parsed.get("kind") == "file":
                 parsed["name"] = urllib.parse.urlparse(parsed.get("url", "")).path.rstrip("/").split("/")[-1] or "model"
+            # Авто-раскладка: активный корень (поле «Путь» = dest) всегда
+            # первый в списке. Пустой список от фронта (корень введён, чипс
+            # «+» не нажат) больше не сваливает задачу в классическую ветку
+            # раскладки по закладкам — см. _effective_auto_roots.
+            auto_dir_on = bool(body.get("auto_dir"))
+            auto_root_on = bool(body.get("auto_root"))
+            auto_roots = _effective_auto_roots(auto_dir_on, auto_root_on,
+                                               body.get("auto_roots"), dest)
             st = {
                 "kind": parsed["kind"],
                 "source": parsed.get("source", "hf"),
@@ -1607,6 +2272,7 @@ class Handler(BaseHTTPRequestHandler):
                 "url": parsed.get("url", ""),
                 "link": str(link or ""),
                 "repo": parsed.get("repo", ""),
+                "repo_path": str(parsed.get("repo_path") or ""),
                 "rtype": parsed.get("rtype", "models"),
                 "branch": branch,
                 "dir": dest,
@@ -1624,6 +2290,21 @@ class Handler(BaseHTTPRequestHandler):
                 "max_retries": 3,
                 "retry_delay": 2,
                 "speed_limit": 0,
+                # Автопрефикс: раскладывать файл по подпапкам типа
+                # (loras/vae/text_encoders/...) и добавлять к имени читаемый
+                # префикс из метаданных. use_prefix — свитч «Префикс имени»
+                # (выкл = имя файла не трогаем); prefix — ручной префикс.
+                "auto_dir": auto_dir_on,
+                "auto_root": auto_root_on,
+                "auto_roots": auto_roots,
+                "use_prefix": bool(body.get("use_prefix", True)),
+                "prefix": str(body.get("prefix") or "").strip()[:60],
+                "dir_base": dest,
+                "dir_source": "",
+                "dir_resolved": False,
+                "final_name": "",
+                "type": "",
+                "meta": {},
             }
             # CivitAI: сохраняем дополнительные поля
             if st["source"].startswith("civitai"):
@@ -1650,7 +2331,10 @@ class Handler(BaseHTTPRequestHandler):
                 TASKS[tid] = st
             if st["status"] == "downloading":
                 threading.Thread(target=run_task, args=(tid,), daemon=True).start()
-            self._json({"id": tid, "kind": parsed["kind"], "status": st["status"], "dir": dest})
+            self._json({"id": tid, "kind": parsed["kind"], "status": st["status"],
+                        "dir": dest, "auto_dir": st["auto_dir"],
+                        "use_prefix": st["use_prefix"], "prefix": st["prefix"],
+                        "type": st.get("type", ""), "final_name": st.get("final_name", "")})
             return
 
         if u.path == "/api/bookmarks":
@@ -1675,6 +2359,30 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"path": path})
             return
 
+        if u.path == "/api/last_auto_root":
+            # Корень авто-раскладки: в отличие от ручного пути, НЕ требуем
+            # существования папки — юзер может указать корень заранее,
+            # create-on-demand создаст её при первой задаче.
+            path = str(body.get("path") or "").strip()
+            if not path or len(path) > 200 or "\n" in path:
+                self._json({"error": "bad path"}, 400)
+                return
+            save_auto_root(path)
+            self._json({"path": path})
+            return
+
+        if u.path == "/api/last_auto_roots":
+            # Список корней авто-раскладки целиком (активный = [0]).
+            roots = _clean_auto_roots(body.get("roots"))
+            save_auto_roots(roots)
+            self._json({"roots": roots})
+            return
+
+        if u.path == "/api/history/clear":
+            clear_history()
+            self._json({"ok": True})
+            return
+
         if u.path == "/api/open":
             # Кнопка «показать в папке»: открыть скачанный файл/папку в проводнике.
             tid = str(body.get("id") or "")
@@ -1682,8 +2390,9 @@ class Handler(BaseHTTPRequestHandler):
                 st = TASKS.get(tid) or HISTORY.get(tid)
             if st:
                 if st["kind"] == "file" and st.get("name"):
-                    # файл ещё качается — открываем саму папку загрузки
-                    f = os.path.join(st["dir"], sanitize(st["name"]))
+                    # файл ещё качается — открываем саму папку загрузки.
+                    # На диске имя с префиксом (final_name), не логическое name.
+                    f = os.path.join(st["dir"], sanitize(disk_name(st)))
                     path = f if os.path.isfile(f) else st["dir"]
                 else:
                     path = st["dir"]
@@ -1694,7 +2403,9 @@ class Handler(BaseHTTPRequestHandler):
                 # поэтому резолвим его относительно BASE_DIR, а не рабочей
                 # директории процесса (иначе откроется не то место).
                 d = str(body.get("dir") or "").strip()
-                nm = str(body.get("name") or "")
+                # Фронтенд присылает и логическое имя (name), и имя на диске
+                # (final_name, с префиксом) — открывать нужно второе.
+                nm = str(body.get("final_name") or body.get("name") or "")
                 if not d:
                     self._json({"error": "not found"}, 404)
                     return

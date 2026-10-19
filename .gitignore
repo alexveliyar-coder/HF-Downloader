@@ -21,9 +21,12 @@ hfdl_token
 
 # --- Runtime-артефакты программы (рядом с main.py) ---
 .tasks.json
-.tasks.json.bak
+.tasks.bak.json
 .lang.txt
 .last_dir.txt
+.last_auto_root.txt
+.last_auto_roots.json
+.history.json
 .hfdl_log.txt
 hfdl_bookmarks.json
 downloads/**

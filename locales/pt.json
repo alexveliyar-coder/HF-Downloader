@@ -37,5 +37,15 @@
   "civitai_no_url": "O CivitAI não retornou um URL de download. Pode ser necessário um token válido.",
   "civitai_api_error": "Erro na API do CivitAI.",
   "pasteFail": "Não foi possível ler a área de transferência",
-  "toastPasted": "Inserido da área de transferência"
+  "toastPasted": "Inserido da área de transferência",
+  "dep_missing": "Dependência não encontrada: %s",
+  "dep_auto_install": "Tentando instalar automaticamente (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Dependências instaladas, continuando.",
+  "dep_still_fail": "A instalação terminou mas a importação continua falhando.",
+  "dep_error_text": "Texto do erro: %s",
+  "dep_manual": "Tente manualmente:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "Não foi possível instalar as dependências automaticamente.",
+  "update_available": "HF Downloader: nova versão %s disponível (você tem %s)",
+  "update_prerelease": "(é uma prerelease — pode ser instável)",
+  "update_latest": "Você tem a versão mais recente (%s)."
 }

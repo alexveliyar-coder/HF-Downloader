@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI не вернул ссылку для скачивания. Требуется действующий токен.",
   "civitai_api_error": "Ошибка API CivitAI.",
   "pasteFail": "Не удалось прочитать буфер обмена",
-  "toastPasted": "Вставлено из буфера обмена"
+  "toastPasted": "Вставлено из буфера обмена",
+  "dep_missing": "Не найдена зависимость: %s",
+  "dep_auto_install": "Пробую установить автоматически (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Зависимости установлены, продолжаю.",
+  "dep_still_fail": "Установка прошла, но импорт всё равно не удался.",
+  "dep_error_text": "Текст ошибки: %s",
+  "dep_manual": "Попробуйте вручную:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "Не удалось установить зависимости автоматически.",
+  "update_available": "HF Downloader: доступна новая версия %s (у вас %s)",
+  "update_prerelease": "(это prerelease — может быть нестабильной)",
+  "update_latest": "У вас последняя версия (%s)."
 }

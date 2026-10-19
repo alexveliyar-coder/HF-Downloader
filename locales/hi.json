@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI ने डाउनलोड URL नहीं दिया। मॉडल को मान्य टोकन की आवश्यकता हो सकती है।",
   "civitai_api_error": "CivitAI API त्रुटि।",
   "pasteFail": "क्लिपबोर्ड पढ़ने में विफल",
-  "toastPasted": "क्लिपबोर्ड से डाला गया"
+  "toastPasted": "क्लिपबोर्ड से डाला गया",
+  "dep_missing": "निर्भरता नहीं मिली: %s",
+  "dep_auto_install": "स्वतः इंस्टॉल का प्रयास (python -m pip install -r requirements.txt)...",
+  "dep_installed": "निर्भरताएँ इंस्टॉल हो गईं, जारी रख रहा हूँ।",
+  "dep_still_fail": "इंस्टॉल पूरा हुआ लेकिन इम्पोर्ट अब भी विफल है।",
+  "dep_error_text": "त्रुटि पाठ: %s",
+  "dep_manual": "मैन्युअल रूप से आज़माएँ:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "निर्भरताएँ स्वचालित रूप से इंस्टॉल नहीं हो सकीं।",
+  "update_available": "HF Downloader: नया संस्करण %s उपलब्ध है (आपके पास %s)",
+  "update_prerelease": "(यह prerelease है — अस्थिर हो सकता है)",
+  "update_latest": "आपके पास नवीनतम संस्करण है (%s)।"
 }

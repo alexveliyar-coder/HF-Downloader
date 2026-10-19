@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HF Downloader — офлайн</title>
+<title>HF Downloader — offline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -372,14 +372,14 @@
         </button>
         <div class="dd-menu" id="langMenu"></div>
       </div>
-      <button class="hbtn" id="logsBtn" type="button" title="Журнал событий" style="position:relative">
+      <button class="hbtn" id="logsBtn" type="button" title="Event log" style="position:relative">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span id="logsLbl">Журнал</span>
+        <span id="logsLbl">Journal</span>
         <span id="logsBadge" style="display:none; position:absolute; top:-4px; right:-4px; width:9px; height:9px; border-radius:50%; background:var(--err); border:2px solid var(--ink-950);"></span>
       </button>
       <button class="hbtn" id="helpBtn" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
-        <span id="helpLbl">Обучение</span>
+        <span id="helpLbl">Guide</span>
       </button>
       <a class="support-btn" id="boostyBtn" href="https://boosty.to/veliyar_ensophia" target="_blank" rel="noopener noreferrer" title="Boosty" aria-label="Boosty">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.661 14.337 6.801 0h6.362L11.88 4.444l-.038.077-3.378 11.733h3.15c-1.321 3.289-2.35 5.867-3.086 7.733-5.816-.063-7.442-4.228-6.02-9.155M8.554 24l7.67-11.035h-3.25l2.83-7.073c4.852.508 7.137 4.33 5.791 8.952C20.16 19.81 14.344 24 8.68 24h-.127z"/></svg>
@@ -391,7 +391,7 @@
       </a>
     </div>
     <div style="width:100%; display:flex; justify-content:flex-end; margin-top:2px;">
-      <span id="supportHeaderText">Поддержи независимую open-source разработку.</span>
+      <span id="supportHeaderText">Support independent open-source development.</span>
     </div>
    </div>
  </header>
@@ -399,8 +399,8 @@
 <main>
   <!-- ============ deck ============ -->
   <section class="rise">
-    <h1><span id="h1a">Центр загрузок</span><br><span class="acc" id="h1b">Hugging Face</span></h1>
-    <p class="sub" id="subTxt">Файлы и целые репозитории — в очередь, с паузой, токеном и автоподхватом ссылок из буфера обмена.</p>
+    <h1><span id="h1a">Download center</span><br><span class="acc" id="h1b">Hugging Face</span></h1>
+    <p class="sub" id="subTxt">Single files and whole repos — queued, pausable, token-aware, with automatic clipboard pickup.</p>
 
     <!-- Источник загрузки -->
     <div class="source-tabs" id="sourceTabs">
@@ -422,12 +422,12 @@
       <div class="sec">
         <div class="sec-head">
           <span class="sec-num">01</span>
-          <span class="sec-ttl" id="lblLink">Ссылка</span>
-          <span class="sec-hint" id="lblLinkHint">на файл или репозиторий</span>
-          <button class="gbtn icon-only" id="pasteBtn" type="button" style="margin-left:auto" title="Вставить" aria-label="Вставить">
+          <span class="sec-ttl" id="lblLink">Link</span>
+          <span class="sec-hint" id="lblLinkHint">to a file or repository</span>
+          <button class="gbtn icon-only" id="pasteBtn" type="button" style="margin-left:auto" title="Paste" aria-label="Paste">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>
           </button>
-          <button class="gbtn amber icon-only" id="addToListBtn" type="button" title="добавить ссылку в список" aria-label="добавить ссылку в список">
+          <button class="gbtn amber icon-only" id="addToListBtn" type="button" title="add link to list" aria-label="add link to list">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
           </button>
         </div>
@@ -440,19 +440,19 @@
         </div>
         <div style="margin-top:14px; border:1px dashed var(--ink-700); border-radius:12px; padding:12px 14px; background:rgba(20,16,10,.45);">
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-            <span style="font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--amber);">BUFFER</span>
+            <span id="bufLbl" style="font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--amber);">BUFFER</span>
             <span id="pendingCount" style="font-family:var(--font-mono); font-size:10px; color:var(--cream-700);">0 links</span>
-            <button class="gbtn icon-only" id="dlAllBtn" type="button" style="margin-left:auto" title="Скачать все" aria-label="Скачать все">
+            <button class="gbtn icon-only" id="dlAllBtn" type="button" style="margin-left:auto" title="Download all" aria-label="Download all">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             </button>
-            <button class="gbtn icon-only" id="clearPendingBtn" type="button" title="очистить буфер" aria-label="очистить буфер" style="color:var(--err); border-color:rgba(255,122,104,.35);">
+            <button class="gbtn icon-only" id="clearPendingBtn" type="button" title="clear buffer" aria-label="clear buffer" style="color:var(--err); border-color:rgba(255,122,104,.35);">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
             </button>
           </div>
           <div id="pendingList" style="display:flex; flex-direction:column; gap:8px;"></div>
           <div id="pendingHint" style="display:none; margin-top:8px; padding:8px 10px; font-size:11px; color:var(--amber); background:rgba(255,180,80,.08); border:1px solid rgba(255,180,80,.35); border-radius:8px; line-height:1.4;"></div>
           <div id="pendingEmpty" style="text-align:center; padding:18px; font-size:11px; color:var(--cream-700); font-style:italic;">
-            Копируйте ссылки huggingface.co — они накопятся здесь
+            Copy huggingface.co links — they will accumulate here
           </div>
         </div>
       </div>
@@ -460,28 +460,64 @@
       <div class="sec">
         <div class="sec-head">
           <span class="sec-num">02</span>
-          <span class="sec-ttl" id="lblFolder">Папка</span>
-          <span class="sec-hint" id="lblFolderHint">куда сохранять</span>
-          <button class="gbtn amber icon-only" id="pickDirBtn" type="button" style="margin-left:auto" title="Обзор…" aria-label="Обзор…">
+          <span class="sec-ttl" id="lblFolder">Folder</span>
+          <span class="sec-hint" id="lblFolderHint">where to save</span>
+          <button class="gbtn amber icon-only" id="pickDirBtn" type="button" style="margin-left:auto" title="choose folder via file dialog" aria-label="Browse…">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v12a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-12Z"/><path d="M3 8.5h18M12 21v-7"/></svg>
           </button>
         </div>
+        <div id="manualDirWrap">
         <input class="field" id="dirInp" spellcheck="false" autocomplete="off" style="font-family:var(--font-body)"
                placeholder="models" title="">
         <div id="dirResolved" style="font-size:11px;color:var(--ink-500);margin-top:3px;min-height:14px;font-family:var(--font-body);word-break:break-all;display:none"></div>
         <div class="chips" id="dirChips"></div>
+        </div>
+        <!-- Авто-режим: отдельная корневая папка + свои закладки-корни.
+             Видна только при включённом свитче, ручная панель при этом скрыта. -->
+        <div id="autoRootWrap" style="display:none">
+        <input class="field" id="autoRootInp" spellcheck="false" autocomplete="off" style="font-family:var(--font-body);border-color:rgba(255,180,60,.45)"
+               placeholder="D:\Models  (root: files go to root\loras, root\vae, …)" title="">
+        <div id="autoRootResolved" style="font-size:11px;color:var(--ink-500);margin-top:3px;min-height:14px;font-family:var(--font-body);word-break:break-all;display:none"></div>
+        <div class="chips" id="autoRootChips"></div>
+        <div id="autoRootHint" style="font-size:11px;color:var(--cream-700);margin-top:6px;line-height:1.5"></div>
+        </div>
+        <!-- Авто-раскладка по папкам по типу модели (ComfyUI-совместимо:
+             checkpoints / loras / vae / text_encoders / …) -->
+        <div style="margin-top:10px">
+          <label class="switch" id="autoDirSwitch" title="">
+            <input type="checkbox" id="autoDirChk">
+            <span class="tr"></span>
+            <span class="lb" id="autoDirLbl">Sort into folders</span>
+          </label>
+        </div>
+        <!-- Префикс имени файла: свитч + ручное поле.
+             Свитч ВКЛ (по умолчанию) = префикс собирается из метаданных
+             модели; поле непустое = твой текст первым токеном.
+             Свитч ВЫКЛ = имя файла не трогается, поле игнорируется. -->
+        <div style="margin-top:10px">
+          <label class="switch" id="prefixSwitch" title="">
+            <input type="checkbox" id="prefixChk" checked>
+            <span class="tr"></span>
+            <span class="lb" id="prefixSwitchLbl">File name prefix</span>
+          </label>
+        </div>
+        <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+          <span id="prefixLbl" style="font-size:11px; color:var(--cream-700); font-family:var(--font-mono); white-space:nowrap;">prefix:</span>
+          <input class="field" id="prefixInp" spellcheck="false" autocomplete="off" style="height:32px; font-size:12px;"
+                 placeholder="Model-v1-sd15-lora" title="">
+        </div>
       </div>
 
       <div class="sec">
         <div class="sec-head">
           <span class="sec-num">03</span>
-          <span class="sec-ttl" id="lblToken">Токен</span>
-          <span class="sec-hint" id="lblTokenHint">для закрытых моделей</span>
+          <span class="sec-ttl" id="lblToken">Token</span>
+          <span class="sec-hint" id="lblTokenHint">for gated models</span>
         </div>
         <div class="token-wrap tok-on" id="tokWrap">
           <svg class="key" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4.2"/><path d="M11 11 20 3M16 5l2.5 2.5M13.5 7.5 16 10"/></svg>
           <input class="field" id="tokInp" type="password" spellcheck="false" autocomplete="off" placeholder="hf_xxxxxxxxxxxxxxxxxxxx">
-          <button class="eye" id="pasteTokBtn" type="button" title="Вставить из буфера" aria-label="Вставить токен">
+          <button class="eye" id="pasteTokBtn" type="button" title="Paste token from clipboard" aria-label="Paste token">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>
           </button>
           <button class="eye" id="eyeBtn" type="button" aria-label="show token">
@@ -492,7 +528,7 @@
           <label class="switch">
             <input type="checkbox" id="useTokChk" checked>
             <span class="tr"></span>
-            <span class="lb" id="useTokLbl">Использовать токен при скачивании</span>
+            <span class="lb" id="useTokLbl">Use token when downloading</span>
           </label>
         </div>
       </div>
@@ -502,7 +538,7 @@
           <label class="switch" id="limitSwitch" title="limit download speed">
             <input type="checkbox" id="limitChk">
             <span class="tr"></span>
-            <span class="lb" id="limitLbl">Ограничить скорость</span>
+            <span class="lb" id="limitLbl">Limit speed</span>
           </label>
           <div class="dropdown" id="speedDd">
               <button class="dd-btn" id="speedBtn" type="button" disabled>
@@ -518,7 +554,7 @@
         </div>
         <button class="add-btn" id="addBtn" type="button" style="margin-top:12px;">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>
-          <span id="addLbl">Добавить в очередь и скачать</span>
+          <span id="addLbl">Add to queue and download</span>
         </button>
         <div class="form-err" id="formErr"></div>
       </div>
@@ -529,22 +565,29 @@
   <section class="console rise" style="animation-delay:120ms">
     <div class="c-head">
       <div>
-        <div class="c-ttl" id="consoleTtl">Активные загрузки</div>
+        <div class="c-ttl" id="consoleTtl">Active downloads</div>
         <div class="c-counts" id="cCounts"></div>
       </div>
       <div class="c-speed">
-        <b id="totalSpd">0 Б/с</b>
-        <span id="spdLbl">Суммарная скорость</span>
+        <b id="totalSpd">0 B/s</b>
+        <span id="spdLbl">Total speed</span>
       </div>
       <div class="c-tools">
         <label class="switch" id="seqSwitch" title="strictly one task at a time">
           <input type="checkbox" id="seqChk">
           <span class="tr"></span>
-          <span class="lb" id="seqLbl">По очереди</span>
+          <span class="lb" id="seqLbl">Sequential</span>
         </label>
+        <button class="gbtn" id="reviewFilterBtn" type="button" style="display:none" title="">
+          <span id="reviewFilterLbl">Unsorted</span><span class="n" id="reviewFilterN" style="margin-left:6px">0</span>
+        </button>
         <button class="gbtn clr-btn" id="clrBtn" type="button">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8M6.5 8l1 11a2 2 0 0 0 2 1.8h5a2 2 0 0 0 2-1.8l1-11M10 12v5M14 12v5"/></svg>
-          <span id="clrLbl">Очистить завершённые</span><span class="n" id="clrN" style="display:none">0</span>
+          <span id="clrLbl">Clear finished</span><span class="n" id="clrN" style="display:none">0</span>
+        </button>
+        <button class="gbtn clr-btn" id="removeAllBtn" type="button" title="remove all tasks">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V5A1.5 1.5 0 0 1 11 3.5h2A1.5 1.5 0 0 1 14.5 5v2M6.5 7l.8 12a2 2 0 0 0 2 1.9h5.4a2 2 0 0 0 2-1.9L17.5 7M10 11v6M14 11v6"/></svg>
+          <span id="removeAllLbl">Remove all</span>
         </button>
       </div>
     </div>
@@ -554,8 +597,8 @@
 
 <footer>
   <div class="fwrap">
-    <span id="footNote">локальный инструмент — ссылки и токен хранятся только на вашем ПК</span>
-    <span id="footVer">офлайн-редакция v3</span>
+    <span id="footNote">local tool — links and token never leave your PC</span>
+    <span id="footVer">offline edition v3</span>
   </div>
 </footer>
 
@@ -568,8 +611,8 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
       </span>
       <div style="flex:1;min-width:0">
-        <h2 id="helpTtl">Обучение</h2>
-        <p id="helpSub">как пользоваться офлайн-загрузчиком</p>
+        <h2 id="helpTtl">Guide</h2>
+        <p id="helpSub">how to use the offline downloader</p>
       </div>
       <button class="gbtn" id="helpClose" type="button">OK</button>
     </div>
@@ -584,19 +627,19 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>
       </span>
       <div style="flex:1;min-width:0">
-        <h2 id="permTtl">Доступ к буферу обмена</h2>
-        <p id="permSub">решение за вами — выключается в любой момент</p>
+        <h2 id="permTtl">Clipboard access</h2>
+        <p id="permSub">your choice — can be turned off at any time</p>
       </div>
     </div>
     <div class="m-body">
-      <div class="m-sec"><h4 id="perm1t">Что происходит</h4><p id="perm1b"></p></div>
-      <div class="m-sec"><h4 id="perm2t">Кто это видит</h4><p id="perm2b"></p></div>
-      <div class="m-sec"><h4 id="perm3t">Как управлять</h4><p id="perm3b"></p></div>
+      <div class="m-sec"><h4 id="perm1t">What happens</h4><p id="perm1b"></p></div>
+      <div class="m-sec"><h4 id="perm2t">Who can see it</h4><p id="perm2b"></p></div>
+      <div class="m-sec"><h4 id="perm3t">How to control</h4><p id="perm3b"></p></div>
     </div>
     <div class="m-foot">
-      <span class="m-note" id="permNote">локально · без передачи данных</span>
-      <button class="gbtn" id="permDenyBtn" type="button">Запретить</button>
-      <button class="gbtn amber" id="permAllowBtn" type="button">Разрешить</button>
+      <span class="m-note" id="permNote">local only · nothing is sent anywhere</span>
+      <button class="gbtn" id="permDenyBtn" type="button">Deny</button>
+      <button class="gbtn amber" id="permAllowBtn" type="button">Allow</button>
     </div>
   </div>
 </div>
@@ -608,7 +651,7 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
       </span>
       <div style="flex:1;min-width:0">
-        <h2 id="confirmTtl">Подтверждение</h2>
+        <h2 id="confirmTtl">Confirm</h2>
         <p id="confirmSub"></p>
       </div>
     </div>
@@ -617,8 +660,8 @@
     </div>
     <div class="m-foot">
       <span class="m-note" id="confirmNote"></span>
-      <button class="gbtn" id="confirmNoBtn" type="button">Отмена</button>
-      <button class="gbtn danger" id="confirmYesBtn" type="button">Удалить</button>
+      <button class="gbtn" id="confirmNoBtn" type="button">Cancel</button>
+      <button class="gbtn danger" id="confirmYesBtn" type="button">Remove</button>
     </div>
   </div>
 </div>
@@ -630,18 +673,18 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg>
       </span>
       <div style="flex:1;min-width:0">
-        <h2 id="authTtl">Доступ запрещён</h2>
-        <p id="authSub">Hugging Face не принял токен</p>
+        <h2 id="authTtl">Access denied</h2>
+        <p id="authSub">Hugging Face did not accept the token</p>
       </div>
     </div>
     <div class="m-body">
-      <div class="m-sec"><h4 id="auth1t">Что случилось</h4><p id="auth1b"></p></div>
-      <div class="m-sec"><h4 id="auth2t">Как исправить</h4><p id="auth2b"></p></div>
+      <div class="m-sec"><h4 id="auth1t">What happened</h4><p id="auth1b"></p></div>
+      <div class="m-sec"><h4 id="auth2t">How to fix</h4><p id="auth2b"></p></div>
     </div>
     <div class="m-foot">
-      <span class="m-note" id="authNote">токен уходит только на huggingface.co</span>
-      <button class="gbtn" id="authLaterBtn" type="button">Понятно</button>
-      <button class="gbtn amber" id="authTokenBtn" type="button">Ввести токен</button>
+      <span class="m-note" id="authNote">the token is sent only to huggingface.co</span>
+      <button class="gbtn" id="authLaterBtn" type="button">Got it</button>
+      <button class="gbtn amber" id="authTokenBtn" type="button">Enter token</button>
     </div>
   </div>
 </div>
@@ -653,32 +696,33 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       </span>
       <div style="flex:1;min-width:0">
-        <h2 id="logsTtl">Журнал событий</h2>
-        <p id="logsSub">предупреждения и ошибки</p>
+        <h2 id="logsTtl">Event log</h2>
+        <p id="logsSub">warnings and errors</p>
       </div>
     </div>
     <div class="m-foot" style="border-top:1px solid var(--ink-700);padding:10px 16px;gap:8px">
       <div class="logs-filter">
-        <button class="logs-filter-btn active" data-filter="all" id="logsFltAll">Все</button>
-        <button class="logs-filter-btn" data-filter="warn" id="logsFltWarn">Предупреждения</button>
-        <button class="logs-filter-btn" data-filter="error" id="logsFltErr">Ошибки</button>
+        <button class="logs-filter-btn active" data-filter="all" id="logsFltAll">All</button>
+        <button class="logs-filter-btn" data-filter="warn" id="logsFltWarn">Warnings</button>
+        <button class="logs-filter-btn" data-filter="error" id="logsFltErr">Errors</button>
+        <button class="logs-filter-btn" data-filter="hist" id="logsFltHist">Downloaded</button>
       </div>
       <div style="flex:1"></div>
       <button class="gbtn" id="logsRefresh" type="button" title="">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       </button>
-      <button class="gbtn" id="logsCopy" type="button" title="">Копировать</button>
-      <button class="gbtn danger" id="logsClear" type="button" style="color:var(--err)" title="">Очистить</button>
+      <button class="gbtn" id="logsCopy" type="button" title="Copy">Copy</button>
+      <button class="gbtn danger" id="logsClear" type="button" style="color:var(--err)" title="Clear">Clear</button>
     </div>
     <div class="logs-body" id="logsBody">
       <div class="logs-empty" id="logsEmpty">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-        <span id="logsEmptyTxt">Журнал пуст</span>
+        <span id="logsEmptyTxt">Log is empty</span>
       </div>
     </div>
     <div class="m-foot" style="border-top:1px solid var(--ink-700);padding:10px 22px">
-      <span class="m-note" id="logsNote">данные хранятся только на вашем ПК</span>
-      <button class="gbtn amber" id="logsClose" type="button">Закрыть</button>
+      <span class="m-note" id="logsNote">data is stored only on your PC</span>
+      <button class="gbtn amber" id="logsClose" type="button">Close</button>
     </div>
   </div>
 </div>
@@ -815,10 +859,10 @@
       tokCivLbl:'CivitAI API 令牌', phCivTok:'输入您的 CivitAI API 密钥',
       tokCivNote:'仅发送到 civitai.com / civitai.red',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
-      civErrToken:'CivitAI: 需要令牌 — 请在 civitai.com/user/account 获取',
-      civErrForbidden:'CivitAI: 访问被拒绝 — 请检查您的 API 密钥',
+      civErrToken:'CivitAI：需要令牌 — 请在 civitai.com/user/account 获取',
+      civErrForbidden:'CivitAI：拒绝访问 — 请检查你的 API 密钥',
       confirmRemove:'此任务仍在下载中。删除它将从磁盘中删除部分文件。继续？', confirmTitle:'删除任务？', confirmOk:'删除',
-      civErrNotFound:'CivitAI: 未找到模型',
+      civErrNotFound:'CivitAI：未找到模型',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'支持独立开源开发。',
@@ -837,8 +881,7 @@ supportOpen:'支持',
          logsTtl:'事件日志', logsSub:'警告和错误', logsEmpty:'日志为空',
          logsAll:'全部', logsWarn:'警告', logsErr:'错误',
          logsRefresh:'刷新', logsCopy:'复制', logsClear:'清空',
-         logsClose:'关闭', logsNote:'数据仅存储在您的电脑上'
-    },
+         logsClose:'关闭', logsNote:'数据仅存储在您的电脑上', civErrGeneric:'CivitAI：API 错误 — 请稍后重试', civErrPaid:'CivitAI：付费模型 / 早期访问（402）— 请购买或等待公开发布', eCancel:'任务已取消', helpFallback:'此语言暂无帮助文档。', phCivUrn:'urn:...:civitai:123456@789+012', },
     HI: {
       h1a:'डाउनलोड केंद्र', h1b:'Hugging Face',
       sub:'एकल फ़ाइलें और पूरे रिपो — कतारबद्ध, विराम योग्य, टोकन-समाधानीय, क्लिपबोर्ड पिकअप के साथ।',
@@ -885,8 +928,8 @@ supportOpen:'支持',
       tokCivLbl:'CivitAI API टोकन', phCivTok:'अपनी CivitAI API कुंजी दर्ज करें',
       tokCivNote:'केवल civitai.com / civitai.red पर भेजा जाता है',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
-      civErrToken:'CivitAI: टोकन आवश्यक — civitai.com/user/account पर प्राप्त करें',
-      civErrForbidden:'CivitAI: पहुंच अस्वीकृत — अपनी API कुंजी जांचें',
+      civErrToken:'CivitAI: टोकन चाहिए — civitai.com/user/account से लें',
+      civErrForbidden:'CivitAI: पहुँच अस्वीकृत — अपनी API कुंजी जाँचें',
       confirmRemove:'यह कार्य अभी भी डाउनलोड हो रहा है। हटाने से आंशिक फ़ाइल डिस्क से मिट जाएगी। जारी रखें?', confirmTitle:'कार्य हटाएँ?', confirmOk:'हटाएँ',
       civErrNotFound:'CivitAI: मॉडल नहीं मिला',
 
@@ -907,8 +950,7 @@ supportOpen:'समर्थन करें',
          logsTtl:'इवेंट लॉग', logsSub:'चेतावनियाँ और त्रुटियाँ', logsEmpty:'लॉग खाली है',
          logsAll:'सभी', logsWarn:'चेतावनियाँ', logsErr:'त्रुटियाँ',
          logsRefresh:'रीफ़्रेश', logsCopy:'कॉपी', logsClear:'साफ़ करें',
-         logsClose:'बंद करें', logsNote:'डेटा केवल आपके पीसी पर संग्रहीत है'
-    },
+         logsClose:'बंद करें', logsNote:'डेटा केवल आपके पीसी पर संग्रहीत है', civErrGeneric:'CivitAI: API त्रुटि — कुछ देर बाद फिर कोशिश करें', civErrPaid:'CivitAI: सशुल्क मॉडल / शीघ्र पहुँच (402) — इसे खरीदें या सार्वजनिक रिलीज़ का इंतज़ार करें', eCancel:'कार्य रद्द किया गया', helpFallback:'इस भाषा में गाइड उपलब्ध नहीं है।', phCivUrn:'urn:...:civitai:123456@789+012', },
     ES: {
       h1a:'Centro de descargas', h1b:'Hugging Face',
       sub:'Archivos individuales y repositorios completos — en cola, pausables, con token y captura automática del portapapeles.',
@@ -952,11 +994,11 @@ supportOpen:'समर्थन करें',
       phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
       tokLbl:'Token de Hugging Face', tokNote:'se envía solo a huggingface.co',
       phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
-      tokCivLbl:'Token API CivitAI', phCivTok:'Ingrese su clave API de CivitAI',
+      tokCivLbl:'Token de API de CivitAI', phCivTok:'Ingrese su clave API de CivitAI',
       tokCivNote:'se envía solo a civitai.com / civitai.red',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
-      civErrToken:'CivitAI: se requiere token — obténgalo en civitai.com/user/account',
-      civErrForbidden:'CivitAI: acceso deniegado — compruebe su clave API',
+      civErrToken:'CivitAI: se requiere un token — obténlo en civitai.com/user/account',
+      civErrForbidden:'CivitAI: acceso denegado — comprueba tu clave de API',
       confirmRemove:'Esta tarea sigue descargándose. Eliminarla borrará el archivo parcial del disco. ¿Continuar?', confirmTitle:'¿Eliminar tarea?', confirmOk:'Eliminar',
       civErrNotFound:'CivitAI: modelo no encontrado',
 
@@ -977,8 +1019,7 @@ supportOpen:'Apoyar',
          logsTtl:'Registro de eventos', logsSub:'advertencias y errores', logsEmpty:'El registro está vacío',
          logsAll:'Todos', logsWarn:'Advertencias', logsErr:'Errores',
          logsRefresh:'Actualizar', logsCopy:'Copiar', logsClear:'Borrar',
-         logsClose:'Cerrar', logsNote:'los datos se almacenan solo en tu PC'
-    },
+         logsClose:'Cerrar', logsNote:'los datos se almacenan solo en tu PC', civErrGeneric:'CivitAI: error de API — inténtalo más tarde', civErrPaid:'CivitAI: modelo de pago / acceso anticipado (402) — cómpralo o espera la publicación', eCancel:'Tarea cancelada', helpFallback:'Guía no disponible en este idioma.', phCivUrn:'urn:...:civitai:123456@789+012', },
     FR: {
       h1a:'Centre de téléchargement', h1b:'Hugging Face',
       sub:'Fichiers uniques et dépôts entiers — en file d\'attente, pause possible, aware token, avec récupération automatique du presse-papiers.',
@@ -1022,13 +1063,13 @@ supportOpen:'Apoyar',
       phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
       tokLbl:'Jeton Hugging Face', tokNote:'envoyé uniquement à huggingface.co',
       phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
-      tokCivLbl:'Jeton API CivitAI', phCivTok:'Entrez votre clé API CivitAI',
+      tokCivLbl:'Jeton d\'API CivitAI', phCivTok:'Entrez votre clé API CivitAI',
       tokCivNote:'envoyé uniquement à civitai.com / civitai.red',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
-      civErrToken:'CivitAI: jeton requis — obtenez-en un sur civitai.com/user/account',
-      civErrForbidden:'CivitAI: accès refusé — vérifiez votre clé API',
+      civErrToken:'CivitAI : jeton requis — obtenez-en un sur civitai.com/user/account',
+      civErrForbidden:'CivitAI : accès refusé — vérifiez votre clé API',
       confirmRemove:'Cette tâche est toujours en cours de téléchargement. La supprimer effacera le fichier partiel du disque. Continuer?', confirmTitle:'Supprimer la tâche ?', confirmOk:'Supprimer',
-      civErrNotFound:'CivitAI: modèle introuvable',
+      civErrNotFound:'CivitAI : modèle introuvable',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'Soutenez le développement indépendant open-source.',
@@ -1047,8 +1088,7 @@ supportOpen:'Soutenir',
          logsTtl:'Journal des événements', logsSub:'avertissements et erreurs', logsEmpty:'Le journal est vide',
          logsAll:'Tous', logsWarn:'Avertissements', logsErr:'Erreurs',
          logsRefresh:'Actualiser', logsCopy:'Copier', logsClear:'Effacer',
-         logsClose:'Fermer', logsNote:'les données sont stockées uniquement sur votre PC'
-    },
+         logsClose:'Fermer', logsNote:'les données sont stockées uniquement sur votre PC', civErrGeneric:'CivitAI : erreur d\'API — réessayez plus tard', civErrPaid:'CivitAI : modèle payant / accès anticipé (402) — achetez-le ou attendez la sortie publique', eCancel:'Tâche annulée', helpFallback:'Guide indisponible dans cette langue.', phCivUrn:'urn:...:civitai:123456@789+012', },
     AR: {
       h1a:'مركز التنزيلات', h1b:'Hugging Face',
       sub:'ملفات فردية ومستودعات كاملة — في الطابور، قابلة للإيقاف، مع رمز وصول، مع التقاط تلقائي من الحافظة.',
@@ -1092,13 +1132,13 @@ supportOpen:'Soutenir',
       phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
       tokLbl:'رمز Hugging Face', tokNote:'يُرسل فقط إلى huggingface.co',
       phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
-      tokCivLbl:'رمز API CivitAI', phCivTok:'أدخل مفتاح API الخاص بـ CivitAI',
+      tokCivLbl:'رمز واجهة CivitAI البرمجية', phCivTok:'أدخل مفتاح API الخاص بـ CivitAI',
       tokCivNote:'يُرسل فقط إلى civitai.com / civitai.red',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
       civErrToken:'CivitAI: الرمز مطلوب — احصل عليه من civitai.com/user/account',
-      civErrForbidden:'CivitAI: الوصول مرفوع — تحقق من مفتاح API',
+      civErrForbidden:'CivitAI: تم رفض الوصول — تحقق من مفتاح واجهة البرمجة لديك',
       confirmRemove:'هذه المهمة لا تزال قيد التنزيل. ستؤدي الإزالة إلى حذف الملف الجزئي من القرص. متابعة؟', confirmTitle:'حذف المهمة؟', confirmOk:'حذف',
-      civErrNotFound:'CivitAI: النموذج غير موجود',
+      civErrNotFound:'CivitAI: لم يُعثر على النموذج',
 
       b:'B', kb:'KB', mb:'MB', gb:'GB', bs:'B/s',
       supportHeader:'ادعم التطوير المستقل مفتوح المصدر.',
@@ -1117,8 +1157,7 @@ supportOpen:'دعم',
          logsTtl:'سجل الأحداث', logsSub:'التحذيرات والأخطاء', logsEmpty:'السجل فارغ',
          logsAll:'الكل', logsWarn:'التحذيرات', logsErr:'الأخطاء',
          logsRefresh:'تحديث', logsCopy:'نسخ', logsClear:'مسح',
-         logsClose:'إغلاق', logsNote:'يتم تخزين البيانات على جهاز الكمبيوتر الخاص بك فقط'
-    },
+         logsClose:'إغلاق', logsNote:'يتم تخزين البيانات على جهاز الكمبيوتر الخاص بك فقط', civErrGeneric:'CivitAI: خطأ في الواجهة البرمجية — أعد المحاولة لاحقًا', civErrPaid:'CivitAI: نموذج مدفوع / وصول مبكر (402) — اشترِ النموذج أو انتظر الإصدار العام', eCancel:'أُلغيت المهمة', helpFallback:'الدليل غير متوفر بهذه اللغة.', phCivUrn:'urn:...:civitai:123456@789+012', },
     BN: {
       h1a:'ডাউনলোড কেন্দ্র', h1b:'Hugging Face',
       sub:'একক ফাইল এবং পুরো রিপো — কিউতে, বিরামযোগ্য, টোকেন-aware, ক্লিপবোর্ড পিকআপ সহ।',
@@ -1160,13 +1199,13 @@ supportOpen:'دعم',
 
       // CivitAI
       phUrl:'https://huggingface.co/owner/repo', phTok:'hf_...',
-      tokLbl:'Hugging Face টোকেন', tokNote:'শুধুমাত্র huggingface.co তে পাঠানো হয়',
+      tokLbl:'Hugging Face টোকেন', tokNote:'শুধু huggingface.co-এ পাঠানো হয়',
       phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345',
       tokCivLbl:'CivitAI API টোকেন', phCivTok:'আপনার CivitAI API কী লিখুন',
-      tokCivNote:'শুধুমাত্র civitai.com / civitai.red তে পাঠানো হয়',
+      tokCivNote:'শুধু civitai.com / civitai.red-এ পাঠানো হয়',
       detectHint:'huggingface.co / civitai.com / urn:...:civitai:...',
-      civErrToken:'CivitAI: টোকেন প্রয়োজন — civitai.com/user/account থেকে নিন',
-      civErrForbidden:'CivitAI: অ্যাক্সেস অস্বীকৃত — আপনার API কী যাচাই করুন',
+      civErrToken:'CivitAI: টোকেন দরকার — civitai.com/user/account থেকে নিন',
+      civErrForbidden:'CivitAI: প্রবেশ অস্বীকৃত — আপনার API কী পরীক্ষা করুন',
       confirmRemove:'এই কাজটি এখনও ডাউনলোড হচ্ছে। এটি অপসারণ করলে আংশিক ফাইলটি ডিস্ক থেকে মুছে যাবে। চালিয়ে যান?', confirmTitle:'কাজটি মুছবেন?', confirmOk:'মুছুন',
       civErrNotFound:'CivitAI: মডেল পাওয়া যায়নি',
 
@@ -1187,8 +1226,7 @@ supportOpen:'সমর্থন করুন',
          logsTtl:'ইভেন্ট লগ', logsSub:'সতর্কতা এবং ত্রুটি', logsEmpty:'লগ খালি',
          logsAll:'সব', logsWarn:'সতর্কতা', logsErr:'ত্রুটি',
          logsRefresh:'রিফ্রেশ', logsCopy:'কপি', logsClear:'মুছুন',
-         logsClose:'বন্ধ করুন', logsNote:'ডেটা শুধুমাত্র আপনার পিসিতে সংরক্ষিত থাকে'
-    },
+         logsClose:'বন্ধ করুন', logsNote:'ডেটা শুধুমাত্র আপনার পিসিতে সংরক্ষিত থাকে', civErrGeneric:'CivitAI: API ত্রুটি — একটু পরে আবার চেষ্টা করুন', civErrPaid:'CivitAI: পেমেন্ট মডেল / আগাম অ্যাক্সেস (402) — কিনুন বা প্রকাশ্য রিলিজ পর্যন্ত অপেক্ষা করুন', eCancel:'কাজ বাতিল করা হয়েছে', helpFallback:'এই ভাষায় গাইড পাওয়া যাচ্ছে না।', phCivUrn:'urn:...:civitai:123456@789+012', },
     PT: {
       h1a:'Centro de downloads', h1b:'Hugging Face',
       sub:'Arquivos individuais e repositórios inteiros — em fila, pausável, aware token, com captura automática da área de transferência.',
@@ -1246,8 +1284,7 @@ supportOpen:'Apoiar',
          logsAll:'Todos', logsWarn:'Avisos', logsErr:'Erros',
          logsRefresh:'Atualizar', logsCopy:'Copiar', logsClear:'Limpar',
                confirmRemove:'Esta tarefa ainda está a descarregar. Removê-la irá apagar o ficheiro parcial do disco. Continuar?', confirmTitle:'Remover tarefa?', confirmOk:'Remover',
-      logsClose:'Fechar', logsNote:'os dados são armazenados apenas no seu PC'
-    },
+      logsClose:'Fechar', logsNote:'os dados são armazenados apenas no seu PC', civErrForbidden:'CivitAI: acesso negado — verifique a sua chave de API', civErrGeneric:'CivitAI: erro de API — tente novamente mais tarde', civErrNotFound:'CivitAI: modelo não encontrado', civErrPaid:'CivitAI: modelo pago / acesso antecipado (402) — compre-o ou aguarde o lançamento público', civErrToken:'CivitAI: token necessário — obtenha um em civitai.com/user/account', detectHint:'huggingface.co / civitai.com / urn:...:civitai:...', eCancel:'Tarefa cancelada', helpFallback:'Guia indisponível neste idioma.', phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345', phCivTok:'Introduza a sua chave de API do CivitAI', phCivUrn:'urn:...:civitai:123456@789+012', phTok:'hf_...', phUrl:'https://huggingface.co/owner/repo', tokCivLbl:'Token de API do CivitAI', tokCivNote:'enviado apenas para civitai.com / civitai.red', tokLbl:'Token do Hugging Face', tokNote:'enviado apenas para huggingface.co', },
     RU: {
       h1a:'Центр загрузок', h1b:'Hugging Face',
       sub:'Файлы и целые репозитории — в очередь, с паузой, токеном и автоподхватом ссылок из буфера обмена.',
@@ -1318,13 +1355,12 @@ supportOpen:'Apoiar',
             logsTtl:'Журнал событий', logsSub:'предупреждения и ошибки', logsEmpty:'Журнал пуст',
             logsAll:'Все', logsWarn:'Предупреждения', logsErr:'Ошибки',
             logsRefresh:'Обновить', logsCopy:'Копировать', logsClear:'Очистить',
-            logsClose:'Закрыть', logsNote:'данные хранятся только на вашем ПК'
-    },
+            logsClose:'Закрыть', logsNote:'данные хранятся только на вашем ПК', phCivUrn:'urn:...:civitai:123456@789+012', },
     UR: {
       h1a:'ڈاؤن لوڈ سینٹر', h1b:'Hugging Face',
       sub:'انفرادی فائلیں اور پورے ذخائر — قطار میں، روکنے کے قابل، ٹوکن سے آگاہ، کلیپ بورڈ اٹھانے کے ساتھ۔',
       link:'لنک', linkHint:'فائل یا ذخیرے کی طرف', paste:'چسپاں کریں',
-      folder:' فولڈر', folderHint:'جہاں محفوظ کریں', pickDir:'براؤز…',
+      folder:'فولڈر', folderHint:'جہاں محفوظ کریں', pickDir:'براؤز…',
       folderHintEx:'مکمل راستہ (مثلاً D:\\models) یا ذیلی فولڈر کا نام',
       relHint:'نسبتاً → ایپ فولڈر میں: ',
       token:'ٹوکن', tokenHint:'گیٹڈ ماڈلز کے لیے', useTok:'ڈاؤن لوڈ کرتے وقت ٹوکن استعمال کریں',
@@ -1377,8 +1413,7 @@ supportOpen:'حمایت کریں',
              logsAll:'سب', logsWarn:'انتباہات', logsErr:'غلطیاں',
              logsRefresh:'تازہ کریں', logsCopy:'کاپی', logsClear:'صاف کریں',
                    confirmRemove:'یہ ٹاسک ابھی ڈاؤن لوڈ ہو رہا ہے۔ اسے ہٹانے سے جزوی فائل ڈسک سے مٹ جائے گی۔ جاری رکھیں؟', confirmTitle:'ٹاسک ہٹائیں؟', confirmOk:'ہٹائیں',
-      logsClose:'بند کریں', logsNote:'ڈیٹا صرف آپ کے پی سی پر محفوظ ہوتا ہے'
-    },
+      logsClose:'بند کریں', logsNote:'ڈیٹا صرف آپ کے پی سی پر محفوظ ہوتا ہے', civErrForbidden:'CivitAI: رسائی رد کی گئی — اپنی API کلید چیک کریں', civErrGeneric:'CivitAI: API خرابی — کچھ دیر بعد دوبارہ کوشش کریں', civErrNotFound:'CivitAI: ماڈل نہیں ملا', civErrPaid:'CivitAI: ادا شدہ ماڈل / ابتدائی رسائی (402) — خریدیں یا عوامی اجرا کا انتظار کریں', civErrToken:'CivitAI: ٹوکن درکار — civitai.com/user/account سے حاصل کریں', detectHint:'huggingface.co / civitai.com / urn:...:civitai:...', eCancel:'کام منسوخ کر دیا گیا', helpFallback:'اس زبان میں رہنمائی دستیاب نہیں ہے۔', phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345', phCivTok:'اپنی CivitAI API کلید درج کریں', phCivUrn:'urn:...:civitai:123456@789+012', phTok:'hf_...', phUrl:'https://huggingface.co/owner/repo', tokCivLbl:'CivitAI API ٹوکن', tokCivNote:'صرف civitai.com / civitai.red پر بھیجا جاتا ہے', tokLbl:'Hugging Face ٹوکن', tokNote:'صرف huggingface.co پر بھیجا جاتا ہے', },
     DE: { h1a:'Download-Center', h1b:'Hugging Face',
       sub:'Einzelne Dateien und ganze Repositories — in Warteschlange, pausierbar, mit Token und automatischer Zwischenablage-Erkennung.',
       link:'Link', linkHint:'zu einer Datei oder einem Repository', paste:'Einfügen',
@@ -1435,8 +1470,7 @@ supportOpen:'Unterstützen',
              logsAll:'Alle', logsWarn:'Warnungen', logsErr:'Fehler',
              logsRefresh:'Aktualisieren', logsCopy:'Kopieren', logsClear:'Leeren',
                    confirmRemove:'Diese Aufgabe lädt noch herunter. Beim Entfernen wird die Teildatei von der Festplatte gelöscht. Fortfahren?', confirmTitle:'Aufgabe entfernen?', confirmOk:'Entfernen',
-      logsClose:'Schließen', logsNote:'Daten werden nur auf Ihrem PC gespeichert'
-    },
+      logsClose:'Schließen', logsNote:'Daten werden nur auf Ihrem PC gespeichert', civErrForbidden:'CivitAI: Zugriff verweigert — API-Schlüssel prüfen', civErrGeneric:'CivitAI: API-Fehler — später erneut versuchen', civErrNotFound:'CivitAI: Modell nicht gefunden', civErrPaid:'CivitAI: kostenpflichtiges Modell / Frühzugriff (402) — kaufen oder auf die öffentliche Veröffentlichung warten', civErrToken:'CivitAI: Token erforderlich — unter civitai.com/user/account holen', detectHint:'huggingface.co / civitai.com / urn:...:civitai:...', eCancel:'Aufgabe abgebrochen', helpFallback:'Anleitung in dieser Sprache nicht verfügbar.', phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345', phCivTok:'CivitAI-API-Schlüssel eingeben', phCivUrn:'urn:...:civitai:123456@789+012', phTok:'hf_...', phUrl:'https://huggingface.co/owner/repo', tokCivLbl:'CivitAI-API-Token', tokCivNote:'wird nur an civitai.com / civitai.red gesendet', tokLbl:'Hugging-Face-Token', tokNote:'wird nur an huggingface.co gesendet', },
     JA: { h1a:'ダウンロードセンター', h1b:'Hugging Face',
       sub:'単一ファイルと entire リポジトリ — キュー、一時停止、トークン対応、クリップボード自動取得付き。',
       link:'リンク', linkHint:'ファイルまたはリポジトリ', paste:'貼り付け',
@@ -1491,8 +1525,7 @@ supportOpen:'Unterstützen',
             logsAll:'すべて', logsWarn:'警告', logsErr:'エラー',
             logsRefresh:'更新', logsCopy:'コピー', logsClear:'クリア',
                   confirmRemove:'このタスクはまだダウンロード中です。削除するとディスク上の部分ファイルが消去されます。続けますか？', confirmTitle:'タスクを削除しますか？', confirmOk:'削除',
-      logsClose:'閉じる', logsNote:'データはあなたのPCのみに保存されます'
-    },
+      logsClose:'閉じる', logsNote:'データはあなたのPCのみに保存されます', civErrForbidden:'CivitAI：アクセスが拒否されました — API キーを確認してください', civErrGeneric:'CivitAI：API エラー — 後で再試行してください', civErrNotFound:'CivitAI：モデルが見つかおりません', civErrPaid:'CivitAI：有料モデル / 早期アクセス（402）— 購入するか、公開配信を待ちください', civErrToken:'CivitAI：トークンが必要です — civitai.com/user/account で取得してください', detectHint:'huggingface.co / civitai.com / urn:...:civitai:...', eCancel:'タスクをキャンセルしました', helpFallback:'この言語ではガイドを使用できません。', phCiv:'https://civitai.com/models/12345', phCivRed:'https://civitai.red/models/12345', phCivTok:'CivitAI API キーを入力', phCivUrn:'urn:...:civitai:123456@789+012', phTok:'hf_...', phUrl:'https://huggingface.co/owner/repo', tokCivLbl:'CivitAI API トークン', tokCivNote:'civitai.com / civitai.red にのみ送信されます', tokLbl:'Hugging Face トークン', tokNote:'huggingface.co にのみ送信されます', },
   };
   var HELP = {
     RU: [
@@ -1832,7 +1865,7 @@ supportOpen:'Unterstützen',
           '<div style="font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + esc(p.link) + '">' + esc(label) + '</div>' +
           '<div style="font-family:var(--font-mono); font-size:9.5px; color:var(--cream-700); margin-top:2px;">' + esc(p.branch) + (p.folder ? ' · ' + esc(p.folder) : '') + '</div>' +
         '</div>' +
-        '<input class="field" data-pid="' + p.id + '" data-pfield="folder" spellcheck="false" autocomplete="off" placeholder="subfolder (opt)" style="width:130px; height:28px; font-size:11px; padding:6px 8px;">' +
+        '<input class="field" data-pid="' + p.id + '" data-pfield="folder" spellcheck="false" autocomplete="off" placeholder="' + esc(tr('pendingSubPh', 'subfolder (opt)')) + '" style="width:130px; height:28px; font-size:11px; padding:6px 8px;">' +
         '<button class="ibtn danger" data-pid="' + p.id + '" data-pact="remove" title="x" style="width:24px; height:24px;">' +
           '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
         '</button>' +
@@ -1869,7 +1902,10 @@ supportOpen:'Unterstützen',
 
   function downloadAllPending(){
     if (pendingLinks.length === 0) return;
-    var baseDir = $('dirInp').value.trim() || 'downloads';
+    // В авто-режиме путь — активный корень (поле и закладки-корни), ручное
+    // поле не читаем вовсе: свитч = полный отказ от ручного выбора.
+    var isAuto = autoDirOn();
+    var baseDir = isAuto ? autoRoot() : ($('dirInp').value.trim() || 'downloads');
     var seq = $('seqChk').checked;
     var token = ($('useTokChk').checked ? tokVal() : '');
     var branch = $('branchInp').value.trim() || 'main';
@@ -1887,13 +1923,18 @@ supportOpen:'Unterstützen',
           }
           if (alreadyQueued) return;
           
-          var dir = item.folder ? baseDir + '/' + item.folder : baseDir;
+          var dir = (!isAuto && item.folder) ? baseDir + '/' + item.folder : baseDir;
           var payload = {
             link: item.link,
             dir: dir,
             seq: seq,
             token: token,
             branch: item.branch || branch,
+            auto_dir: autoFlags().auto_dir,
+            auto_root: autoFlags().auto_root,
+            auto_roots: autoFlags().auto_roots,
+            use_prefix: prefixOn(),
+            prefix: userPrefix(),
             speed_limit: speedLimit
           };
           fetch(CORE + '/api/tasks', {
@@ -1909,6 +1950,9 @@ supportOpen:'Unterstützen',
               dir: (j.dir || dir), backendId: j.id,
               status: j.status || 'waiting', downloaded: 0, total: 0, speed: 0,
               filesDone: 0, filesTotal: 0, current: '', error: null,
+              finalName: j.final_name || '', type: j.type || '',
+              dirSource: j.dir_source || '',
+              autoDir: autoDirOn(),
               branch: item.branch || branch,
               speedLimit: speedLimit
             };
@@ -1932,6 +1976,86 @@ supportOpen:'Unterstützen',
   $('clearPendingBtn').addEventListener('click', clearPending);
 
   function $(id){ return document.getElementById(id); }
+  // Свитч авто-раскладки и ручной префикс. Обе настройки живут в localStorage
+  // (как и путь/branch) и уезжают в КАЖДУЮ задачу: иначе после перезапуска
+  // скачанные задачи разложились бы по старым правилам.
+  function autoDirOn(){
+    try { return !!($('autoDirChk') && $('autoDirChk').checked); } catch(e){ return false; }
+  }
+  /* ---------- авто-режим: корни отдельно от ручных закладок ----------
+     autoRoots — упорядоченный список корней (активный = [0]).
+     Хранится в localStorage 'hfdl_auto_roots' (JSON), поле ввода — в 'hfdl_auto_root'.
+     Ручные bookmarks/path при этом не трогаем — режимы независимы. */
+  var autoRoots = [];
+  try {
+    var _arj = JSON.parse(localStorage.getItem('hfdl_auto_roots') || '[]');
+    if (Array.isArray(_arj)) autoRoots = _arj.filter(function(x){ return typeof x === 'string' && x.trim(); });
+  } catch(e){ autoRoots = []; }
+  function saveAutoRoots(){
+    try { ls('hfdl_auto_roots', JSON.stringify(autoRoots)); } catch(e){}
+    syncAutoRootsToBackend();
+  }
+  // Серверный слой СПИСКА корней (.last_auto_roots.json): localStorage может
+  // слететь (профиль WebView2), и тогда терялись все корни, кроме активного,
+  // — раскладка «в первый корень, где уже есть loras/checkpoints» ломалась.
+  function syncAutoRootsToBackend(){
+    fetch(CORE + '/api/last_auto_roots', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roots: autoRoots })
+    }).catch(function(){});
+  }
+  function autoRoot(){
+    try {
+      var v = ($('autoRootInp') && $('autoRootInp').value.trim()) || '';
+      if (v) return v;
+    } catch(e){}
+    if (autoRoots.length) return autoRoots[0];
+    return 'downloads';
+  }
+  function effectiveDir(){
+    // Единая точка: какой «путь» уходит в задачу.
+    if (autoDirOn()) return autoRoot();
+    try { return $('dirInp').value.trim(); } catch(e){ return ''; }
+  }
+  function autoFlags(){
+    // Одинаковый набор полей для всех payload\'ов (addTask / downloadAllPending
+    // / startCoreTask): в авто-режиме шлём корни, в ручном — пустышки.
+    // Активный корень ГАРАНТИРОВАННО первый: поле могло быть заполнено без
+    // нажатия чипса «+» (тогда список пуст, и задача ушла бы в классическую
+    // раскладку по ручным закладкам вместо «корень/тип»). Ядро делает то же
+    // (_effective_auto_roots) — дублируем, чтобы payload и UI совпадали.
+    var on = autoDirOn();
+    var roots = [];
+    if (on){
+      var act = autoRoot();
+      roots.push(act);
+      for (var i = 0; i < autoRoots.length; i++){
+        if (autoRoots[i] !== act){ roots.push(autoRoots[i]); }
+      }
+    }
+    return { auto_dir: on, auto_root: on, auto_roots: roots };
+  }
+  function setAutoMode(on){
+    var mw = $('manualDirWrap'), aw = $('autoRootWrap');
+    if (mw) mw.style.display = on ? 'none' : '';
+    if (aw) aw.style.display = on ? '' : 'none';
+    // Кнопку «Обзор…» (pickDirBtn) НЕ прячем: она общая для обоих режимов.
+    // pickDir() сам определяет по свитчу, какое поле активно, и открывает
+    // проводник в его текущей папке (для корня — autoRootInp).
+    try { ls('hfdl_autodir', on ? '1' : '0'); } catch(e){}
+    renderChips(); renderAutoRoots();
+    if (on) updateAutoRootResolved(); else updateDirResolved();
+    renderTasks();
+  }
+  // Свитч префикса: ВКЛ (по умолчанию) — имя собирается с префиксом из
+  // метаданных; ВЫКЛ — имя файла не трогается, поле префикса игнорируется.
+  function prefixOn(){
+    try { return !!($('prefixChk') && $('prefixChk').checked); } catch(e){ return true; }
+  }
+  function userPrefix(){
+    try { return ($('prefixInp') && $('prefixInp').value.trim()) || ''; } catch(e){ return ''; }
+  }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function L(){ return T[lang]; }
   // Подстроки, которые в основном T-словаре были заданы только для RU/EN:
@@ -1940,6 +2064,10 @@ supportOpen:'Unterstützen',
   I18N_EXTRA = {
      RU: { cntActive:'активных', cntQueued:'в очереди', cntDone:'завершено',
           bmEmpty:'Закладок нет — введите имя и нажмите «+»', bmSelect:'Выбрать', bmRemove:'Удалить', bmSave:'Сохранить путь',
+          autoRootHint:'Авто-раскладка: файлы лягут в корень/тип (loras, checkpoints, vae…). Неопознанное — в корень/other и попадёт в фильтр «Нераспределённые».',
+          removeAll:'Удалить все', removeAllTip:'удалить ВСЕ задачи: остановить активные, удалить недокачанные (.part); скачанные файлы останутся на диске',
+          removeAllConfirm:'Удалить ВСЕ задачи из списка? Активные загрузки будут остановлены, недокачанные файлы (.part) удалены с диска. Скачанные файлы останутся.',
+          removeAllEmpty:'Список уже пуст',
           toastQueued:'Ссылка уже в очереди', toastAdded:'Ссылка добавлена в список', toastPasted:'Ссылка вставлена из буфера',
           toastInList:'Ссылка уже в списке', toastInvalid:'Ссылка уже в списке или неверна',
           tRetry:'повтор', tipWatch:'наблюдение за буфером', tipLang:'Язык', tipPick:'выбрать папку через проводник',
@@ -1949,9 +2077,20 @@ supportOpen:'Unterstützen',
           addToListTip:'добавить ссылку в список', appTitle:'HF Downloader — офлайн',
           addFromBuffer:'Добавить из буфера', addToQueue:'Добавить в очередь',
            linkSingular:'ссылка', linkPlural:'ссылки', dialogError:'Ошибка диалога',
-            tSkipped:'уже на диске — пропущено', bufferHint:'В буфере {0} ссылок — нажмите «Скачать все» или добавьте в очередь' },
+            tSkipped:'уже на диске — пропущено', bufferHint:'В буфере {0} ссылок — нажмите «Скачать все» или добавьте в очередь',
+          autoDir:'Раскладывать по папкам', autoDirTip:'тыкнутая закладка побеждает: файл уйдёт прямо в неё. Иначе — в папку типа из закладок (первое совпадение имени), иначе в подпапку здесь (checkpoints, loras, vae, …)',
+          autoDirFromBm:'из закладок', autoDirPinned:'выбранная папка',
+          prefixSwitch:'Префикс имени', prefixSwitchTip:'добавлять к имени файла префикс из названия модели, базы и типа. Выкл — имя файла не меняется',
+          needsFolder:'нужна папка', reviewFilter:'Не разобрано',
+          reviewFilterTip:'показать файлы, чей тип не опознан (папка other)',
+          prefixLbl:'префикс:', prefixTip:'префикс имени файла: пусто — собирается из названия модели, базы и типа',
+          histTab:'Скачано', histEmpty:'История пуста', autoRootPh:'D:\\Models  (корень: файлы лягут в корень\\loras, корень\\vae, …)', pasteTokTip:'Вставить токен из буфера', tokMissing:'Сначала введите CivitAI API-токен', bufLbl:'БУФЕР', pendingSubPh:'подпапка (опц.)', },
      EN: { cntActive:'active', cntQueued:'queued', cntDone:'finished',
           bmEmpty:'No bookmarks — type a name and press “+”', bmSelect:'Select', bmRemove:'Delete', bmSave:'Save path',
+          autoRootHint:'Auto layout: files go to root/type (loras, checkpoints, vae…). Unknown ones — root/other and appear in the “Unsorted” filter.',
+          removeAll:'Remove all', removeAllTip:'remove ALL tasks: stop active ones, delete partial files (.part); completed files stay on disk',
+          removeAllConfirm:'Remove ALL tasks from the list? Active downloads will be stopped and partial files (.part) deleted from disk. Completed files stay.',
+          removeAllEmpty:'List is already empty',
           toastQueued:'Link already in queue', toastAdded:'Link added to list', toastPasted:'Link pasted from clipboard',
           toastInList:'Already in list', toastInvalid:'Already in list or invalid',
           tRetry:'retry', tipWatch:'clipboard watcher', tipLang:'Language', tipPick:'choose folder via file dialog',
@@ -1961,7 +2100,14 @@ supportOpen:'Unterstützen',
           addToListTip:'add link to list', appTitle:'HF Downloader — offline',
           addFromBuffer:'Add from buffer', addToQueue:'Add to queue',
           linkSingular:'link', linkPlural:'links', dialogError:'Dialog error',
-           tSkipped:'already on disk — skipped', bufferHint:'{0} links in buffer — press “Download all” or add to queue' },
+           tSkipped:'already on disk — skipped', bufferHint:'{0} links in buffer — press “Download all” or add to queue',
+          autoDir:'Sort into folders', autoDirTip:'pinned bookmark wins: the file goes straight there. Else — the type folder from bookmarks (first name match), else a subfolder here (checkpoints, loras, vae, …)',
+          autoDirFromBm:'from bookmarks', autoDirPinned:'pinned folder',
+          prefixSwitch:'File name prefix', prefixSwitchTip:'prepend the file name with a prefix from the model name, base and type. Off — file name stays as is',
+          needsFolder:'needs folder', reviewFilter:'Unsorted',
+          reviewFilterTip:'show files whose type was not recognized (other folder)',
+          prefixLbl:'prefix:', prefixTip:'file name prefix: empty — built from the model name, base and type',
+          histTab:'Downloaded', histEmpty:'History is empty', autoRootPh:'D:\\Models  (root: files go to root\\loras, root\\vae, …)', pasteTokTip:'Paste token from clipboard', tokMissing:'Enter your CivitAI API token first', bufLbl:'BUFFER', pendingSubPh:'subfolder (opt)', },
      ZH: { cntActive:'下载中', cntQueued:'排队中', cntDone:'已完成',
           bmEmpty:'暂无书签 — 输入名称并按“+”', bmSelect:'选择', bmRemove:'删除', bmSave:'保存路径',
           toastQueued:'链接已在队列中', toastAdded:'链接已加入列表', toastPasted:'已从剪贴板粘贴链接',
@@ -1973,7 +2119,7 @@ supportOpen:'Unterstützen',
           addToListTip:'将链接添加到列表', appTitle:'HF Downloader — 离线',
           addFromBuffer:'从缓冲区添加', addToQueue:'添加到队列',
           linkSingular:'链接', linkPlural:'链接', dialogError:'对话框错误',
-            tSkipped:'已在磁盘上 — 已跳过', bufferHint:'缓冲区有 {0} 个链接 — 点击“下载全部”或加入队列' },
+            tSkipped:'已在磁盘上 — 已跳过', bufferHint:'缓冲区有 {0} 个链接 — 点击“下载全部”或加入队列', autoDir:'按文件夹排列', autoDirFromBm:'来自书签', autoDirPinned:'指定的文件夹', autoDirTip:'指定的书签优先：文件直接放进该目录。否则放进书签中的类型目录（按名字首次匹配），否则放进此处的子文件夹（checkpoints、loras、vae…）', autoRootHint:'自动布局：文件放进 根目录/类型（loras、checkpoints、vae…）。未识别的放进 根目录/other，并出现在「未分类」筛选器中。', autoRootPh:'D:\\Models  (根目录：文件放进 根目录\\loras、根目录\\vae…)', histEmpty:'历史记录为空', histTab:'已下载', needsFolder:'需要文件夹', pasteTokTip:'从剪贴板粘贴令牌', prefixLbl:'前缀：', prefixSwitch:'文件名前缀', prefixSwitchTip:'在文件名前加上由模型、基础和类型组成的前缀', prefixTip:'文件名前缀：为空时按模型名、基础和类型自动生成', removeAll:'删除全部', removeAllConfirm:'从列表中删除所有任务？正在进行的下载会被停止，未完成的文件（.part）会从磁盘删除。已完成的文件会保留。', removeAllEmpty:'列表已经是空的', removeAllTip:'删除所有任务：停止活跃任务，删除未完成文件（.part）；已完成的文件保留在磁盘上', reviewFilter:'未分类', reviewFilterTip:'显示类型未被识别的文件（other 文件夹）', tokMissing:'请先输入 CivitAI API 令牌', bufLbl:'缓冲区', pendingSubPh:'子文件夹（可选）', },
      HI: { cntActive:'सक्रिय', cntQueued:'कतार में', cntDone:'समाप्त',
           bmEmpty:'कोई बुकमार्क नहीं — नाम टाइप करें और “+” दबाएं', bmSelect:'चुनें', bmRemove:'हटाएं', bmSave:'पथ सहेजें',
           toastQueued:'लिंक पहले से कतार में है', toastAdded:'लिंक सूची में जोड़ा गया', toastPasted:'क्लिपबोर्ड से लिंक चिपकाया गया',
@@ -1985,7 +2131,7 @@ supportOpen:'Unterstützen',
           addToListTip:'सूची में लिंक जोड़ें', appTitle:'HF Downloader — ऑफ़लाइन',
           addFromBuffer:'बफर से जोड़ें', addToQueue:'कतार में जोड़ें',
           linkSingular:'लिंक', linkPlural:'लिंक', dialogError:'डायलॉग त्रुटि',
-            tSkipped:'पहले से डिस्क पर — छोड़ दिया गया', bufferHint:'बफर में {0} लिंक — “सभी डाउनलोड करें” दबाएँ या कतार में जोड़ें' },
+            tSkipped:'पहले से डिस्क पर — छोड़ दिया गया', bufferHint:'बफर में {0} लिंक — “सभी डाउनलोड करें” दबाएँ या कतार में जोड़ें', autoDir:'फ़ोल्डरों में क्रमबद्ध करें', autoDirFromBm:'बुकमार्क से', autoDirPinned:'पिन किया गया फ़ोल्डर', autoDirTip:'पिन किया गया बुकमार्क जीतता है: फ़ाइल सीधे वहाँ जाती है। अन्यथा बुकमार्क में से उस प्रकार का फ़ोल्डर (नाम का पहला मेल), और यदि न मिले तो यहाँ एक उपफ़ोल्डर में (checkpoints, loras, vae, …)', autoRootHint:'स्वतः लेआउट: फ़ाइलें मूल/प्रकार में जाती हैं (loras, checkpoints, vae…)। अपरिचित फ़ाइलें मूल/other में जाती हैं और «अवर्गीकृत» फ़िल्टर में दिखती हैं।', autoRootPh:'D:\\Models  (मूल: फ़ाइलें मूल\\loras, मूल\\vae, … में जाती हैं)', histEmpty:'इतिहास खाली है', histTab:'डाउनलोड किए गए', needsFolder:'फ़ोल्डर चाहिए', pasteTokTip:'क्लिपबोर्ड से टोकन चिपकाएँ', prefixLbl:'उपसर्ग:', prefixSwitch:'फ़ाइल नाम का उपसर्ग', prefixSwitchTip:'फ़ाइल नाम से पहले मॉडल, बेस और प्रकार से बना उपसर्ग जोड़ें', prefixTip:'फ़ाइल नाम का उपसर्ग: खाली — मॉडल के नाम, बेस और प्रकार से बनाया जाता है', removeAll:'सभी हटाएँ', removeAllConfirm:'सूची से सभी कार्य हटाएँ? सक्रिय डाउनलोड रोक दिए जाएँगे और अधूरी फ़ाइलें (.part) डिस्क से हटा दी जाएँगी। पूरी हुई फ़ाइलें बनी रहेंगी।', removeAllEmpty:'सूची पहले से खाली है', removeAllTip:'सभी कार्य हटाएँ: सक्रिय रोकें, अधूरी (.part) फ़ाइलें हटाएँ; पूरी हुई फ़ाइलें डिस्क पर रहेंगी', reviewFilter:'अवर्गीकृत', reviewFilterTip:'वे फ़ाइलें दिखाएँ जिनका प्रकार पहचाना नहीं गया (other फ़ोल्डर)', tokMissing:'पहले अपना CivitAI API टोकन दर्ज करें', bufLbl:'बफ़र', pendingSubPh:'सबफ़ोल्डर (वैकल्पिक)', },
      ES: { cntActive:'activas', cntQueued:'en cola', cntDone:'terminadas',
           bmEmpty:'Sin marcadores — escribe un nombre y pulsa “+”', bmSelect:'Elegir', bmRemove:'Eliminar', bmSave:'Guardar ruta',
           toastQueued:'El enlace ya está en la cola', toastAdded:'Enlace añadido a la lista', toastPasted:'Enlace pegado del portapapeles',
@@ -1997,7 +2143,7 @@ supportOpen:'Unterstützen',
           addToListTip:'añadir enlace a la lista', appTitle:'HF Downloader — sin conexión',
           addFromBuffer:'Añadir del búfer', addToQueue:'Añadir a la cola',
           linkSingular:'enlace', linkPlural:'enlaces', dialogError:'Error de diálogo',
-            tSkipped:'ya en disco — omitido', bufferHint:'{0} enlaces en el búfer — pulse «Descargar todo» o añada a la cola' },
+            tSkipped:'ya en disco — omitido', bufferHint:'{0} enlaces en el búfer — pulse «Descargar todo» o añada a la cola', autoDir:'Ordenar en carpetas', autoDirFromBm:'desde marcadores', autoDirPinned:'carpeta fijada', autoDirTip:'Gana el marcador fijado: el archivo va directamente allí. Si no, a la carpeta del tipo entre los marcadores (primera coincidencia de nombre), y si no, a una subcarpeta aquí (checkpoints, loras, vae, …)', autoRootHint:'Organización automática: los archivos van a raíz/tipo (loras, checkpoints, vae…). Los desconocidos van a raíz/other y aparecen en el filtro «Sin clasificar».', autoRootPh:'D:\\Models  (raíz: los archivos van a raíz\\loras, raíz\\vae, …)', histEmpty:'El historial está vacío', histTab:'Descargados', needsFolder:'necesita carpeta', pasteTokTip:'Pegar el token desde el portapapeles', prefixLbl:'prefijo:', prefixSwitch:'Prefijo del nombre de archivo', prefixSwitchTip:'añadir al nombre de archivo un prefijo con modelo, base y tipo', prefixTip:'prefijo del nombre de archivo: vacío — se construye con el nombre del modelo, la base y el tipo', removeAll:'Quitar todo', removeAllConfirm:'¿Quitar TODAS las tareas de la lista? Se detendrán las descargas activas y se borrarán del disco los archivos parciales (.part). Los archivos completos se quedan.', removeAllEmpty:'La lista ya está vacía', removeAllTip:'quitar TODAS las tareas: detener las activas, borrar los archivos parciales (.part); los completos se quedan en el disco', reviewFilter:'Sin clasificar', reviewFilterTip:'mostrar archivos cuyo tipo no se reconoció (carpeta other)', tokMissing:'Introduce primero tu clave API de CivitAI', bufLbl:'BUFFER', pendingSubPh:'subcarpeta (opc.)', },
      FR: { cntActive:'actives', cntQueued:'en file', cntDone:'terminées',
           bmEmpty:'Aucun signet — tapez un nom et appuyez sur “+”', bmSelect:'Choisir', bmRemove:'Supprimer', bmSave:'Enregistrer le chemin',
           toastQueued:'Le lien est déjà dans la file', toastAdded:'Lien ajouté à la liste', toastPasted:'Lien collé depuis le presse-papiers',
@@ -2009,7 +2155,7 @@ supportOpen:'Unterstützen',
           addToListTip:'ajouter le lien à la liste', appTitle:'HF Downloader — hors-ligne',
           addFromBuffer:'Ajouter du buffer', addToQueue:'Ajouter à la file',
           linkSingular:'lien', linkPlural:'liens', dialogError:'Erreur de dialogue',
-            tSkipped:'déjà sur le disque — ignoré', bufferHint:'{0} liens dans le buffer — appuyez sur « Tout télécharger » ou ajoutez à la file' },
+            tSkipped:'déjà sur le disque — ignoré', bufferHint:'{0} liens dans le buffer — appuyez sur « Tout télécharger » ou ajoutez à la file', autoDir:'Trier par dossiers', autoDirFromBm:'depuis les favoris', autoDirPinned:'dossier épinglé', autoDirTip:'Le favori épinglé l\'emporte : le fichier va directement dedans. Sinon dans le dossier du type parmi les favoris (première correspondance de nom), sinon dans un sous-dossier ici (checkpoints, loras, vae, …)', autoRootHint:'Disposition auto : les fichiers vont dans racine/type (loras, checkpoints, vae…). Les inconnus vont dans racine/other et apparaissent dans le filtre « Non classé ».', autoRootPh:'D:\\Models  (racine : les fichiers vont dans racine\\loras, racine\\vae, …)', histEmpty:'L\'historique est vide', histTab:'Téléchargés', needsFolder:'dossier requis', pasteTokTip:'Coller le jeton depuis le presse-papiers', prefixLbl:'préfixe :', prefixSwitch:'Préfixe du nom de fichier', prefixSwitchTip:'ajouter au nom de fichier un préfixe modèle, base et type', prefixTip:'préfixe du nom de fichier : vide — construit à partir du nom du modèle, de la base et du type', removeAll:'Tout supprimer', removeAllConfirm:'Supprimer TOUTES les tâches de la liste ? Les téléchargements en cours seront arrêtés et les fichiers partiels (.part) supprimés du disque. Les fichiers terminés restent.', removeAllEmpty:'La liste est déjà vide', removeAllTip:'supprimer TOUTES les tâches : arrêter les tâches actives, supprimer les fichiers partiels (.part) ; les fichiers terminés restent sur le disque', reviewFilter:'Non classé', reviewFilterTip:'afficher les fichiers dont le type n\'a pas été reconnu (dossier other)', tokMissing:'Saisissez d’abord votre jeton API CivitAI', bufLbl:'BUFFER', pendingSubPh:'sous-dossier (opt.)', },
      AR: { cntActive:'نشطة', cntQueued:'في الطابور', cntDone:'مكتملة',
           bmEmpty:'لا توجد إشارات — اكتب اسماً واضغط “+”', bmSelect:'اختر', bmRemove:'حذف', bmSave:'حفظ المسار',
           toastQueued:'الرابط موجود بالفعل في الطابور', toastAdded:'تمت إضافة الرابط إلى القائمة', toastPasted:'تم لصق الرابط من الحافظة',
@@ -2021,7 +2167,7 @@ supportOpen:'Unterstützen',
           addToListTip:'أضف الرابط إلى القائمة', appTitle:'HF Downloader — دون اتصال',
           addFromBuffer:'أضف من المخزن', addToQueue:'أضف إلى الطابور',
           linkSingular:'رابط', linkPlural:'روابط', dialogError:'خطأ في الحوار',
-            tSkipped:'موجود بالفعل على القرص — تم التخطي', bufferHint:'روابط {0} في المخزن — اضغط «تنزيل الكل» أو أضف إلى الطابور' },
+            tSkipped:'موجود بالفعل على القرص — تم التخطي', bufferHint:'روابط {0} في المخزن — اضغط «تنزيل الكل» أو أضف إلى الطابور', autoDir:'الفرز داخل المجلدات', autoDirFromBm:'من الإشارات المرجعية', autoDirPinned:'المجلد المثبّت', autoDirTip:'تفوز الإشارة المرجعية المثبّتة: يذهب الملف إليها مباشرة. وإلا فإلى مجلد النوع من الإشارات المرجعية (أول تطابق بالاسم)، وإلا إلى مجلد فرعي هنا (checkpoints، loras، vae، …)', autoRootHint:'تخطيط تلقائي: تذهب الملفات إلى الجذر/النوع (loras، checkpoints، vae…). الملفات غير المعروفة تذهب إلى الجذر/other وتظهر في عامل التصفية «غير مصنّف».', autoRootPh:'D:\\Models  (الجذر: تذهب الملفات إلى الجذر\\loras، الجذر\\vae، …)', histEmpty:'السجل فارغ', histTab:'تم التنزيل', needsFolder:'يحتاج مجلدًا', pasteTokTip:'الصق الرمز من الحافظة', prefixLbl:'بادئة:', prefixSwitch:'بادئة اسم الملف', prefixSwitchTip:'أضف بادئة من النموذج والأساس والنوع إلى مقدمة اسم الملف', prefixTip:'بادئة اسم الملف: فارغة — تُبنى من اسم النموذج والأساس والنوع', removeAll:'إزالة الكل', removeAllConfirm:'هل تريد إزالة كل المهام من القائمة؟ ستتوقف التنزيلات الجارية وستُحذف الملفات الجزئية (.part) من القرص. تبقى الملفات المكتملة.', removeAllEmpty:'القائمة فارغة بالفعل', removeAllTip:'إزالة كل المهام: إيقاف الجارية وحذف الملفات الجزئية (.part)؛ تبقى الملفات المكتملة على القرص', reviewFilter:'غير مصنّف', reviewFilterTip:'اعرض الملفات التي لم يتم التعرف على نوعها (مجلد other)', tokMissing:'أدخل رمز CivitAI API أولاً', bufLbl:'المخزن', pendingSubPh:'مجلد فرعي (اختياري)', },
      BN: { cntActive:'সক্রিয়', cntQueued:'কিউতে', cntDone:'সম্পন্ন',
           bmEmpty:'কোনো বুকমার্ক নেই — নাম লিখুন এবং “+” চাপুন', bmSelect:'বেছে নিন', bmRemove:'মুছুন', bmSave:'পথ সংরক্ষণ',
           toastQueued:'লিঙ্ক ইতিমধ্যে কিউতে আছে', toastAdded:'লিঙ্ক তালিকায় যোগ করা হয়েছে', toastPasted:'ক্লিপবোর্ড থেকে লিঙ্ক পেস্ট করা হয়েছে',
@@ -2033,7 +2179,7 @@ supportOpen:'Unterstützen',
           addToListTip:'তালিকায় লিঙ্ক যোগ করুন', appTitle:'HF Downloader — অফলাইন',
           addFromBuffer:'বাফার থেকে যোগ', addToQueue:'কিউতে যোগ',
           linkSingular:'লিঙ্ক', linkPlural:'লিঙ্ক', dialogError:'ডায়ালগ ত্রুটি',
-            tSkipped:'ইতিমধ্যে ডিস্কে আছে — বাদ দেওয়া হয়েছে', bufferHint:'বাফারে {0}টি লিঙ্ক — “সব ডাউনলোড করুন” চাপুন বা কিউতে যোগ করুন' },
+            tSkipped:'ইতিমধ্যে ডিস্কে আছে — বাদ দেওয়া হয়েছে', bufferHint:'বাফারে {0}টি লিঙ্ক — “সব ডাউনলোড করুন” চাপুন বা কিউতে যোগ করুন', autoDir:'ফোল্ডারে সাজান', autoDirFromBm:'বুকমার্ক থেকে', autoDirPinned:'পিন করা ফোল্ডার', autoDirTip:'পিন করা বুকমার্ক জেতে: ফাইল সরাসরি সেখানে যায়। নয়তো বুকমার্কের ধরনের ফোল্ডারে (নামের প্রথম মিল), আর না পেলে এখানে একটি সাবফোল্ডারে (checkpoints, loras, vae, …)', autoRootHint:'স্বয়ংক্রিয় বিন্যাস: ফাইল যায় মূল/ধরনে (loras, checkpoints, vae…)। অচেনা ফাইল যায় মূল/other-এ এবং «শ্রেণিবিহীন» ফিল্টারে দেখা যায়।', autoRootPh:'D:\\Models  (মূল: ফাইল যায় মূল\\loras, মূল\\vae, …-এ)', histEmpty:'ইতিহাস ফাঁকা', histTab:'ডাউনলোড হয়েছে', needsFolder:'ফোল্ডার দরকার', pasteTokTip:'ক্লিপবোর্ড থেকে টোকেন পেস্ট করুন', prefixLbl:'প্রিফিক্স:', prefixSwitch:'ফাইল নামের প্রিফিক্স', prefixSwitchTip:'মডেল, বেস ও ধরন দিয়ে তৈরি প্রিফিক্স ফাইলের নামের আগে যোগ করুন', prefixTip:'ফাইল নামের প্রিফিক্স: খালি — মডেলের নাম, বেস ও ধরন থেকে তৈরি হয়', removeAll:'সব সরান', removeAllConfirm:'তালিকা থেকে সব কাজ সরাবেন? চলমান ডাউনলোড থামবে এবং অসম্পূর্ণ ফাইল (.part) ডিস্ক থেকে মুছে যাবে। সম্পূর্ণ ফাইল থাকবে।', removeAllEmpty:'তালিকা ইতিমধ্যেই ফাঁকা', removeAllTip:'সব কাজ সরান: চলমান থামান, অসম্পূর্ণ (.part) ফাইল মুছুন; সম্পূর্ণ ফাইল ডিস্কে থাকে', reviewFilter:'শ্রেণিবিহীন', reviewFilterTip:'যেসব ফাইলের ধরন শনাক্ত হয়নি সেগুলো দেখান (other ফোল্ডার)', tokMissing:'আগে আপনার CivitAI API টোকেন দিন', bufLbl:'বাফার', pendingSubPh:'সাবফোল্ডার (ঐচ্ছিক)', },
      PT: { cntActive:'ativas', cntQueued:'na fila', cntDone:'concluídas',
           bmEmpty:'Sem favoritos — digite um nome e pressione “+”', bmSelect:'Selecionar', bmRemove:'Remover', bmSave:'Salvar caminho',
           toastQueued:'O link já está na fila', toastAdded:'Link adicionado à lista', toastPasted:'Link colado da área de transferência',
@@ -2045,7 +2191,7 @@ supportOpen:'Unterstützen',
           addToListTip:'adicionar link à lista', appTitle:'HF Downloader — offline',
           addFromBuffer:'Adicionar do buffer', addToQueue:'Adicionar à fila',
           linkSingular:'link', linkPlural:'links', dialogError:'Erro de diálogo',
-           tSkipped:'já no disco — ignorado', bufferHint:'{0} links no buffer — pressione “Baixar tudo” ou adicione à fila' },
+           tSkipped:'já no disco — ignorado', bufferHint:'{0} links no buffer — pressione “Baixar tudo” ou adicione à fila', autoDir:'Organizar em pastas', autoDirFromBm:'dos marcadores', autoDirPinned:'pasta fixada', autoDirTip:'Ganha o marcador fixado: o ficheiro vai direto para lá. Caso contrário, para a pasta do tipo entre os marcadores (primeira correspondência de nome), e se não, para uma subpasta aqui (checkpoints, loras, vae, …)', autoRootHint:'Organização automática: os ficheiros vão para raiz/tipo (loras, checkpoints, vae…). Os desconhecidos vão para raiz/other e aparecem no filtro «Sem classificação».', autoRootPh:'D:\\Models  (raiz: os ficheiros vão para raiz\\loras, raiz\\vae, …)', histEmpty:'O histórico está vazio', histTab:'Transferidos', needsFolder:'precisa de pasta', pasteTokTip:'Colar o token da área de transferência', prefixLbl:'prefixo:', prefixSwitch:'Prefixo do nome do ficheiro', prefixSwitchTip:'acrescentar ao nome do ficheiro um prefixo com modelo, base e tipo', prefixTip:'prefixo do nome do ficheiro: vazio — construído a partir do nome do modelo, da base e do tipo', removeAll:'Remover tudo', removeAllConfirm:'Remover TODAS as tarefas da lista? As transferências ativas serão interrompidas e os ficheiros parciais (.part) serão eliminados do disco. Os ficheiros concluídos ficam.', removeAllEmpty:'A lista já está vazia', removeAllTip:'remover TODAS as tarefas: parar as ativas, apagar os ficheiros parciais (.part); os concluídos ficam no disco', reviewFilter:'Sem classificação', reviewFilterTip:'mostrar ficheiros cujo tipo não foi reconhecido (pasta other)', tokMissing:'Introduza primeiro a sua chave API da CivitAI', bufLbl:'BUFFER', pendingSubPh:'subpasta (opc.)', },
     UR: { cntActive:'فعال', cntQueued:'قطار میں', cntDone:'مکمل',
           bmEmpty:'کوئی بک مارک نہیں — نام لکھیں اور “+” دبائیں', bmSelect:'چنیں', bmRemove:'حذف کریں', bmSave:'پاتھ محفوظ کریں',
           toastQueued:'ربط پہلے ہی قطار میں ہے', toastAdded:'ربط فہرست میں شامل کر دیا گیا', toastPasted:'ربط کلپ بورڈ سے چسپاں کر دیا گیا',
@@ -2057,7 +2203,7 @@ supportOpen:'Unterstützen',
           addToListTip:'فہرست میں ربط شامل کریں', appTitle:'HF Downloader — آف لائن',
           addFromBuffer:'بفر سے شامل کریں', addToQueue:'قطار میں شامل کریں',
             linkSingular:'link', linkPlural:'links', dialogError:'ڈائیلاگ کی غلطی',
-            tSkipped:'پہلے سے ڈسک پر ہے — چھوڑ دیا گیا', bufferHint:'بفر میں {0} لنکس — “سب ڈاؤن لوڈ کریں” دبائیں یا قطار میں شامل کریں' },
+            tSkipped:'پہلے سے ڈسک پر ہے — چھوڑ دیا گیا', bufferHint:'بفر میں {0} لنکس — “سب ڈاؤن لوڈ کریں” دبائیں یا قطار میں شامل کریں', autoDir:'فولڈرز میں ترتیب دیں', autoDirFromBm:'بُک مارک سے', autoDirPinned:'پن کردہ فولڈر', autoDirTip:'پن کردہ بُک مارک جیتا ہے: فائل براہِ راست وہیں جاتی ہے۔ ورنہ بُک مارکس میں سے قسم کا فولڈر (نام کا پہلا مطابقت)، اور اگر نہ ملے تو یہاں ایک ذیلی فولڈر میں (checkpoints, loras, vae, …)', autoRootHint:'خودکار ترتیب: فائلیں جڑ/قسم میں جاتی ہیں (loras, checkpoints, vae…)۔ نامعلوم فائلیں جڑ/other میں جاتی ہیں اور «غیر درجہ بند» فلٹر میں نظر آتی ہیں۔', autoRootPh:'D:\\Models  (جڑ: فائلیں جڑ\\loras، جڑ\\vae، … میں جاتی ہیں)', histEmpty:'تاریچ خالی ہے', histTab:'ڈاؤن لوڈ شدہ', needsFolder:'فولڈر درکار', pasteTokTip:'کلپ بورڈ سے ٹوکن چسپاں کریں', prefixLbl:'پریفکس:', prefixSwitch:'فائل کے نام کا پریفکس', prefixSwitchTip:'ماڈل، بیس اور قسم سے بنا پریفکس فائل کے نام سے پہلے لگائیں', prefixTip:'فائل کے نام کا پریفکس: خالی — ماڈل کے نام، بیس اور قسم سے بنایا جاتا ہے', removeAll:'سب ہٹائیں', removeAllConfirm:'کی فہرست سے تمام کام ہٹا دیں؟ جاری ڈاؤن لوڈز رک جائیں گی اور ناقص فائلیں (.part) ڈسک سے حذف ہو جائیں گی۔ مکمل فائلیں محفوظ رہیں گی۔', removeAllEmpty:'فہرست پہلے ہی خالی ہے', removeAllTip:'تمام کام ہٹائیں: جاری روکیں، ناقص (.part) فائلیں حذف کریں؛ مکمل فائلیں ڈسک پر رہیں گی', reviewFilter:'غیر درجہ بند', reviewFilterTip:'وہ فائلیں دکھائیں جن کی قسم پہچانی نہیں گئی (other فولڈر)', tokMissing:'پہلے اپنا CivitAI API ٹوکن درج کریں', bufLbl:'بفر', pendingSubPh:'ذیلی فولڈر (اختیاری)', },
     DE: { cntActive:'aktiv', cntQueued:'in Warteschlange', cntDone:'fertiggestellt',
           bmEmpty:'Keine Lesezeichen — Namen eingeben und „+“ drücken', bmSelect:'Auswählen', bmRemove:'Löschen', bmSave:'Pfad speichern',
           toastQueued:'Link bereits in Warteschlange', toastAdded:'Link zur Liste hinzugefügt', toastPasted:'Link aus Zwischenablage eingefügt',
@@ -2069,7 +2215,7 @@ supportOpen:'Unterstützen',
           addToListTip:'Link zur Liste hinzufügen', appTitle:'HF Downloader — offline',
            addFromBuffer:'Aus Puffer hinzufügen', addToQueue:'Zur Warteschlange hinzufügen',
           linkSingular:'Link', linkPlural:'Links', dialogError:'Dialogfehler',
-            tSkipped:'bereits auf der Festplatte — übersprungen', bufferHint:'{0} Links im Puffer — „Alle downloaden“ klicken oder zur Warteschlange hinzufügen' },
+            tSkipped:'bereits auf der Festplatte — übersprungen', bufferHint:'{0} Links im Puffer — „Alle downloaden“ klicken oder zur Warteschlange hinzufügen', autoDir:'In Ordner sortieren', autoDirFromBm:'aus Lesezeichen', autoDirPinned:'angehefteter Ordner', autoDirTip:'Das angeheftete Lesezeichen gewinnt: Die Datei landet direkt dort. Sonst in den Typ-Ordner der Lesezeichen (erster Namens-Treffer), sonst in einen Unterordner hier (checkpoints, loras, vae, …)', autoRootHint:'Auto-Layout: Dateien landen in Wurzel/Typ (loras, checkpoints, vae…). Unbekannte in Wurzel/other — sie erscheinen im Filter „Nicht zugeordnet“.', autoRootPh:'D:\\Models  (Wurzel: Dateien landen in Wurzel\\loras, Wurzel\\vae, …)', histEmpty:'Verlauf ist leer', histTab:'Heruntergeladen', needsFolder:'Ordner nötig', pasteTokTip:'Token aus Zwischenablage einfügen', prefixLbl:'Präfix:', prefixSwitch:'Präfix des Dateinamens', prefixSwitchTip:'Präfix aus Modell, Basis und Typ vor den Dateinamen stellen', prefixTip:'Präfix des Dateinamens: leer — wird aus Modellname, Basis und Typ gebildet', removeAll:'Alle entfernen', removeAllConfirm:'ALLE Aufgaben aus der Liste entfernen? Laufende Downloads werden gestoppt und Teildateien (.part) von der Festplatte gelöscht. Fertige Dateien bleiben.', removeAllEmpty:'Die Liste ist bereits leer', removeAllTip:'ALLE Aufgaben entfernen: laufende stoppen, Teildateien (.part) löschen; fertige Dateien bleiben auf der Festplatte', reviewFilter:'Nicht zugeordnet', reviewFilterTip:'Dateien anzeigen, deren Typ nicht erkannt wurde (Ordner other)', tokMissing:'Zuerst CivitAI-API-Schlüssel eingeben', bufLbl:'BUFFER', pendingSubPh:'Unterordner (opt.)', },
     JA: { cntActive:'アクティブ', cntQueued:'キュー中', cntDone:'完了',
           bmEmpty:'ブックマークなし — 名前を入力して「+」を押してください', bmSelect:'選択', bmRemove:'削除', bmSave:'パスを保存',
           toastQueued:'リンクは既にキューにあります', toastAdded:'リンクがリストに追加されました', toastPasted:'リンクがクリップボードから貼り付けられました',
@@ -2081,9 +2227,17 @@ supportOpen:'Unterstützen',
           addToListTip:'リンクをリストに追加', appTitle:'HF Downloader — オフライン',
            addFromBuffer:'バッファから追加', addToQueue:'キューに追加',
            linkSingular:'リンク', linkPlural:'リンク', dialogError:'ダイアログエラー',
-           bufferHint:'バッファに{0}件のリンク —「全てダウンロード」または「キューに追加」', tSkipped:'すでにディスク上にあります — スキップしました' }
+           bufferHint:'バッファに{0}件のリンク —「全てダウンロード」または「キューに追加」', tSkipped:'すでにディスク上にあります — スキップしました', autoDir:'フォルダに分ける', autoDirFromBm:'ブックマークから', autoDirPinned:'固定したフォルダ', autoDirTip:'固定したブックマークが優勝：ファイルはそのままに配られます。ないたらブックマーク内の種別フォルダ（名前の一致で最初）へ、なければこの子フォルダ（checkpoints、loras、vae…）へ', autoRootHint:'自動組み設定：ファイルは ルート/種別（loras、checkpoints、vae…）へ。分別できないものは ルート/other に入り、「未分類」フィルターに表示されます。', autoRootPh:'D:\\Models  (ルート：ファイルは ルート\\loras、ルート\\vae… へ)', histEmpty:'履歴は空です', histTab:'ダウンロード済み', needsFolder:'フォルダが必要', pasteTokTip:'クリップボードからトークを貼り付け', prefixLbl:'プレフィックス：', prefixSwitch:'ファイル名のプレフィックス', prefixSwitchTip:'モデル・基礎・種別から組みたプレフィックスをファイル名の前に付ける', prefixTip:'ファイル名のプレフィックス：空の場合はモデル名・基礎・種別から自動生成', removeAll:'すべて削除', removeAllConfirm:'リストからすべてのタスクを削除しますか？実行中のダウンロードは中止され、不完全なファイル（.part）はディスクから削除されます。完了したファイルは残ります。', removeAllEmpty:'リストはすでに空です', removeAllTip:'すべてのタスクを削除：実行中を停止し、不完全ファイル（.part）を削除。完了したファイルはディスクに残ります', reviewFilter:'未分類', reviewFilterTip:'種別を識別できなかったファイル（other フォルダ）を表示', tokMissing:'先に CivitAI API トークンを入力してください', bufLbl:'バッファ', pendingSubPh:'サブフォルダ（任意）', }
   };
   function E(){ return I18N_EXTRA[lang] || I18N_EXTRA.EN; }
+  // Перевод по ключу с откатом на EN и на текст по умолчанию: новые строки
+  // добавляются в I18N_EXTRA только для RU/EN, остальные языки берут
+  // английский вариант вместо "undefined" в интерфейсе.
+  function tr(key, fallback){
+    try { var e = E(); if (e && e[key]) return e[key]; } catch(err){}
+    try { if (I18N_EXTRA.EN && I18N_EXTRA.EN[key]) return I18N_EXTRA.EN[key]; } catch(err){}
+    return fallback || '';
+  }
   function ls(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 
   function getShortPathName(fullPath) {
@@ -2226,7 +2380,7 @@ supportOpen:'Unterstützen',
     if (p.source && p.source !== currentSource){
       setActiveSourceTab(p.source);
     }
-    var branchSuffix = (p.branch && p.branch !== 'main') ? ' · branch: ' + esc(p.branch) : '';
+    var branchSuffix = (p.branch && p.branch !== 'main') ? ' · ' + tr('lblBranch', 'branch:') + ' ' + esc(p.branch) : '';
     if (p.source && p.source.indexOf('civitai') !== -1){
       var civLabel = p.source === 'civitai_red' ? 'CivitAI.red' : 'CivitAI';
       line.innerHTML = '<span class="d-ok"><span class="tag tag-file">' + esc(civLabel) + '</span> ' +
@@ -2282,11 +2436,18 @@ supportOpen:'Unterstützen',
     $('limitSwitch').title = e.tipLimit;
     $('seqSwitch').title = e.tipSeq;
     $('branchLbl').textContent = e.lblBranch;
+    // Раньше эти подсказки были зашитыми русскими в HTML и никогда не
+    // переназначались — в любом языке интерфейса оставались русскими.
+    if ($('logsBtn')) $('logsBtn').title = u.logsTtl;
+    if ($('pasteTokBtn')) $('pasteTokBtn').title = e.pasteTokTip;
+    if ($('pasteTokBtn')) $('pasteTokBtn').setAttribute('aria-label', e.pasteTokTip);
+    if ($('autoRootInp')) $('autoRootInp').placeholder = e.autoRootPh;
     $('dlAllBtn').title = e.dlAll;
     $('dlAllBtn').setAttribute('aria-label', e.dlAll);
     $('clearPendingBtn').title = e.clearPending;
     $('clearPendingBtn').setAttribute('aria-label', e.clearPending);
     $('limitLbl').textContent = e.limit;
+    _setText('bufLbl', tr('bufLbl', 'BUFFER'));
     $('pendingEmpty').textContent = e.pendingEmpty;
     $('addToListBtn').title = e.addToListTip;
     $('addToListBtn').setAttribute('aria-label', e.addToListTip);
@@ -2296,14 +2457,26 @@ supportOpen:'Unterstützen',
     $('pasteBtn').title = u.paste;
     $('pasteBtn').setAttribute('aria-label', u.paste);
     $('lblFolder').textContent = u.folder; $('lblFolderHint').textContent = u.folderHint;
+    // Авто-раскладка по папкам и префикс имени
+    if ($('autoDirSwitch')) $('autoDirSwitch').title = tr('autoDirTip', 'save into a subfolder by model type');
+    if ($('autoDirLbl')) $('autoDirLbl').textContent = tr('autoDir', 'Sort into folders');
+    if ($('prefixSwitch')) $('prefixSwitch').title = tr('prefixSwitchTip', 'prepend file name with model prefix');
+    if ($('prefixSwitchLbl')) $('prefixSwitchLbl').textContent = tr('prefixSwitch', 'File name prefix');
+    if ($('prefixLbl')) $('prefixLbl').textContent = tr('prefixLbl', 'prefix:');
+    if ($('prefixInp')) $('prefixInp').title = tr('prefixTip', 'file name prefix');
     if ($('dirInp') && u.folderHintEx) $('dirInp').title = u.folderHintEx;
-    $('pickDirBtn').title = u.pickDir;
+    // pickDir: title — из E().tipPick (переводится во всех 12 языках),
+    // aria-label — короткий глагол из T (Browse…/Обзор…).
+    // Раньше вторая строка затирала title обратно (мёртвое присваивание).
+    $('pickDirBtn').title = e.tipPick || u.pickDir;
     $('pickDirBtn').setAttribute('aria-label', u.pickDir);
     $('lblToken').textContent = u.token; $('lblTokenHint').textContent = u.tokenHint;
     $('useTokLbl').textContent = u.useTok;
     $('addLbl').textContent = u.add;
     $('consoleTtl').textContent = u.console; $('spdLbl').textContent = u.speed;
     $('seqLbl').textContent = u.seq; $('clrLbl').textContent = u.clr;
+    var ral = $('removeAllLbl'); if (ral) ral.textContent = tr('removeAll', 'Remove all');
+    var rab = $('removeAllBtn'); if (rab) rab.title = tr('removeAllTip', 'remove all tasks');
     $('helpLbl').textContent = u.help; $('helpTtl').textContent = u.helpTtl; $('helpSub').textContent = u.helpSub;
     $('footNote').textContent = u.foot; $('footVer').textContent = u.ver;
     
@@ -2341,10 +2514,15 @@ supportOpen:'Unterstützen',
   _setText('logsTtl', u.logsTtl || 'Event log');
     _setText('logsSub', u.logsSub || 'warnings and errors');
     _setText('logsLbl', u.journal_button || 'Journal');
-    _setText('logsEmptyTxt', u.logsEmpty || 'Log is empty');
+    // Вкладка «Скачано» показывает свой текст «пусто». logsFilter объявлен
+    // выше блока init, поэтому сравнение безопасно на любом вызове applyLang.
+    _setText('logsEmptyTxt', logsFilter === 'hist'
+      ? tr('histEmpty', 'History is empty')
+      : (u.logsEmpty || 'Log is empty'));
     _setText('logsFltAll', u.logsAll || 'All');
     _setText('logsFltWarn', u.logsWarn || 'Warnings');
     _setText('logsFltErr', u.logsErr || 'Errors');
+    _setText('logsFltHist', tr('histTab', 'Downloaded'));
     _setText('logsCopy', u.logsCopy || 'Copy');
     _setTitle('logsCopy', u.logsCopy || 'Copy');
     _setText('logsClear', u.logsClear || 'Clear');
@@ -2353,6 +2531,30 @@ supportOpen:'Unterstützen',
     _setText('logsClose', u.logsClose || 'Close');
     _setText('logsNote', u.logsNote || 'data is stored only on your PC');
     if ($('supportHeaderText') && u.supportHeader) $('supportHeaderText').textContent = u.supportHeader;
+    // Токен-метки зависят от активного таба источника: HF vs CivitAI.
+    // applyLang вызывается раньше initSourceTabs и при смене языка таб не
+    // трогает — обновляем плейсхолдеры/подписи здесь, чтобы смена EN->RU
+    // не оставляла английские "Hugging Face token" и наоборот.
+    try { updateUIForSource(currentSource || 'hf'); } catch(_e){}
+    // Confirm-диалог: если открыт в момент смены языка — перерисовать тексты.
+    try {
+      if ($('confirmOv') && $('confirmOv').classList.contains('show')) {
+        $('confirmTtl').textContent = u.confirmTitle || 'Confirm';
+        var _cb = $('confirmBody'); if (_cb && !_cb.getAttribute('data-custom')) _cb.textContent = u.confirmRemove || 'Continue?';
+      }
+    } catch(_e2){}
+    // Support-модалка (если есть в разметке): тексты из T.
+    try {
+      var _s = function(id, v){ var el = $(id); if (el && v) el.textContent = v; };
+      _s('supportTtl', u.supportTtl); _s('supportSub', u.supportSub);
+      _s('supportThanks', u.supportThanks); _s('supportBody', u.supportBody);
+      _s('supportStory', u.supportStory); _s('supportStoryText', u.supportStoryText);
+      _s('supportStickers', u.supportStickers); _s('supportStickersBody', u.supportStickersBody);
+      _s('supportNote', u.supportNote); _s('supportLater', u.supportLater);
+      _s('supportOpen', u.supportOpen);
+    } catch(_e3){}
+    // Глазок токена: aria-label тоже переводим.
+    try { if ($('eyeBtn')) $('eyeBtn').setAttribute('aria-label', u.tokLbl || 'Hugging Face token'); } catch(_e4){}
     detect();
     renderChips();
     renderTasks();
@@ -2361,18 +2563,27 @@ supportOpen:'Unterstützen',
 }
 
   /* ---------- folder picker ---------- */
-  function applyPickedDir(v){
+  function applyPickedDir(v, isAuto){
     if (!v) return;
     setTimeout(function(){
-      $('dirInp').value = v;
-      ls('hfdl_path', v);
-      renderChips();
-      fetch(CORE + '/api/last_dir', {
+      if (isAuto || autoDirOn()){
+        if ($('autoRootInp')) $('autoRootInp').value = v;
+        ls('hfdl_auto_root', v);
+        renderAutoRoots();
+      } else {
+        $('dirInp').value = v;
+        ls('hfdl_path', v);
+        renderChips();
+      }
+      // Серверный слой путей: ручной путь — в общий last_dir, корень
+      // авто-режима — в отдельный last_auto_root, чтобы режимы при
+      // восстановлении после перезапуска не подмешивались друг к другу.
+      fetch(CORE + (autoDirOn() ? '/api/last_auto_root' : '/api/last_dir'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: v })
       }).catch(function(){});
-      updateDirResolved();
+      if (autoDirOn()) updateAutoRootResolved(); else updateDirResolved();
     }, 0);
   }
 
@@ -2420,10 +2631,13 @@ supportOpen:'Unterstützen',
     return j.absolute || j.path;
   }
 
-  function pickDir(){
-    // Текущее значение поля «Путь»: диалог откроется именно в этой папке,
+  function pickDir(isAuto){
+    // Текущее значение активного поля: диалог откроется именно в этой папке,
     // а не в BASE_DIR по умолчанию.
-    var cur = $('dirInp').value.trim();
+    var auto = (typeof isAuto === 'boolean') ? isAuto : autoDirOn();
+    var cur = auto
+      ? (($('autoRootInp') && $('autoRootInp').value.trim()) || '')
+      : $('dirInp').value.trim();
     // pywebview: методы объекта js_api доступны как window.pywebview.api.*
     // (старый прямой доступ window.external.choose_dir() в pywebview не существует).
     if (typeof window.pywebview !== 'undefined' &&
@@ -2435,14 +2649,14 @@ supportOpen:'Unterstützen',
         if (p && typeof p.then === 'function') {
           p.then(function(result){
             var v = parsePicked(result);
-            if (v) applyPickedDir(v);
+            if (v) applyPickedDir(v, auto);
           }).catch(function(e){
             console.error('pywebview.api.choose_dir error:', e);
             toast(E().dialogError || 'Dialog error');
           });
         } else {
           var v = parsePicked(p);
-          if (v) applyPickedDir(v);
+          if (v) applyPickedDir(v, auto);
         }
       } catch(e) {
         console.error('pywebview.api.choose_dir error:', e);
@@ -2460,13 +2674,17 @@ supportOpen:'Unterstützen',
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(j){
         var v = parsePicked(j);
-        if (v) applyPickedDir(v);
+        if (v) applyPickedDir(v, auto);
       })
       .catch(function(err){
         toast((L().eNet || 'Network error') + ' (' + (err.message || '?') + ')');
       });
   }
-  $('pickDirBtn').addEventListener('click', pickDir);
+  // Кнопка «Обзор…» в шапке секции «Папка» — общая. В ручном режиме выбирает
+  // путь для dirInp, в авто-режиме (свитч включён) — корень для autoRootInp:
+  // pickDir() без аргументов берёт режим из autoDirOn(), applyPickedDir(v, true)
+  // кладёт выбранный путь в поле корня и обновляет подсказку/чипсы.
+  $('pickDirBtn').addEventListener('click', function(){ pickDir(); });
 
   /* ---------- bookmarks ---------- */
   function renderChips(){
@@ -2528,6 +2746,154 @@ supportOpen:'Unterstützen',
     // Выбор закладки
     var bm = t.getAttribute('data-bm');
     if (bm){ setTimeout(function(){ $('dirInp').value = bm; ls('hfdl_path', bm); renderChips(); }, 0); }
+  });
+
+  /* ---------- авто-режим: рендер корней, подсказка, чипсы ----------
+     Логика та же, что у ручных закладок, но список отдельный (autoRoots),
+     клик по чипу ДЕЛАЕТ корень активным (перемещает в начало списка),
+     а не просто подставляет в поле. Активный чип = 'on'. */
+  function renderAutoRoots(){
+    var e = E();
+    var box = $('autoRootChips'), html = '';
+    if (box){
+      if (autoRoots.length === 0){
+        html = '<span class="empty">' + e.bmEmpty + '</span>';
+      }
+      var active = autoRoot();
+      for (var i = 0; i < autoRoots.length; i++){
+        var b = autoRoots[i];
+        var on = active === b ? ' on' : '';
+        var shortName = esc(getShortPathName(b));
+        html += '<div class="chip' + on + ' chip-select" data-ar="' + esc(b) + '" title="' + esc(b) + '">' +
+          '<button class="chip-link" type="button" title="' + e.bmSelect + ' ' + esc(b) + '">' +
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v12a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-12Z"/><path d="M3 8.5h18M12 21v-7"/></svg>' +
+            shortName +
+          '</button>' +
+          '<button class="chip-x" type="button" data-arx="' + esc(b) + '" title="' + e.bmRemove + '" aria-label="' + e.bmRemove + '">' +
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+          '</button>' +
+        '</div>';
+      }
+      html += '<button class="chip amber" type="button" data-aradd="1">+ ' + e.bmSave + '</button>';
+      box.innerHTML = html;
+    }
+    var hint = $('autoRootHint');
+    if (hint){
+      var h = tr('autoRootHint', '');
+      hint.textContent = h;
+      hint.style.display = h ? '' : 'none';
+    }
+  }
+
+  function updateAutoRootResolved(){
+    var inp = $('autoRootInp');
+    var out = $('autoRootResolved');
+    if (!inp || !out) return;
+    var v = inp.value.trim();
+    if (!v){
+      if (autoRoots.length){
+        // Поле пустое, но корни сохранены — показываем активный корень.
+        out.textContent = '→ ' + autoRoots[0] + '/{type}';
+        out.style.display = 'block';
+      } else {
+        out.style.display = 'none';
+        out.textContent = '';
+      }
+      return;
+    }
+    fetch(CORE + '/api/resolve_dir', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: v })
+    })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j) return;
+      var prefix = j.isAbsolute ? '→ ' : '→ ' + (L().relHint || 'relative → in app folder: ');
+      out.textContent = prefix + j.resolved + (j.exists ? '' : '  (будет создана)') + '  /  {type}';
+      out.style.display = 'block';
+      out.style.color = 'var(--ink-500)';
+    })
+    .catch(function(){ out.style.display = 'none'; });
+  }
+
+  $('autoRootChips').addEventListener('click', function(e){
+    var t = e.target;
+    while (t && t !== this){
+      if (t.getAttribute &&
+          (t.getAttribute('data-ar') !== null ||
+           t.getAttribute('data-arx') !== null ||
+           t.getAttribute('data-aradd') !== null)) break;
+      t = t.parentNode;
+    }
+    if (!t || t === this) return;
+
+    // Добавить текущее значение поля как корень (в начало = активный)
+    if (t.getAttribute('data-aradd')){
+      var v = ($('autoRootInp') && $('autoRootInp').value.trim()) || '';
+      if (!v) return;
+      var idx = autoRoots.indexOf(v);
+      if (idx !== -1){
+        if (idx === 0){ toast(L().pathExists); return; }
+        autoRoots.splice(idx, 1);
+      }
+      autoRoots.unshift(v);
+      saveAutoRoots();
+      syncAutoRootToBackend(v);
+      renderAutoRoots();
+      updateAutoRootResolved();
+      return;
+    }
+
+    // Удалить корень
+    var arx = t.getAttribute('data-arx');
+    if (arx !== null){
+      autoRoots = autoRoots.filter(function(x){ return x !== arx; });
+      saveAutoRoots();
+      renderAutoRoots();
+      updateAutoRootResolved();
+      return;
+    }
+
+    // Выбрать корень активным: переносим в начало списка и показываем в поле
+    var ar = t.getAttribute('data-ar');
+    if (ar){
+      var i2 = autoRoots.indexOf(ar);
+      if (i2 > 0){ autoRoots.splice(i2, 1); autoRoots.unshift(ar); saveAutoRoots(); }
+      setTimeout(function(){
+        $('autoRootInp').value = ar;
+        ls('hfdl_auto_root', ar);
+        syncAutoRootToBackend(ar);
+        renderAutoRoots();
+        updateAutoRootResolved();
+      }, 0);
+    }
+  });
+  // Серверный слой активного корня: переживает перезапуск даже при пустом
+  // localStorage (тот же принцип, что у ручного last_dir). Пишется на выбор
+  // чипса, «Обзор…» и уход с поля (blur/change).
+  function syncAutoRootToBackend(v){
+    v = String(v || '').trim();
+    if (!v) return;
+    fetch(CORE + '/api/last_auto_root', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: v })
+    }).catch(function(){});
+  }
+  $('autoRootInp').addEventListener('input', function(){
+    // Ручной ввод корня тоже сохраняем сразу (раньше путь терялся, если
+    // юзер ввёл корень и закрыл приложение, не добавив задачу).
+    ls('hfdl_auto_root', this.value.trim());
+    renderAutoRoots();
+  });
+  $('autoRootInp').addEventListener('blur', function(){
+    syncAutoRootToBackend(this.value);
+    updateAutoRootResolved();
+  });
+  $('autoRootInp').addEventListener('change', function(){
+    syncAutoRootToBackend(this.value);
+    updateAutoRootResolved();
   });
 
   /* ---------- tasks ---------- */
@@ -2626,16 +2992,18 @@ supportOpen:'Unterstützen',
 
   function renderTasks(){
     var u = L(), box = $('taskList');
-    if (tasks.length === 0){
+    renderReviewFilter();
+    var list = reviewOnly ? tasks.filter(needsReview) : tasks;
+    if (list.length === 0){
       box.innerHTML = '<div class="empty">' +
         '<svg class="blink" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7Z"/><path d="M3 8.5 12 14l9-5.5M12 14v7"/></svg>' +
-        '<h3>' + u.empty + '</h3><p>' + u.emptyTxt + '</p></div>';
+        '<h3>' + (reviewOnly ? esc(tr('reviewFilter', 'Unsorted')) : u.empty) + '</h3><p>' + (reviewOnly ? '' : u.emptyTxt) + '</p></div>';
       updateCounts();
       return;
     }
     var html = '';
-    for (var i = 0; i < tasks.length; i++){
-      var t = tasks[i];
+    for (var i = 0; i < list.length; i++){
+      var t = list[i];
       var pct = t.status === 'done' ? 100 : (t.total > 0 ? Math.min(100, Math.round(t.downloaded / t.total * 100)) : 0);
       var fillCls = 'fill' + (t.status === 'done' ? ' done' : t.status === 'error' ? ' err' : t.status === 'downloading' ? ' live' : '');
       var nameCls = t.status === 'done' ? ' done' : t.status === 'error' ? ' error' : '';
@@ -2643,7 +3011,7 @@ supportOpen:'Unterstützen',
       html += '<article class="task slidein" data-id="' + t.id + '">' +
         '<div class="t-top">' +
           '<span class="t-ico">' + (t.kind === 'file' ? iconFile() : iconRepo()) + '</span>' +
-          '<div class="t-name' + nameCls + '"><b>' + esc(t.name) + '</b><span>' + esc(t.dir) + ' · ' + esc(t.kind === 'file' ? u.file.toLowerCase() : t.repo) + '</span></div>' +
+          '<div class="t-name' + nameCls + '"><b>' + esc(t.finalName || t.name) + '</b><span>' + esc(t.dir) + (t.dirSource === 'bookmark' ? ' · ' + esc(tr('autoDirFromBm', 'from bookmarks')) : (t.dirSource === 'pinned' ? ' · ' + esc(tr('autoDirPinned', 'pinned folder')) : '')) + (needsReview(t) ? ' · ' + esc(tr('needsFolder', 'needs folder')) : '') + ' · ' + esc(t.kind === 'file' ? (t.type ? t.type : u.file.toLowerCase()) : t.repo) + '</span></div>' +
           '<span class="badge ' + t.kind + '">' + (t.kind === 'file' ? u.file : u.repo) + '</span>' +
           statusChip(t) +
           '<span class="t-btns">' +
@@ -2687,6 +3055,32 @@ supportOpen:'Unterstützen',
     for (var i = 0; i < tasks.length; i++) if (tasks[i].id === id) return tasks[i];
     return null;
   }
+  /* Нераспределённая задача (карантин вместо отдельного списка): авто-раскладка
+     включена, тип не опознан (other) и ни закладка, ни pinned-путь не сработали.
+     Тип считается ядром уже во время скачивания, поэтому признак вычисляемый —
+     нового стейта и миграции .tasks.json не нужно. */
+  function needsReview(t){
+    if (!t || t.kind !== 'file') return false;
+    if (t.type && t.type !== 'other') return false;
+    if (!t.type && !(t.autoDir || autoDirOn())) return false;
+    if (!t.autoDir && !autoDirOn()) return false;
+    return !t.dirSource;
+  }
+  var reviewOnly = false;
+  function renderReviewFilter(){
+    var btn = $('reviewFilterBtn');
+    if (!btn) return;
+    var n = 0;
+    for (var i = 0; i < tasks.length; i++) if (needsReview(tasks[i])) n++;
+    var lbl = $('reviewFilterLbl');
+    if (lbl) lbl.textContent = tr('reviewFilter', 'Unsorted');
+    var cnt = $('reviewFilterN');
+    if (cnt) cnt.textContent = String(n);
+    btn.title = tr('reviewFilterTip', 'show files whose type was not recognized');
+    btn.style.display = n > 0 ? '' : 'none';
+    if (n === 0) reviewOnly = false;
+    btn.classList.toggle('on', reviewOnly);
+  }
   function activeCount(){
     var n = 0;
     for (var i = 0; i < tasks.length; i++) if (tasks[i].status === 'downloading') n++;
@@ -2694,6 +3088,7 @@ supportOpen:'Unterstützen',
   }
 
   function startCoreTask(t){
+    var flags = autoFlags();
     var payload = {
       link: t.link,
       source: t.source || detectSource(t.link),
@@ -2701,6 +3096,11 @@ supportOpen:'Unterstützen',
       seq: $('seqChk').checked,
       token: ($('useTokChk').checked ? tokVal() : ''),
       branch: t.branch || 'main',
+      auto_dir: flags.auto_dir,
+      auto_root: flags.auto_root,
+      auto_roots: flags.auto_roots,
+      use_prefix: prefixOn(),
+      prefix: userPrefix(),
       speed_limit: ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0)
     };
     fetch(CORE + '/api/tasks', {
@@ -2725,6 +3125,11 @@ supportOpen:'Unterstützen',
       // Абсолютный путь загрузки от ядра — карточке и кнопке «показать в папке».
       if (j.dir) tt.dir = j.dir;
       if (j.status) tt.status = j.status;
+      // Тип модели и итоговое имя файла (с префиксом) ядро считает во время
+      // скачивания — здесь они могут быть ещё пустыми, подтянутся опросом.
+      if (j.final_name) tt.finalName = j.final_name;
+      if (j.type) tt.type = j.type;
+      if (j.dir_source) tt.dirSource = j.dir_source;
       renderTasks();
     })
     .catch(function(err){
@@ -2819,7 +3224,12 @@ supportOpen:'Unterstützen',
             needsToken: !!bk.needs_token,
             branch: bk.branch || 'main',
             speedLimit: bk.speed_limit || 0,
-            hadSkip: !!bk.had_skip
+            hadSkip: !!bk.had_skip,
+            // Итоговое имя файла (с префиксом) и тип модели из ядра: после
+            // перезапуска карточка сразу показывает реальное имя на диске.
+            finalName: bk.final_name || '',
+            type: bk.type || '',
+            dirSource: bk.dir_source || ''
           });
           added = true;
         }
@@ -2829,7 +3239,7 @@ supportOpen:'Unterstützen',
   }
   function addTask(){
     var u = L();
-    var dir = $('dirInp').value.trim();
+    var dir = effectiveDir();
     $('formErr').textContent = '';
 
     // Основной принцип: «Добавить в очередь и скачать» при КАЖДОМ нажатии
@@ -2851,13 +3261,21 @@ supportOpen:'Unterstützen',
         return;
       }
 
+      var flags = autoFlags();
       var payload = {
         link: item.link,
         source: item.source || detectSource(item.link),
-        dir: item.folder ? dir + '/' + item.folder : dir,
+        // В авто-режиме item.folder (подпапка из типа ссылки) не дописываем:
+        // подпапку типа ядро добавит само (root/loras, root/checkpoints, …).
+        dir: (!flags.auto_dir && item.folder) ? dir + '/' + item.folder : dir,
         seq: $('seqChk').checked,
         token: ($('useTokChk').checked ? tokVal() : ''),
         branch: item.branch || 'main',
+        auto_dir: flags.auto_dir,
+        auto_root: flags.auto_root,
+        auto_roots: flags.auto_roots,
+        use_prefix: prefixOn(),
+        prefix: userPrefix(),
         speed_limit: ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0)
       };
       fetch(CORE + '/api/tasks', {
@@ -2878,6 +3296,9 @@ supportOpen:'Unterstützen',
           dir: absDir, backendId: j.id,
           status: j.status || 'waiting', downloaded: 0, total: 0, speed: 0,
           filesDone: 0, filesTotal: 0, current: '', error: null,
+          finalName: j.final_name || '', type: j.type || '',
+          dirSource: j.dir_source || '',
+          autoDir: autoDirOn(),
           branch: item.branch || 'main',
           speedLimit: payload.speed_limit
         };
@@ -2913,7 +3334,7 @@ supportOpen:'Unterstützen',
       return;
     }
     
-    ls('hfdl_path', dir);
+    ls(autoDirOn() ? 'hfdl_auto_root' : 'hfdl_path', dir);
     uid++;
     var t = {
       id: 'task' + uid + '-' + Date.now(),
@@ -2922,6 +3343,7 @@ supportOpen:'Unterstützen',
       status: 'waiting', downloaded: 0, total: 0, speed: 0,
       filesDone: 0, filesTotal: 0, current: '', error: null,
       branch: p.branch || 'main',
+      autoDir: autoDirOn(), dirSource: '',
       speedLimit: ($('limitChk').checked ? parseInt(($('speedBtn').getAttribute('data-speed') || '1'), 10) : 0)
     };
     tasks.unshift(t);
@@ -3027,7 +3449,8 @@ supportOpen:'Unterstützen',
       fetch(CORE + '/api/open', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: t.backendId, dir: t.dir, name: t.name, kind: t.kind })
+        body: JSON.stringify({ id: t.backendId, dir: t.dir, name: t.name,
+                               final_name: t.finalName || '', kind: t.kind })
       })
         .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
         .catch(function(){ toast(L().openFail); });
@@ -3108,6 +3531,59 @@ supportOpen:'Unterstützen',
     updateCounts();
   });
 
+  // «Удалить все» — НЕ «очистить завершённые»: убираем всё из списка, включая
+  // активные, стоящие в очереди и на паузе. Ядро по /cancel останавливает
+  // задачу и удаляет её вместе с .part-файлом; скачанные файлы не трогаем.
+  $('removeAllBtn').addEventListener('click', function(){
+    if (tasks.length === 0){ toast(tr('removeAllEmpty', 'List is already empty')); return; }
+    var hasActive = false;
+    for (var i = 0; i < tasks.length; i++){
+      var s = tasks[i].status;
+      if (tasks[i].backendId && (s === 'downloading' || s === 'waiting' || s === 'paused')){
+        hasActive = true; break;
+      }
+    }
+    var doRemoveAll = function(){
+      // Гонка та же, что при удалении одной задачи: ждём ОТВЕТЫ всех cancel
+      // (Promise.all) и только потом чистим список — иначе 5-секундный
+      // автосейв ядра успел бы перезаписать .tasks.json до доставки cancel,
+      // и задачи «воскресли» бы после перезапуска. Ошибки сети игнорируем:
+      // список всё равно очищается.
+      var requests = [];
+      for (var j = 0; j < tasks.length; j++){
+        if (tasks[j].backendId){
+          requests.push(fetch(CORE + '/api/tasks/' + tasks[j].backendId + '/cancel',
+            { method: 'POST' }).catch(function(){}));
+        }
+      }
+      var done = function(){
+        tasks = [];
+        reviewOnly = false;
+        renderTasks();
+        updateCounts();
+      };
+      if (requests.length) Promise.all(requests).then(done, done);
+      else done();
+    };
+    if (hasActive){
+      confirmDialog({
+        title: tr('removeAll', 'Remove all'),
+        body: tr('removeAllConfirm',
+          'Remove ALL tasks from the list? Active downloads will be stopped and partial files (.part) deleted from disk. Completed files stay.'),
+        okText: tr('removeAll', 'Remove all'),
+        onOk: doRemoveAll
+      });
+      return;
+    }
+    doRemoveAll();
+  });
+
+  $('reviewFilterBtn').addEventListener('click', function(){
+    reviewOnly = !reviewOnly;
+    renderReviewFilter();
+    renderTasks();
+  });
+
   /* ---------- polling ---------- */
   setInterval(function(){
     var any = false;
@@ -3133,6 +3609,13 @@ supportOpen:'Unterstützen',
                cur.filesTotal = j.files_total || 0;
                cur.current = j.current || '';
                if (j.had_skip) cur.hadSkip = true;
+               // Ядро считает подпапку по типу модели и префикс имени уже во
+               // время скачивания — подтягиваем, чтобы карточка показывала
+               // реальное место сохранения и итоговое имя файла.
+               if (j.dir && j.dir !== cur.dir){ cur.dir = j.dir; changed = true; }
+               if (j.final_name && j.final_name !== cur.finalName){ cur.finalName = j.final_name; changed = true; }
+               if (j.type && j.type !== cur.type){ cur.type = j.type; changed = true; }
+               if (j.dir_source && j.dir_source !== cur.dirSource){ cur.dirSource = j.dir_source; changed = true; }
                cur.retries = typeof j.retries === 'number' ? j.retries : cur.retries || 0;
                cur.maxRetries = typeof j.max_retries === 'number' ? j.max_retries : cur.maxRetries || 3;
                cur.speedLimit = typeof j.speed_limit === 'number' ? j.speed_limit : cur.speedLimit || 0;
@@ -3580,6 +4063,23 @@ supportOpen:'Unterstützen',
     ls('hfdl_token', v);
   });
   $('branchInp').addEventListener('input', function(){ ls('hfdl_branch', this.value); });
+  // Авто-раскладка по папкам и ручной префикс — сохраняем между запусками
+  // (как путь и branch) и сразу перерисовываем карточки: подпись «куда
+  // сохранять» меняется на глазах.
+  $('autoDirChk').addEventListener('change', function(){
+    // Свитч = переключатель РЕЖИМОВ, а не довесок: скрывает ручную панель
+    // (поле, закладки, «Обзор…»), показывает авто-панель (корень + чипсы).
+    // setAutoMode сам хранит флаг и перерисовывает всё.
+    setAutoMode(this.checked);
+  });
+  $('prefixInp').addEventListener('input', function(){ ls('hfdl_prefix', this.value); });
+  // Свитч префикса: по умолчанию ВКЛ; состояние переживает перезапуск.
+  // При ВЫКЛ поле префикса приглушаем, чтобы было видно, что оно не действует.
+  $('prefixChk').addEventListener('change', function(){
+    ls('hfdl_useprefix', this.checked ? '1' : '0');
+    if ($('prefixInp')) $('prefixInp').disabled = !this.checked;
+    renderTasks();
+  });
   $('seqChk').addEventListener('change', function(){
     tickQueue();
     renderTasks();
@@ -3638,6 +4138,17 @@ supportOpen:'Unterstützen',
   $('authOv').addEventListener('mousedown', function(e){ if (e.target === this) this.classList.remove('show'); });
   // (обработчики permOv/Escape перенесены выше — см. блок clipboard watcher)
 
+  /* Состояние журнала/истории — ДО блока init. applyLang() (и другие
+     init-вызовы) обращаются к этим переменным, а `var` без инициализации
+     равен undefined (hoisting). Регрессия: ранний renderLogs() падал на
+     logsCache.filter → applyLang() обрывал init → initClipPerm() не
+     запускался, и ссылки из буфера обмена переставали попадать в список. */
+  var logsFilter = 'all';
+  var logsCache = [];
+  var logsOpen = false;
+  var logsLastErrorCount = 0;
+  var historyCache = [];
+
   /* ---------- init ---------- */
   try {
     var p0 = localStorage.getItem('hfdl_path'); if (p0) $('dirInp').value = p0;
@@ -3645,6 +4156,17 @@ supportOpen:'Unterstützen',
     if (t0){ $('tokInp').value = t0.replace(/[\s'"`]+/g,'').replace(/[\u200b-\u200d\u2060\ufeff]/g,''); ls('hfdl_token', $('tokInp').value); }
     $('useTokChk').checked = localStorage.getItem('hfdl_usetoken') !== '0';
     var br = localStorage.getItem('hfdl_branch'); if (br) $('branchInp').value = br;
+    $('autoDirChk').checked = localStorage.getItem('hfdl_autodir') === '1';
+    // Авто-режим: корень восстанавливаем ОТДЕЛЬНО от ручного пути
+    // (поле 'hfdl_auto_root', потом первый из сохранённых корней).
+    var ar0 = localStorage.getItem('hfdl_auto_root');
+    if (!ar0 && autoRoots.length) ar0 = autoRoots[0];
+    if (ar0 && $('autoRootInp')) $('autoRootInp').value = ar0;
+    var pf = localStorage.getItem('hfdl_prefix'); if (pf) $('prefixInp').value = pf;
+    // Свитч префикса по умолчанию ВКЛ: выключенным он бывает только если
+    // юзер явно сохранил '0'. Поле сразу приглушаем при ВЫКЛ.
+    $('prefixChk').checked = localStorage.getItem('hfdl_useprefix') !== '0';
+    if ($('prefixInp')) $('prefixInp').disabled = !$('prefixChk').checked;
     var sp = localStorage.getItem('hfdl_speed');
     if (sp) {
       $('speedBtn').setAttribute('data-speed', sp);
@@ -3674,7 +4196,44 @@ supportOpen:'Unterstützen',
   } else {
     updateDirResolved();
   }
+  // Авто-режим: если localStorage пуст (слетевший профиль WebView2 и т.п.) —
+  // тянем активный корень с диска (.last_auto_root.txt): тот же fallback-
+  // принцип, что у ручного пути через /api/last_dir.
+  if (!$('autoRootInp').value && !autoRoots.length) {
+    fetch(CORE + '/api/last_auto_root', { method: 'GET' })
+      .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
+      .then(function(j){
+        if (j && j.path && !$('autoRootInp').value){
+          $('autoRootInp').value = j.path;
+          ls('hfdl_auto_root', j.path);
+          renderAutoRoots();
+          if (autoDirOn()) updateAutoRootResolved();
+        }
+      })
+      .catch(function(){});
+  }
+  // Список корней тоже восстанавливаем с диска (localStorage мог слететь):
+  // иначе оставался только активный корень и авто-раскладка вырождалась.
+  if (!autoRoots.length) {
+    fetch(CORE + '/api/last_auto_roots', { method: 'GET' })
+      .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
+      .then(function(j){
+        if (!j || !j.roots || !j.roots.length) return;
+        autoRoots = j.roots.slice();
+        saveAutoRoots();
+        if ($('autoRootInp') && !$('autoRootInp').value){
+          $('autoRootInp').value = autoRoots[0];
+          ls('hfdl_auto_root', autoRoots[0]);
+        }
+        renderAutoRoots();
+        if (autoDirOn()) updateAutoRootResolved();
+      })
+      .catch(function(){});
+  }
   $('tokWrap').className = 'token-wrap ' + ($('useTokChk').checked ? 'tok-on' : 'tok-off');
+  // Авто-режим: применяем переключение панелей с учётом сохранённого свитча
+  // (скрыть/показать ручную и авто-панели, отрисовать чипсы-корни).
+  setAutoMode($('autoDirChk').checked);
   applyLang();
   loadBackendTasks();
   initClipPerm();
@@ -3693,11 +4252,6 @@ supportOpen:'Unterstützen',
   /* Support buttons — реальный href, переход браузерный, ничего не блокируем */
 
   /* ---------- logs ---------- */
-  var logsFilter = 'all';
-  var logsCache = [];
-  var logsOpen = false;
-  var logsLastErrorCount = 0;
-
   function fetchLogs(){
     fetch(CORE + '/api/logs')
       .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
@@ -3725,14 +4279,68 @@ supportOpen:'Unterstützen',
       .catch(function(){});
   }
 
+  // История скачивания (вкладка «Скачано»): файл + путь + размер. Живёт в
+  // отдельном файле на диске (.history.json), потому что .tasks.json хранит
+  // только НЕзавершённые задачи — после done путь файла терялся.
+  // (Сама переменная historyCache объявлена выше блока init.)
+  function fetchHistory(){
+    fetch(CORE + '/api/history?limit=200')
+      .then(function(r){ if (!r.ok) throw new Error('x'); return r.json(); })
+      .then(function(j){ historyCache = j.items || []; if (logsFilter === 'hist') renderLogs(); })
+      .catch(function(){});
+  }
+
   function renderLogs(){
     var body = $('logsBody');
     var empty = $('logsEmpty');
-    var filtered = logsCache;
-    if (logsFilter !== 'all'){
-      filtered = logsCache.filter(function(l){ return l.level.toLowerCase() === logsFilter; });
+    var isHist = logsFilter === 'hist';
+    var emptyTxt = $('logsEmptyTxt');
+    if (emptyTxt){
+      emptyTxt.textContent = isHist
+        ? tr('histEmpty', 'History is empty')
+        : (L().logsEmpty || 'Log is empty');
     }
     if (!body || !empty) return;
+    var old0 = body.querySelectorAll('.log-entry');
+    for (var e0 = 0; e0 < old0.length; e0++){ body.removeChild(old0[e0]); }
+    if (isHist){
+      var hist = historyCache || [];
+      if (hist.length === 0){
+        if (empty.parentNode !== body) body.appendChild(empty);
+        empty.style.display = 'flex';
+        return;
+      }
+      empty.style.display = 'none';
+      if (empty.parentNode !== body) body.insertBefore(empty, body.firstChild);
+      var hfrag = document.createDocumentFragment();
+      for (var hi = 0; hi < hist.length; hi++){
+        var it = hist[hi];
+        var hrow = document.createElement('div');
+        hrow.className = 'log-entry';
+        var c1 = document.createElement('span');
+        c1.className = 'log-time'; c1.textContent = it.ts || '';
+        var c2 = document.createElement('span');
+        c2.className = 'log-level';
+        c2.textContent = it.status === 'done' ? 'OK' : 'ERR';
+        var c3 = document.createElement('span');
+        c3.className = 'log-msg';
+        c3.style.whiteSpace = 'pre-wrap';
+        c3.textContent = (it.final_name || it.name || '') +
+          (it.size ? '  ·  ' + fmtBytes(it.size) : '') + '\n' + (it.path || '');
+        hrow.appendChild(c1); hrow.appendChild(c2); hrow.appendChild(c3);
+        hfrag.appendChild(hrow);
+      }
+      body.appendChild(hfrag);
+      body.scrollTop = body.scrollHeight;
+      return;
+    }
+    // logsCache/logsFilter инициализируются в блоке состояния выше, но на
+    // всякий случай не падаем на undefined (var-hoisting при раннем вызове).
+    var all = logsCache || [];
+    var filtered = all;
+    if (logsFilter && logsFilter !== 'all'){
+      filtered = all.filter(function(l){ return l.level.toLowerCase() === logsFilter; });
+    }
     var entries = body.querySelectorAll('.log-entry');
     for (var e = 0; e < entries.length; e++){ body.removeChild(entries[e]); }
     if (filtered.length === 0){
@@ -3770,6 +4378,7 @@ supportOpen:'Unterstützen',
     logsOpen = true;
     $('logsOv').classList.add('show');
     fetchLogs();
+    if (logsFilter === 'hist') fetchHistory();
   });
   $('logsClose').addEventListener('click', function(){
     logsOpen = false;
@@ -3778,12 +4387,20 @@ supportOpen:'Unterstützen',
   $('logsOv').addEventListener('mousedown', function(e){
     if (e.target === this){ logsOpen = false; this.classList.remove('show'); }
   });
-  $('logsRefresh').addEventListener('click', fetchLogs);
+  $('logsRefresh').addEventListener('click', function(){ fetchLogs(); fetchHistory(); });
   $('logsCopy').addEventListener('click', function(){
     var lines = [];
-    for (var i = 0; i < logsCache.length; i++){
-      var l = logsCache[i];
-      lines.push('[' + l.time + '] ' + l.level + ' ' + l.msg);
+    if (logsFilter === 'hist'){
+      for (var h = 0; h < historyCache.length; h++){
+        var it = historyCache[h];
+        lines.push('[' + (it.ts || '') + '] ' + (it.status || '') + ' ' +
+          (it.final_name || it.name || '') + ' — ' + (it.path || ''));
+      }
+    } else {
+      for (var i = 0; i < logsCache.length; i++){
+        var l = logsCache[i];
+        lines.push('[' + l.time + '] ' + l.level + ' ' + l.msg);
+      }
     }
     var text = lines.join('\n');
     if (navigator.clipboard && navigator.clipboard.writeText){
@@ -3791,6 +4408,13 @@ supportOpen:'Unterstützen',
     }
   });
   $('logsClear').addEventListener('click', function(){
+    // На вкладке «Скачано» кнопка чистит историю, в остальных вкладках — журнал.
+    if (logsFilter === 'hist'){
+      fetch(CORE + '/api/history/clear', { method: 'POST' })
+        .then(function(){ historyCache = []; renderLogs(); })
+        .catch(function(){});
+      return;
+    }
     fetch(CORE + '/api/logs/clear', { method: 'POST' })
       .then(function(){ logsCache = []; renderLogs(); updateLogsBadge(); })
       .catch(function(){});
@@ -3803,6 +4427,7 @@ supportOpen:'Unterstützen',
         for (var j = 0; j < logsFbtns.length; j++){ logsFbtns[j].className = 'logs-filter-btn'; }
         btn.className = 'logs-filter-btn active';
         logsFilter = btn.getAttribute('data-filter');
+        if (logsFilter === 'hist') fetchHistory();
         renderLogs();
       });
     })(logsFbtns[fi]);

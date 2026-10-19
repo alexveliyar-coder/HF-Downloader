@@ -37,5 +37,15 @@
   "civitai_no_url": "لم يُرجع CivitAI رابط التنزيل. قد يتطلب النموذج رمزًا صالحًا.",
   "civitai_api_error": "خطأ في API CivitAI.",
   "pasteFail": "فشل قراءة الحافظة",
-  "toastPasted": "تم الإدراج من الحافظة"
+  "toastPasted": "تم الإدراج من الحافظة",
+  "dep_missing": "الاعتمادية مفقودة: %s",
+  "dep_auto_install": "محاولة التثبيت التلقائي (python -m pip install -r requirements.txt)...",
+  "dep_installed": "تم تثبيت الاعتماديات، أكمل.",
+  "dep_still_fail": "اكتمل التثبيت لكن الاستيراد ما زال يفشل.",
+  "dep_error_text": "نص الخطأ: %s",
+  "dep_manual": "جرّب يدويًا:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "تعذر تثبيت الاعتماديات تلقائيًا.",
+  "update_available": "HF Downloader: إصدار جديد %s متوفر (لديك %s)",
+  "update_prerelease": "(هذا إصدار تجريبي — قد يكون غير مستقر)",
+  "update_latest": "لديك أحدث إصدار (%s)."
 }

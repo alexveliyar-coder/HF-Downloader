@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI n'a pas retourné d'URL de téléchargement. Le modèle peut nécessiter un jeton valide.",
   "civitai_api_error": "Erreur API CivitAI.",
   "pasteFail": "Impossible de lire le presse-papiers",
-  "toastPasted": "Inséré depuis le presse-papiers"
+  "toastPasted": "Inséré depuis le presse-papiers",
+  "dep_missing": "Dépendance manquante : %s",
+  "dep_auto_install": "Tentative d'installation automatique (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Dépendances installées, je continue.",
+  "dep_still_fail": "Installation terminée mais l'import échoue toujours.",
+  "dep_error_text": "Texte de l'erreur : %s",
+  "dep_manual": "Essayez manuellement :  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "Impossible d'installer les dépendances automatiquement.",
+  "update_available": "HF Downloader : nouvelle version %s disponible (vous avez %s)",
+  "update_prerelease": "(c'est une prerelease — peut être instable)",
+  "update_latest": "Vous avez la dernière version (%s)."
 }

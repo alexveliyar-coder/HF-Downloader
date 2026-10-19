@@ -302,6 +302,12 @@ def get_civitai_file_info(
     if not download_url:
         download_url = version_data.get("downloadUrl", "")
 
+    # model.type («Checkpoint», «LORA», «VAE», «TextualInversion», …) и
+    # baseModel («SD 1.5», «SDXL 1.0», «Flux.1 D») нужны, чтобы построить
+    # читаемый префикс имени файла и разложить файл по папкам. API отдаёт их
+    # в том же ответе, который мы уже получили, — дополнительных запросов нет.
+    model_info = version_data.get("model") or {}
+
     return {
         "name": target_file.get("name", f"civitai_{version_data.get('id', 'unknown')}.safetensors"),
         "downloadUrl": download_url,
@@ -309,7 +315,12 @@ def get_civitai_file_info(
         "format": target_file.get("metadata", {}).get("format", ""),
         "fp": target_file.get("metadata", {}).get("fp", ""),
         "size": target_file.get("metadata", {}).get("size", ""),
-        "model_name": version_data.get("name", ""),
+        # Настоящее имя МОДЕЛИ (DreamShaper), а не версии ("8"). Раньше здесь
+        # лежало имя версии — оно и остаётся, но теперь в version_name.
+        "model_name": model_info.get("name", "") or version_data.get("name", ""),
+        "model_type": model_info.get("type", ""),
+        "base_model": version_data.get("baseModel", ""),
+        "trained_words": version_data.get("trainedWords") or [],
         "version_name": version_data.get("name", ""),
         # Реальный ID выбранного файла — нужен чтобы fileId в download-URL
         # указывал на него, а не на version_id (см. get_civitai_download_url).
@@ -324,10 +335,13 @@ def get_civitai_download_url(
     token: str = "",
     source: str = "civitai_blue",
     variant: dict | None = None,
-) -> tuple[str, str, int]:
+) -> tuple[str, str, int, dict]:
     """Получить прямую ссылку для скачивания с CivitAI.
 
-    Возвращает (filename, url, size_bytes).
+    Возвращает (filename, url, size_bytes, info), где info — полный ответ
+    get_civitai_file_info (имя модели, тип, база, fp): из него ядро строит
+    читаемый префикс имени файла и определяет папку. Запрос к API один и тот
+    же, поэтому отдаём info наружу, а не ходим в API второй раз.
     Кидает CivitAIError при ошибках.
     """
     token = _clean_token(token)
@@ -384,4 +398,4 @@ def get_civitai_download_url(
     filename = info.get("name", "civitai_model.safetensors")
     size_bytes = int(info.get("sizeKB", 0)) * 1024
 
-    return filename, download_url, size_bytes
+    return filename, download_url, size_bytes, info

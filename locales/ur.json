@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI نے ڈاؤن لوڈ یو آر ایل واپس نہیں کیا۔ درست ٹوکن درکار ہو سکتا ہے۔",
   "civitai_api_error": "CivitAI API میں خرابی۔",
   "pasteFail": "کلپ بورڈ پڑھنے میں ناکام",
-  "toastPasted": "کلپ بورڈ سے داخل کیا گیا"
+  "toastPasted": "کلپ بورڈ سے داخل کیا گیا",
+  "dep_missing": "انحصار نہیں ملا: %s",
+  "dep_auto_install": "خودکار انسٹال کی کوشش (python -m pip install -r requirements.txt)...",
+  "dep_installed": "انحصارات انسٹال ہو گئے، جاری رکھا جا رہا ہے۔",
+  "dep_still_fail": "انسٹال مکمل ہوا لیکن امپورٹ اب بھی ناکام ہے۔",
+  "dep_error_text": "خرابی کا متن: %s",
+  "dep_manual": "دستی طور پر آزمائیں:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "انحصارات خودکار طور پر انسٹال نہیں ہو سکے۔",
+  "update_available": "HF Downloader: نیا ورژن %s دستیاب ہے (آپ کے پاس %s)",
+  "update_prerelease": "(یہ prerelease ہے — غیر مستحکم ہو سکتا ہے)",
+  "update_latest": "آپ کے پاس تازہ ترین ورژن ہے (%s)۔"
 }

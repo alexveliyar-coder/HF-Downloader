@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAIがダウンロードURLを返しませんでした。有効なトークンが必要な場合があります。",
   "civitai_api_error": "CivitAI APIエラー。",
   "pasteFail": "クリップボードを読み取れません",
-  "toastPasted": "クリップボードから挿入しました"
+  "toastPasted": "クリップボードから挿入しました",
+  "dep_missing": "依存関係が見つかりません: %s",
+  "dep_auto_install": "自動インストールを試みています (python -m pip install -r requirements.txt)...",
+  "dep_installed": "依存関係をインストールしました。続行します。",
+  "dep_still_fail": "インストールは完了しましたが、インポートは依然として失敗します。",
+  "dep_error_text": "エラー内容: %s",
+  "dep_manual": "手動で試してください:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "依存関係を自動インストールできませんでした。",
+  "update_available": "HF Downloader: 新しいバージョン %s が利用可能です（現在 %s）",
+  "update_prerelease": "（これはプレリリース版です — 不安定な場合があります）",
+  "update_latest": "最新バージョンです（%s）。"
 }

@@ -16,6 +16,8 @@
 ## What it does
 
 - **Download** any model, dataset or space — single files or whole repos
+- **Readable file names** — downloaded files get a prefix built from the model metadata (`DreamShaper-v8-sd15-checkpoint-fp16_dreamshaper_8.safetensors` instead of `dreamshaper_8.safetensors`), so you can tell at a glance what a file is and where it came from
+- **Auto-sorting into folders** — optional switch: files are placed into ComfyUI-compatible subfolders by type (`checkpoints`, `loras`, `vae`, `text_encoders`, `controlnet`, `embeddings`, `upscale_models`, …); anything unrecognised goes to `other` rather than into a random folder. With the switch on, the app first looks for a matching folder among your **bookmarks** (your ComfyUI `models/*` collection) and only falls back to a subfolder under the chosen path
 - **Multi-source**: [Hugging Face](https://huggingface.co) and [CivitAI](https://civitai.com) (Blue & Red)
 - **Pause & resume** downloads (HTTP Range headers + `.part` files, survives crashes)
 - **Queue** with optional strict one-at-a-time mode
@@ -156,7 +158,10 @@ Most things work out of the box. Optional tweaks:
 
 User preferences (bookmarks, last folder, language) are stored in plain-text files next to `main.py`:
 - `.lang.txt` — selected language
-- `.last_dir.txt` — last folder used
+- `.last_dir.txt` — last folder used (manual mode)
+- `.last_auto_root.txt` — active auto-layout root
+- `.last_auto_roots.json` — full ordered list of auto-layout roots
+- `.history.json` — download history (path of every finished/failed file)
 - `.tasks.json` — active task state (so you can kill the app and resume)
 - `hfdl_bookmarks.json` — your bookmarks
 - `.hfdl_log.txt` — rolling log, last 500 lines

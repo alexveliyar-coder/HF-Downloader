@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI did not return a download URL. The model may require a valid token.",
   "civitai_api_error": "CivitAI API error.",
   "pasteFail": "Cannot read clipboard",
-  "toastPasted": "Inserted from clipboard"
+  "toastPasted": "Inserted from clipboard",
+  "dep_missing": "Missing dependency: %s",
+  "dep_auto_install": "Trying to install automatically (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Dependencies installed, continuing.",
+  "dep_still_fail": "Install finished but import still fails.",
+  "dep_error_text": "Error text: %s",
+  "dep_manual": "Try manually:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "Could not install dependencies automatically.",
+  "update_available": "HF Downloader: new version %s available (you have %s)",
+  "update_prerelease": "(this is a prerelease — may be unstable)",
+  "update_latest": "You have the latest version (%s)."
 }

@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI no devolvió una URL de descarga. El modelo puede requerir un token válido.",
   "civitai_api_error": "Error de API de CivitAI.",
   "pasteFail": "No se puede leer el portapapeles",
-  "toastPasted": "Insertado desde el portapapeles"
+  "toastPasted": "Insertado desde el portapapeles",
+  "dep_missing": "Falta la dependencia: %s",
+  "dep_auto_install": "Intentando instalar automáticamente (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Dependencias instaladas, continuando.",
+  "dep_still_fail": "La instalación terminó pero la importación sigue fallando.",
+  "dep_error_text": "Texto del error: %s",
+  "dep_manual": "Intente manualmente:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "No se pudieron instalar las dependencias automáticamente.",
+  "update_available": "HF Downloader: nueva versión %s disponible (tiene %s)",
+  "update_prerelease": "(es una prerelease — puede ser inestable)",
+  "update_latest": "Tiene la última versión (%s)."
 }

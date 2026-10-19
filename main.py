@@ -41,9 +41,22 @@ try:
 # это не удалось, показываем инструкцию вместо молчаливого краша.
 except ImportError as _imp_err:
     import sys
+    # Locale for these earliest messages: saved user choice (.lang.txt)
+    # if present, else OS auto-detection. No hard dependency on
+    # hf_core_server here (it failed to import) — read .lang.txt directly.
+    try:
+        from pathlib import Path as _P
+        _lc = (_P(__file__).resolve().parent / ".lang.txt").read_text(
+            encoding="utf-8").strip().lower()
+        from locale_loader import SUPPORTED_LANGUAGES as _SL
+        _lc = _lc if _lc in _SL else None
+    except OSError:
+        _lc = None
+    from locale_loader import get_locale as _get_locale
+    _L0 = _get_locale(_lc)
     _missing = getattr(_imp_err, "name", None) or "requests"
-    print(f"\n[HF Downloader] Не найдена зависимость: {_missing}")
-    print("Пробую установить автоматически (python -m pip install -r requirements.txt)...")
+    print(f"\n[HF Downloader] {_L0.t('dep_missing', _missing)}")
+    print(_L0.t("dep_auto_install"))
     import subprocess
     _rc = subprocess.call(
         [sys.executable, "-m", "pip", "install", "-r",
@@ -52,19 +65,19 @@ except ImportError as _imp_err:
     if _rc == 0:
         try:
             import hf_core_server  # повторная попытка после установки
-            print("[HF Downloader] Зависимости установлены, продолжаю.")
+            print(f"[HF Downloader] {_L0.t('dep_installed')}")
         except ImportError as _imp_err2:
             sys.stderr.write(
-                "\n[HF Downloader] Установка прошла, но импорт всё равно не удался.\n"
-                f"Текст ошибки: {_imp_err2}\n"
-                "Попробуйте вручную:  python -m pip install -r requirements.txt\n"
+                f"\n[HF Downloader] {_L0.t('dep_still_fail')}\n"
+                f"{_L0.t('dep_error_text', _imp_err2)}\n"
+                f"{_L0.t('dep_manual')}\n"
             )
             raise SystemExit(1) from None
     else:
         sys.stderr.write(
-            "\n[HF Downloader] Не удалось установить зависимости автоматически.\n"
-            "Установите их вручную командой:  python -m pip install -r requirements.txt\n"
-            f"Текст ошибки: {_imp_err}\n"
+            f"\n[HF Downloader] {_L0.t('dep_auto_fail')}\n"
+            f"{_L0.t('dep_manual')}\n"
+            f"{_L0.t('dep_error_text', _imp_err)}\n"
         )
         raise SystemExit(1) from None
 
@@ -166,13 +179,64 @@ def _find_free_port(host, start_port, max_tries=20):
     return s, start_port
 
 
+def _site_static_root():
+    """Корень раздачи статики — только каталог site/ (никогда не cwd)."""
+    return str(SITE)
+
+
+def _site_path_allowed(path):
+    """Отдаём ЛИШЬ страницу приложения — всё остальное запрещено.
+
+    Раньше всё, кроме index.html, уходило в SimpleHTTPRequestHandler, у которого
+    корень раздачи — текущая рабочая директория. При запуске через
+    start_windows.bat (там `cd /d "%~dp0"`) cwd = корень проекта, поэтому по
+    http://127.0.0.1:<port>/ были доступны .env, .tasks.json, .last_dir.txt,
+    .last_auto_root.txt, .hfdl_log.txt, hfdl_bookmarks.json, src/*.py и каталог
+    downloads/**. Любая страница в браузере (через DNS-rebinding) могла
+    вычитать .env с токеном. site/index.html самодостаточен (внешние ресурсы —
+    только шрифты Google по HTTPS), поэтому больше ничего отдавать не нужно.
+    """
+    return path in ("/", "/index.html")
+
+
 class _SiteHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        # Второй барьер: корень раздачи — только site/, а не cwd. Это важно на
+        # случай, если кто-то снова включит отдачу статики через
+        # super().do_GET(): в cwd лежат .env, .tasks.json, .hfdl_log.txt,
+        # hfdl_bookmarks.json и каталог downloads/**. Передавать directory
+        # через конструктор сервера нельзя (socketserver создаёт обработчик
+        # сам), и просто присвоить атрибут класса тоже нельзя —
+        # SimpleHTTPRequestHandler.__init__ перезапишет его на os.getcwd().
+        kwargs["directory"] = _site_static_root()
+        super().__init__(*args, **kwargs)
+
+    def log_message(self, *a):
+        # Не засоряем консоль: страница одна, а 404 на favicon.ico и прочее —
+        # штатная ситуация. Заодно пути не попадают в консольные логи.
+        pass
+
     def do_GET(self):
         path = urllib.parse.urlparse(self.path).path
-        if path == "/" or path == "/index.html":
+        if _site_path_allowed(path):
             self._serve_index()
         else:
-            super().do_GET()
+            # Ни файлов проекта, ни листинга каталогов.
+            self.send_error(404, "Not Found")
+
+    def do_HEAD(self):
+        path = urllib.parse.urlparse(self.path).path
+        if not _site_path_allowed(path):
+            self.send_error(404, "Not Found")
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def _serve_index(self):
         try:
@@ -185,6 +249,7 @@ class _SiteHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
             self.send_header("Pragma", "no-cache")
             self.send_header("Expires", "0")
+            self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Content-Length", str(len(content.encode("utf-8"))))
             self.end_headers()
             self.wfile.write(content.encode("utf-8"))
@@ -404,7 +469,7 @@ def main():
         try:
             info = updater.check_update()
             if info:
-                print(updater.format_update_message(info))
+                print(updater.format_update_message(info, L))
         except Exception:
             pass
 

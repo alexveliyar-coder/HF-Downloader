@@ -26,7 +26,7 @@ from typing import Optional
 
 # Эту строку обновляешь вручную при каждом релизе. Должна совпадать с тегом
 # GitHub-релиза вида v1.2.3 (без префикса 'v' в самой строке).
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 # Куда смотреть. Юзер может переопределить через env HUGGINGFACE_TOKEN же нет,
 # через HF_DOWNLOADER_UPDATE_REPO — например, для форка.
@@ -110,26 +110,49 @@ def check_update():
     }
 
 
-def format_update_message(info) -> str:
+def format_update_message(info, L=None) -> str:
     """Готовая строка для печати в консоль."""
     if not info:
         return ""
+    def _t(key, *args):
+        try:
+            if L is not None:
+                return L.t(key, *args)
+        except Exception:
+            pass
+        _fb = {
+            "update_available": "HF Downloader: new version %s available (you have %s)",
+            "update_prerelease": "(this is a prerelease — may be unstable)",
+        }
+        try:
+            return _fb[key] % args if args else _fb[key]
+        except Exception:
+            return _fb.get(key, key)
     lines = [
         "",
         "-" * 58,
-        "  HF Downloader: доступна новая версия {} (у вас {})".format(info["latest"], VERSION),
+        "  " + _t("update_available", info["latest"], VERSION),
         "  " + info["url"],
     ]
     if info.get("prerelease"):
-        lines.append("  (это prerelease — может быть нестабильной)")
+        lines.append("  " + _t("update_prerelease"))
     lines.append("-" * 58)
     return "\n".join(lines)
 
 
 if __name__ == "__main__":
     # Можно дёрнуть напрямую:  python updater.py
+    try:
+        from locale_loader import init_locale as _init
+        _L = _init()
+    except Exception:
+        _L = None
     info = check_update()
     if info:
-        print(format_update_message(info))
+        print(format_update_message(info, _L))
     else:
-        print(f"У вас последняя версия ({VERSION}).")
+        try:
+            msg = _L.t("update_latest", VERSION) if _L is not None else f"You have the latest version ({VERSION})."
+        except Exception:
+            msg = f"You have the latest version ({VERSION})."
+        print(msg)

@@ -5,7 +5,7 @@
 locale_loader.py — Localization module for HF Downloader.
 
 Auto-detects OS language and loads JSON files from the locales/ folder.
-Supported languages: 10 (ru, en, zh, hi, es, fr, ar, bn, pt, ur)
+Supported languages: 12 (en, zh, hi, es, fr, ar, bn, pt, ru, ur, de, ja)
 
 Usage examples in Python code:
 
@@ -13,7 +13,7 @@ Usage examples in Python code:
     L = get_locale()                          # auto-detect OS language
     print(L.t("console_start"))               # → "HF Downloader started (offline)"
 
-Supported languages: ru, en, zh, hi, es, fr, ar, bn, pt, ur
+Supported languages: en, zh, hi, es, fr, ar, bn, pt, ru, ur, de, ja
 
 See README.md for full documentation.
 """
@@ -32,64 +32,80 @@ LOCALES_DIR = Path(__file__).resolve().parent.parent / "locales"
 SUPPORTED_LANGUAGES = ["en", "zh", "hi", "es", "fr", "ar", "bn", "pt", "ru", "ur", "de", "ja"]
 
 
+def _normalize_code(raw):
+    """'ru_RU', 'ru-RU', 'RUS', 'rus' -> 'ru'. Returns '' if unknown."""
+    if not raw:
+        return ""
+    s = str(raw).strip().lower().replace("-", "_")
+    first = s.split("_")[0].split(";")[0].split(".")[0].split("@")[0]
+    # 3-letter / long names -> 2-letter code
+    _aliases = {
+        "eng": "en", "english": "en",
+        "rus": "ru", "russian": "ru",
+        "ger": "de", "deu": "de", "deutsch": "de",
+        "fra": "fr", "fre": "fr", "french": "fr",
+        "spa": "es", "spanish": "es",
+        "por": "pt", "portuguese": "pt",
+        "chi": "zh", "zho": "zh", "chinese": "zh",
+        "hin": "hi", "hindi": "hi",
+        "ara": "ar", "arabic": "ar",
+        "ben": "bn", "bengali": "bn",
+        "urd": "ur", "urdu": "ur",
+        "jpn": "ja", "jap": "ja", "japanese": "ja",
+    }
+    if first in _aliases:
+        return _aliases[first]
+    prefix = first[:2]
+    if prefix in SUPPORTED_LANGUAGES:
+        return prefix
+    return ""
+
+
 def _detect_os_language():
     """Detect the user's OS language.
 
     Returns a two-letter locale code or 'en' as default fallback."""
-    # Windows: environment variable LANG/LANGUAGE
+    # 0) Explicit env override (works on all OSes, incl. Windows)
+    for var in ("HFDL_LANG", "LANG", "LANGUAGE", "LC_ALL", "LC_MESSAGES"):
+        raw = (os.environ.get(var) or "").strip().split(";")[0].split(",")[0]
+        code = _normalize_code(raw)
+        if code:
+            return code
+
+    # Windows: GetUserDefaultLocaleName via ctypes (real OS language,
+    # not env vars which are usually empty on Windows).
     if os.name == "nt":
-        lang = (os.environ.get("LANG") or "").strip()
-        if not lang:
-            lang = os.environ.get("LANGUAGE", "").split(";")[0]
+        try:
+            import ctypes
+            _buf = ctypes.create_unicode_buffer(85)
+            if ctypes.windll.kernel32.GetUserDefaultLocaleName(_buf, 85):
+                code = _normalize_code(_buf.value)
+                if code:
+                    return code
+        except Exception:
+            pass
 
-        for supported in SUPPORTED_LANGUAGES:
-            if lang.startswith(supported):
-                return supported
-
-    # POSIX systems: locale environment variable
+    # POSIX systems: locale module
     try:
         import locale as loc_module
 
-        code = ""
-
-        # Python 3.12+ removed getdefaultlocale() — use fallback below instead
-        try:
-            result = loc_module.getdefaultlocale() or (None, None)
-            if isinstance(result[0], str):
-                code = result[0]
-        except AttributeError:
-            pass
-
-        # Fallback for Python 3.12+ and other edge cases
-        import locale as _loc_mod
-        try:
-            detected_code = (_loc_mod.getlocale() or (None, None))[0] or ""
-
-            if not code:
-                prefix = detected_code.split("_")[0].lower().split("-")[0]
-
-                # Handle special cases like "zh_CN" → zh
-                mapping = {
-                    "en": ["en", "eng"],
-                    "ru": ["ru", "rus"],
-                    "de": ["de", "ger", "deutsch"],
-                    "fr": ["fr", "fra"],
-                    "es": ["es", "spa"],
-                    "pt": ["pt", "por"],
-                }
-
-                if prefix in mapping:
-                    return mapping[prefix][0]
-
-            # Try direct match first, then partial
-            for supported in SUPPORTED_LANGUAGES:
-                code_lower = detected_code.lower()[:2].lower().split("-")[0]
-                if code_lower == supported:
-                    return supported
-
-        except (AttributeError, ValueError):
-            pass
-
+        candidates = []
+        for getter in ("getdefaultlocale", "getlocale"):
+            try:
+                fn = getattr(loc_module, getter, None)
+                if fn is None:
+                    continue
+                res = fn()
+                if isinstance(res, (list, tuple)):
+                    candidates.extend([x for x in res if isinstance(x, str)])
+                elif isinstance(res, str):
+                    candidates.append(res)
+            except Exception:
+                continue
+        for cand in candidates:
+            code = _normalize_code(cand)
+            if code:
+                return code
     except ImportError:
         pass
 
@@ -106,6 +122,7 @@ def _load_language(code):
 
         # Try English as fallback — this is the most common case when users install on non-English systems
         code = "en"
+        filepath = LOCALES_DIR / f"{code}.json"
 
     # If even English is missing — just use empty dict and let UI show defaults
     try:
@@ -140,24 +157,15 @@ def get_locale(lang=None):
 
     if lang is None:
         # Auto-detect from OS — this ensures the console output matches user's system language
-        detected_lang_code = _detect_os_language()
-
-        code_lower_underscored = (detected_lang_code or "").lower().replace("-", "_")
-
-        for supported in SUPPORTED_LANGUAGES:
-            if code_lower_underscored == "zh_cn":
-                return get_locale("en")  # Simplified Chinese not fully translated yet — fall back to English
-
-            elif detected_lang_code.lower()[:2] in ["ru", "de"]:
-
-                for supported in SUPPORTED_LANGUAGES:
-                    if code_lower_underscored == (supported.replace("-", "_").lower()):
-                        return get_locale(supported)
-
+        detected = _normalize_code(_detect_os_language())
+        if detected in SUPPORTED_LANGUAGES:
+            return get_locale(detected)
         # If no match found, default to English — safest fallback that works everywhere. This is the most common path since many users install on non-English systems and we want them at least seeing something readable in console output
         lang = "en"
 
-    # Validate language code against supported languages
+    # Validate language code against supported languages (case-insensitive)
+    if isinstance(lang, str):
+        lang = _normalize_code(lang) or lang.strip().lower()
     if lang not in SUPPORTED_LANGUAGES:
         print(f"[locale] Language '{lang}' unsupported; falling back to en", file=sys.stderr)
         lang = "en"
@@ -225,16 +233,16 @@ def get_available_languages():
     """Return list of available language codes from installed .json files."""
     languages = []
 
-    if LOCALES_DIR.exists() and not isinstance(LOCALES_DIR, str):
-        for f in sorted([x.name for x in LOCALES_DIR.iterdir()], key=str.lower) :
+    if LOCALES_DIR.exists():
+        for p in sorted(LOCALES_DIR.iterdir(), key=lambda x: x.name.lower()):
 
             # Only include JSON locale files that match our supported set. This prevents
             # accidentally including unrelated .json config or data files from being listed as languages
 
-            if (f.suffix == ".json" and f.stem.replace("-", "_") in SUPPORTED_LANGUAGES):
-                languages.append(f.stem)
+            if p.is_file() and p.suffix == ".json" and p.stem.replace("-", "_").lower() in SUPPORTED_LANGUAGES:
+                languages.append(p.stem.lower())
 
-    return sorted(languages, key=str.lower).lower()
+    return sorted(languages, key=str.lower)
 
 
 # Global cache for performance — initialized once at import time to avoid

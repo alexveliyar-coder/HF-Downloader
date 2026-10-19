@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI hat keine Download-URL geliefert. Eventuell wird ein gültiges Token benötigt.",
   "civitai_api_error": "Fehler in der CivitAI-API.",
   "pasteFail": "Zwischenablage kann nicht gelesen werden",
-  "toastPasted": "Aus Zwischenablage eingefügt"
+  "toastPasted": "Aus Zwischenablage eingefügt",
+  "dep_missing": "Fehlende Abhängigkeit: %s",
+  "dep_auto_install": "Versuche automatische Installation (python -m pip install -r requirements.txt)...",
+  "dep_installed": "Abhängigkeiten installiert, fahre fort.",
+  "dep_still_fail": "Installation fertig, aber Import schlägt weiterhin fehl.",
+  "dep_error_text": "Fehlertext: %s",
+  "dep_manual": "Manuell versuchen:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "Abhängigkeiten konnten nicht automatisch installiert werden.",
+  "update_available": "HF Downloader: neue Version %s verfügbar (Sie haben %s)",
+  "update_prerelease": "(dies ist ein Prerelease — möglicherweise instabil)",
+  "update_latest": "Sie haben die neueste Version (%s)."
 }

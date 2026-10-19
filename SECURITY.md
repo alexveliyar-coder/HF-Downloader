@@ -5,17 +5,19 @@
 HF Downloader is designed so that nothing important leaks:
 
 - **Servers listen only on `127.0.0.1`** — they cannot be reached from the internet or your local network. Only you, on your own machine.
-- **Hugging Face token** is sent directly from the browser (or pywebview window) to `huggingface.co` over HTTPS. No intermediate server ever sees or stores it. By default the token is not persisted at all — it lives only in the window's `localStorage` while the app is running.
-- **CivitAI API token** is sent directly to `civitai.com` or `civitai.red` over HTTPS. Like the HF token, it is never saved to disk and is not logged. The token is required for all CivitAI downloads.
-- **Local cache** (`downloads/`, `.tasks.json`, `.lang.txt`, `.last_dir.txt`) sits next to the app and is accessible only to you.
-- **Downloaded files** go to `downloads/<the folder you chose>/` and never leave your computer.
+- **Hugging Face token** is sent over HTTPS to `huggingface.co` by the local download core — no third-party server of ours ever sees it. The app never writes it to its state: it is stripped from `.tasks.json` (and removed from download URLs) and masked in the log. The UI keeps it in the webview's `localStorage` so you don't have to retype it, which means it *is* stored on your machine, inside the webview profile — turn the token switch off (or clear the field) to drop that copy.
+- **CivitAI API token** is sent over HTTPS to `civitai.com` or `civitai.red` the same way: it is never written to the app's state files and is masked in the log. The token is required for all CivitAI downloads.
+- **Local cache** (`downloads/`, `.tasks.json`, `.lang.txt`, `.last_dir.txt`, `.last_auto_root.txt`, `.last_auto_roots.json`, `.history.json`, `.hfdl_log.txt`, `hfdl_bookmarks.json`) sits next to the app and is accessible only to you.
+- **The local web server serves only the app page** (`site/index.html`). Every other path — including the state files above and `downloads/**` — answers `404`, so nothing in the project folder is reachable over HTTP.
+- **Downloaded files** go to the folder you choose (by default `downloads/<the folder you chose>/`) and never leave your computer.
 
 ## What we do **not** do
 
 - No telemetry.
 - No inbound open ports.
 - We never run downloaded files, unpack archives, or execute scripts.
-- We never modify files outside `downloads/`.
+- We never touch your disk except (a) the download folder you pick, and (b) the app's own state files next to the app (`.tasks.json`, `.lang.txt`, `.last_dir.txt`, `.last_auto_root.txt`, `.last_auto_roots.json`, `.history.json`, `.hfdl_log.txt`, `hfdl_bookmarks.json`). Nothing else is modified.
+- We never expose those state files over HTTP: the local web server answers only the app page and returns `404` for everything else.
 
 ## Reporting a vulnerability
 

@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI 未返回下载链接。模型可能需要有效的令牌。",
   "civitai_api_error": "CivitAI API 错误。",
   "pasteFail": "无法读取剪贴板",
-  "toastPasted": "已从剪贴板插入"
+  "toastPasted": "已从剪贴板插入",
+  "dep_missing": "缺少依赖: %s",
+  "dep_auto_install": "正在尝试自动安装 (python -m pip install -r requirements.txt)...",
+  "dep_installed": "依赖已安装，继续运行。",
+  "dep_still_fail": "安装完成，但导入仍然失败。",
+  "dep_error_text": "错误信息: %s",
+  "dep_manual": "请手动尝试:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "无法自动安装依赖。",
+  "update_available": "HF Downloader: 有新版本 %s 可用（当前 %s）",
+  "update_prerelease": "（这是预发布版本 — 可能不稳定）",
+  "update_latest": "您已使用最新版本（%s）。"
 }

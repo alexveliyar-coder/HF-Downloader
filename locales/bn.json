@@ -37,5 +37,15 @@
   "civitai_no_url": "CivitAI ডাউনলোড URL দেয়নি। মডেলটি একটি বৈধ টোকেন প্রয়োজন হতে পারে।",
   "civitai_api_error": "CivitAI API ত্রুটি।",
   "pasteFail": "ক্লিপবোর্ড পড়া যায়নি",
-  "toastPasted": "ক্লিপবোর্ড থেকে ঢোকানো হয়েছে"
+  "toastPasted": "ক্লিপবোর্ড থেকে ঢোকানো হয়েছে",
+  "dep_missing": "নির্ভরতা পাওয়া যায়নি: %s",
+  "dep_auto_install": "স্বয়ংক্রিয় ইনস্টলের চেষ্টা (python -m pip install -r requirements.txt)...",
+  "dep_installed": "নির্ভরতা ইনস্টল হয়েছে, চালিয়ে যাচ্ছি।",
+  "dep_still_fail": "ইনস্টল শেষ হলেও ইমপোর্ট ব্যর্থ হচ্ছে।",
+  "dep_error_text": "ত্রুটির পাঠ্য: %s",
+  "dep_manual": "ম্যানুয়ালি চেষ্টা করুন:  python -m pip install -r requirements.txt",
+  "dep_auto_fail": "নির্ভরতা স্বয়ংক্রিয়ভাবে ইনস্টল করা যায়নি।",
+  "update_available": "HF Downloader: নতুন সংস্করণ %s উপলব্ধ (আপনার %s)",
+  "update_prerelease": "(এটি prerelease — অস্থির হতে পারে)",
+  "update_latest": "আপনার কাছে সর্বশেষ সংস্করণ আছে (%s)।"
 }
