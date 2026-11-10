@@ -155,6 +155,19 @@ def _saved_lang():
     return None
 
 
+def _saved_theme():
+    """User-selected color theme (the core writes it to .theme.json).
+
+    Returns {"mode","h","s","l"} or None. Forwarded to the frontend via URL
+    query params so the theme applies on the very first paint and survives
+    restarts even when WebView2 localStorage is unavailable.
+    """
+    try:
+        return hf_core_server._read_saved_theme()
+    except Exception:
+        return None
+
+
 def _find_free_port(host, start_port, max_tries=20):
     """Найти свободный порт, держа привязанный сокет открытым (исключает
     гонку TOCTOU). Возвращает (socket, port); сокет передаётся в сервер."""
@@ -451,10 +464,14 @@ def main():
     # порт, иначе CORS/Origin не совпадут и все запросы фронтенда получат 403.
     hf_core_server.set_web_port(actual_web_port)
 
-    # Передаём язык в frontend через URL-параметр.
+    # Передаём язык и тему в frontend через URL-параметры.
     # cache-buster (`&v=VERSION`) — чтобы при обновлении версии pywebview/браузер
     # не показывал старую страницу из кэша.
-    url = f"http://127.0.0.1:{actual_web_port}/?lang={L.lang}&v={updater.VERSION}"
+    theme = _saved_theme()
+    theme_q = ""
+    if theme:
+        theme_q = f"&theme={theme['mode']}&ah={theme['h']}&as={theme['s']}&al={theme['l']}"
+    url = f"http://127.0.0.1:{actual_web_port}/?lang={L.lang}&v={updater.VERSION}{theme_q}"
 
     print("=" * 58)
     print(" " + L.t("console_start") + " v" + (updater.VERSION if _HAS_UPDATER else "?"))

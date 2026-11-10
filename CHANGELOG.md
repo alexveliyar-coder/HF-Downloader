@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format is based on 
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-11-10
+
+### Added
+- **Light theme + custom palette**: the UI can switch between **Dark / Light / Auto** (follows the OS) and lets you tune the accent color from the header panel — 8 presets plus a custom color picker. The accent drives buttons, badges, highlights and the ambient background; text keeps a readable, darkened variant of the chosen hue.
+- The chosen theme is stored on the core side (`.theme.json`, `GET/POST /api/theme`) and passed to the UI through the start URL — it survives restarts even when WebView2 drops `localStorage`.
+
+### Fixed
+- **Theme did not persist across restarts** — it lived only in `localStorage`, which WebView2 does not keep between sessions. It is now saved to disk next to the UI language (`\.lang.txt` → `.theme.json`).
+- `hfdownloader.spec` `APP_VERSION` was left at `1.1.0`; it now matches the release version.
+
+### Changed
+- Theme panel labels fall back to English for languages that don't define them yet (no more literal "undefined").
+
 ## [1.2.0] — 2026-10-19
 
 ### Added

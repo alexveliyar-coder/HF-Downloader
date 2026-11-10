@@ -146,6 +146,9 @@ _seq_mode = False
 _server_instance = None
 _TASKS_FILE = os.path.join(_PROJECT_ROOT, ".tasks.json")
 LANG_FILE = os.path.join(_PROJECT_ROOT, ".lang.txt")
+THEME_FILE = os.path.join(_PROJECT_ROOT, ".theme.json")
+# Допустимые режимы темы оформления (см. site/index.html).
+_THEME_MODES = ("dark", "light", "auto")
 LAST_DIR_FILE = os.path.join(_PROJECT_ROOT, ".last_dir.txt")
 AUTO_ROOT_FILE = os.path.join(_PROJECT_ROOT, ".last_auto_root.txt")
 # Полный СПИСОК корней авто-раскладки (активный = [0]). Раньше он жил только в
@@ -408,6 +411,44 @@ def _read_saved_lang():
     except OSError:
         pass
     return None
+
+
+def _normalize_theme(data):
+    """Привести тему к виду {mode,h,s,l} или вернуть None, если это не словарь.
+
+    Тема хранится рядом с .lang.txt (.theme.json) — надёжный слой: в WebView2
+    localStorage/cookie между сессиями не гарантированы, а файл переживает
+    перезапуск и передаётся во frontend через URL-параметры (main.py).
+    """
+    if not isinstance(data, dict):
+        return None
+    mode = str(data.get("mode") or "").strip().lower()
+    if mode not in _THEME_MODES:
+        mode = "dark"
+
+    def _num(v, default, lo, hi):
+        try:
+            n = round(float(v))
+        except (TypeError, ValueError):
+            n = default
+        return min(max(n, lo), hi)
+
+    return {
+        "mode": mode,
+        "h": _num(data.get("h", 33), 33, 0, 360),
+        "s": _num(data.get("s", 100), 100, 0, 100),
+        "l": _num(data.get("l", 62), 62, 0, 100),
+    }
+
+
+def _read_saved_theme():
+    """Сохранённая тема оформления (.theme.json) или None."""
+    try:
+        with open(THEME_FILE, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    return _normalize_theme(data)
 
 
 def load_bookmarks():
@@ -2111,6 +2152,11 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == "/api/logs":
             self._json({"logs": logger.all()})
             return
+        if u.path == "/api/theme":
+            # Чтение сохранённой темы (безопасный GET). Основной путь передачи —
+            # URL-параметр из main.py; этот GET нужен как fallback/диагностика.
+            self._json({"theme": _read_saved_theme()})
+            return
         if u.path in ("/api/logs/clear", "/api/lang"):
             # Раньше и очистка журнала, и смена языка ядра были доступны ещё и
             # через GET. Это мутирующие операции, а браузер не отправляет Origin
@@ -2222,6 +2268,23 @@ class Handler(BaseHTTPRequestHandler):
                 return
             _server_locale = get_locale(lang)
             self._json({"lang": lang})
+            return
+
+        if u.path == "/api/theme":
+            # Сохранение темы оформления. main.py при старте читает .theme.json
+            # и передаёт режим/акцент в URL (?theme=...&ah=..&as=..&al=..), так
+            # выбор переживает перезапуск даже без рабочего localStorage.
+            theme = _normalize_theme(body)
+            if theme is None:
+                self._json({"error": "bad theme"}, 400)
+                return
+            try:
+                with open(THEME_FILE, "w", encoding="utf-8") as tf:
+                    json.dump(theme, tf)
+            except OSError:
+                self._json({"error": "write failed"}, 500)
+                return
+            self._json({"theme": theme})
             return
 
         if u.path == "/api/tasks":

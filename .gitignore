@@ -23,6 +23,7 @@ hfdl_token
 .tasks.json
 .tasks.bak.json
 .lang.txt
+.theme.json
 .last_dir.txt
 .last_auto_root.txt
 .last_auto_roots.json
